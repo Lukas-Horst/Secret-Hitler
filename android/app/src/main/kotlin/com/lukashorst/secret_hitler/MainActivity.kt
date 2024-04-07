@@ -1,4 +1,4 @@
-package com.example.secret_hitler
+package com.lukashorst.secret_hitler
 
 import io.flutter.embedding.android.FlutterActivity
 
