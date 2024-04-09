@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart' show BuildContext, MediaQuery;
 
+// Class to get the screen size globally
 class ScreenSize {
   static late double screenWidth;
   static late double screenHeight;

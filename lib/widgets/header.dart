@@ -1,3 +1,5 @@
+// author Lukas Horst
+
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
