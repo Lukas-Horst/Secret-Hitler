@@ -1,17 +1,25 @@
 // author Lukas Horst
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:secret_hitler/backend/app_design/app_design.dart';
+import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'dart:math' as math;
 
-import '../constants/screen_size.dart';
+import 'header_image.dart';
 
+
+// Widget for the header
 class Header extends StatelessWidget {
   final String headerText;
-  final String headerImage;
-  final Color headerColor;
+  late final Color headerColor;
+  late String headerImage;
 
-  const Header({super.key, required this.headerText, required this.headerImage,
-    required this.headerColor});
+  Header({super.key, required this.headerText}) {
+    headerColor = AppDesign.getPrimaryColor();
+    headerImage = HeaderImage.getHeaderImage(headerColor);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,6 +88,7 @@ class Header extends StatelessWidget {
   }
 }
 
+// Creates a half circle
 class HalfCirclePainter extends CustomPainter {
   final Color color;
 

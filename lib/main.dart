@@ -2,11 +2,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:appwrite/appwrite.dart';
-import 'package:secret_hitler/app_language/app_language.dart';
-import 'package:secret_hitler/database/hive_database.dart';
-import 'package:secret_hitler/login_page.dart';
-
-import 'constants/screen_size.dart';
+import 'package:secret_hitler/backend/app_design/app_design.dart';
+import 'package:secret_hitler/backend/app_language/app_language.dart';
+import 'package:secret_hitler/backend/constants/screen_size.dart';
+import 'package:secret_hitler/backend/database/hive_database.dart';
+import 'package:secret_hitler/frontend/pages/authentication/login_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,6 +16,9 @@ void main() async {
 
   // Initialize the language
   await AppLanguage.init();
+
+  // Initialize the design
+  await AppDesign.init();
 
   // Connection to AppWrite
   Client client = Client()
@@ -38,7 +41,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   @override
   Widget build(BuildContext context) {
     ScreenSize.init(context);  // Initialize the screen size
