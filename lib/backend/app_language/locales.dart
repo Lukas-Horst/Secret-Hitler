@@ -1,16 +1,17 @@
 // author: Lukas Horst
 
 mixin LocaleData {
-  static const String login = 'login';
-  static const String register = 'register';
-
   static const Map<String, dynamic> EN = {
-    login: 'Login',
-    register: 'Register',
+    'Login': 'Login',
+    'Register': 'Register',
+    'E-Mail': 'E-Mail',
+    'Password': 'Password',
   };
 
   static const Map<String, dynamic> DE = {
-    login: 'Anmelden',
-    register: 'Registrieren',
+    'Login': 'Anmelden',
+    'Register': 'Registrieren',
+    'E-Mail': 'E-Mail',
+    'Password': 'Passwort',
   };
 }

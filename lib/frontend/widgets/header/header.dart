@@ -1,7 +1,5 @@
 // author Lukas Horst
 
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:secret_hitler/backend/app_design/app_design.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
@@ -23,66 +21,57 @@ class Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      flex: 1,
-      child: FractionallySizedBox(
-        alignment: Alignment.topCenter,
-        widthFactor: 1,
-        heightFactor: 0.2,
-        child: Container(
-          child: Stack(
-            children: [
-              FractionallySizedBox(
-                widthFactor: 1.5,
-                heightFactor: 1,
-                child: Container(
-                  child: CustomPaint(
-                    painter: HalfCirclePainter(color: headerColor),
-                  ),
+    return SizedBox(
+      height: ScreenSize.screenHeight * 0.185,
+      child: Stack(
+        children: [
+          FractionallySizedBox(
+            widthFactor: 1.5,
+            heightFactor: 1,
+            child: CustomPaint(
+              painter: HalfCirclePainter(color: headerColor),
+            ),
+          ),
+          FractionallySizedBox(
+            widthFactor: 1,
+            heightFactor: 1,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Image.asset(
+                  'assets/images/${headerImage}.png',
+                  height: ScreenSize.screenHeight * 0.135,
+                  width: ScreenSize.screenWidth * 0.25,
                 ),
-              ),
-              FractionallySizedBox(
-                widthFactor: 1,
-                heightFactor: 1,
-                child: Row(
+                Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Image.asset(
-                      'assets/images/${headerImage}.png',
-                      height: ScreenSize.screenHeight * 0.135,
-                      width: ScreenSize.screenWidth * 0.25,
+                      'assets/images/Logo.png',
+                      height: ScreenSize.screenHeight * 0.1,
+                      width: ScreenSize.screenWidth * 0.3,
                     ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Image.asset(
-                          'assets/images/Logo.png',
-                          height: ScreenSize.screenHeight * 0.1,
-                          width: ScreenSize.screenWidth * 0.3,
-                        ),
-                        Text(
-                          headerText,
-                          style: TextStyle(
-                            fontFamily: 'EskapadeFrakturW04BlackFamily',
-                            color: Colors.white,
-                            fontSize: ScreenSize.screenHeight * 0.025 +
-                                ScreenSize.screenWidth * 0.025,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Image.asset(
-                      'assets/images/${headerImage}_inverted.png',
-                      height: ScreenSize.screenHeight * 0.135,
-                      width: ScreenSize.screenWidth * 0.25,
+                    Text(
+                      headerText,
+                      style: TextStyle(
+                        fontFamily: 'EskapadeFrakturW04BlackFamily',
+                        color: Colors.white,
+                        fontSize: ScreenSize.screenHeight * 0.025 +
+                            ScreenSize.screenWidth * 0.025,
+                      ),
                     ),
                   ],
                 ),
-              ),
-            ],
+                Image.asset(
+                  'assets/images/${headerImage}_inverted.png',
+                  height: ScreenSize.screenHeight * 0.135,
+                  width: ScreenSize.screenWidth * 0.25,
+                ),
+              ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
