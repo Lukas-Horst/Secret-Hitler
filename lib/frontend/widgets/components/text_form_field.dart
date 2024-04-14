@@ -1,5 +1,7 @@
 // author: Lukas Horst
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:secret_hitler/backend/app_design/app_design.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
@@ -28,6 +30,58 @@ class CustomTextFormField extends StatefulWidget {
 class _CustomTextFormFieldState extends State<CustomTextFormField> {
 
   bool _passwordVisible = false;
+  final double _maxFontSize = ScreenSize.screenHeight * 0.018 +
+      ScreenSize.screenWidth * 0.016;
+  double _fontSize = ScreenSize.screenHeight * 0.018 +
+      ScreenSize.screenWidth * 0.016;
+  late double _maxWidth;
+  int _textLength = 0;
+
+  // Methode to adjust the text length, to have it always in one line
+  void _adjustTextLength(value) {
+    final TextPainter textPainter = TextPainter(
+      text: TextSpan(
+        text: value,
+        style: TextStyle(
+          fontFamily: 'EskapadeFrakturW04BlackFamily',
+          color: Colors.black,
+          fontSize: _fontSize,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
+      textDirection: TextDirection.ltr,
+    );
+    textPainter.layout(maxWidth: _maxWidth);
+
+    // Detecting if text was added or deleted
+    bool textAdded = _textLength < value.length;
+
+    if (textPainter.maxIntrinsicWidth > _maxWidth && textAdded) {
+      setState(() {
+        _fontSize *= 0.90;
+      });
+      // Adjust it so often until it fits
+      _adjustTextLength(value);
+    } else if (textPainter.maxIntrinsicWidth < _maxWidth * 0.95 &&
+        _fontSize < _maxFontSize && !textAdded) {
+      setState(() {
+        _fontSize = min(_fontSize * 1.1, _maxFontSize);
+        _adjustTextLength(value);
+      });
+    } else {
+      _textLength = value.length;
+    }
+  }
+
+  @override
+  void initState() {
+    if (widget.obscureText) {
+      _maxWidth = ScreenSize.screenWidth * 0.63;
+    } else {
+      _maxWidth = ScreenSize.screenWidth * 0.7;
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +103,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         // Size
         constraints: BoxConstraints(
           maxWidth: widget.width,
+          minHeight: widget.height,
           maxHeight: widget.height,
         ),
         border: OutlineInputBorder(
@@ -92,19 +147,20 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         hintText: widget.hintText,
         hintStyle: TextStyle(
           fontFamily: 'EskapadeFrakturW04BlackFamily',
-          fontSize: ScreenSize.screenHeight * 0.016 +
-              ScreenSize.screenWidth * 0.016,
+          fontSize: _fontSize,
         ),
       ),
       style: TextStyle(
         fontFamily: 'EskapadeFrakturW04BlackFamily',
         color: Colors.black,
-        fontSize: ScreenSize.screenHeight * 0.016 +
-            ScreenSize.screenWidth * 0.016,
+        fontSize: _fontSize,
         overflow: TextOverflow.ellipsis,
       ),
       textAlign: TextAlign.left,
       maxLines: 1,
+      onChanged: (value) {
+        _adjustTextLength(value);
+      },
     );
   }
 }

@@ -44,8 +44,13 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     ScreenSize.init(context);  // Initialize the screen size
-    return const MaterialApp(
-      home: Login(),
+    return MaterialApp(
+      theme: ThemeData(
+        textSelectionTheme: TextSelectionThemeData(
+          cursorColor: AppDesign.getTertiaryColor()
+        ),
+      ),
+      home: const Login(),
     );
   }
 }
