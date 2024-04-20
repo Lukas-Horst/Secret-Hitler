@@ -101,10 +101,9 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         filled: true,
         fillColor: AppDesign.getPrimaryColor(),
         // Size
+        contentPadding: EdgeInsets.fromLTRB(ScreenSize.screenWidth * 0.03, ScreenSize.screenHeight * 0.03, 0, 0),
         constraints: BoxConstraints(
           maxWidth: widget.width,
-          minHeight: widget.height,
-          maxHeight: widget.height,
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(50.0),

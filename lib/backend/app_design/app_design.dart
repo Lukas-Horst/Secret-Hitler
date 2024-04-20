@@ -9,6 +9,7 @@ class AppDesign {
   static late Color _currentSecondaryColor;
   static late Color _currentTertiaryColor;
   static late Color _contraryPrimaryColor;
+  static late String _currentCirclePNG;
 
   static Future<void> init() async {
     String? color = await HiveDatabase.getValue('color');
@@ -19,9 +20,15 @@ class AppDesign {
       _currentPrimaryColor = const Color(0xffDC3B06);
       await HiveDatabase.insertData('color', _currentPrimaryColor.value.toRadixString(16));
     }
+    _update();
+  }
+
+  // Methode to update all attributes
+  static void _update() {
     _setSecondaryColor();
     _setTertiaryColor();
     _setContraryPrimaryColor();
+    _setCirclePNG();
   }
   
   static Color getPrimaryColor() {
@@ -40,10 +47,14 @@ class AppDesign {
     return _contraryPrimaryColor;
   }
 
+  static String getCirclePNG() {
+    return _currentCirclePNG;
+  }
+
   // Method to set the primary color and save it in the database
   static Future<void> setPrimaryColor(Color color) async {
     _currentPrimaryColor = color;
-    _setSecondaryColor();
+    _update();
     await HiveDatabase.insertData('color', _currentPrimaryColor.value.toRadixString(16));
   }
 
@@ -71,6 +82,14 @@ class AppDesign {
       _contraryPrimaryColor= const Color(0xff479492);
     } else {
       _currentTertiaryColor = const Color(0xffDC3B06);
+    }
+  }
+
+  static void _setCirclePNG() {
+    if (_currentPrimaryColor == const Color(0xffDC3B06)) {
+      _currentCirclePNG = 'fascist_circle';
+    } else {
+      _currentCirclePNG = 'liberal_circle';
     }
   }
 }

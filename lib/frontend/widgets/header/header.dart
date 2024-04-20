@@ -1,6 +1,8 @@
 // author Lukas Horst
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:secret_hitler/backend/app_design/app_design.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'dart:math' as math;
@@ -52,15 +54,26 @@ class Header extends StatelessWidget {
                       height: ScreenSize.screenHeight * 0.1,
                       width: ScreenSize.screenWidth * 0.3,
                     ),
-                    Text(
-                      headerText,
-                      style: TextStyle(
-                        fontFamily: 'EskapadeFrakturW04BlackFamily',
-                        color: Colors.white,
-                        fontSize: ScreenSize.screenHeight * 0.025 +
-                            ScreenSize.screenWidth * 0.025,
+                    SizedBox(
+                      width: ScreenSize.screenWidth * 0.45,
+                      height: ScreenSize.screenHeight * 0.07,
+                      child: Center(
+                        child: Text(
+                          headerText,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontFamily: 'EskapadeFrakturW04BlackFamily',
+                            color: Colors.white,
+                            fontSize: ScreenSize.screenHeight * 0.025 +
+                                ScreenSize.screenWidth * 0.025,
+                            height: 0.9,
+                          ),
+                        ),
                       ),
                     ),
+                    Container(
+                      height: ScreenSize.screenHeight * 0.005,
+                    )
                   ],
                 ),
                 Image.asset(
