@@ -37,4 +37,8 @@ class AppLanguage {
       return LocaleData.EN;
     }
   }
+
+  static String getCurrentLanguage() {
+    return _currentLanguage;
+  }
 }

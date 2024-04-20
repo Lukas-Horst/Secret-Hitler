@@ -7,7 +7,6 @@ import 'package:secret_hitler/backend/app_language/app_language.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/backend/database/hive_database.dart';
 import 'package:secret_hitler/frontend/pages/authentication/switches/login_register_switch.dart';
-import 'package:secret_hitler/frontend/pages/home/homepage/homepage.dart';
 import 'package:secret_hitler/frontend/pages/home/page_navigation.dart';
 
 void main() async {
@@ -52,7 +51,7 @@ class _MyAppState extends State<MyApp> {
           cursorColor: AppDesign.getTertiaryColor()
         ),
       ),
-      home: PageNavigation(),
+      home: const PageNavigation(),
       // home: const LoginRegisterSwitch(),
     );
   }

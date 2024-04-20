@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
+import 'package:secret_hitler/frontend/pages/home/settings/language_page.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons.dart';
 import 'package:secret_hitler/frontend/widgets/header/header.dart';
 
@@ -28,7 +29,12 @@ class Settings extends StatelessWidget {
               children: [
                 PrimaryElevatedButton(
                   text: AppLanguage.getLanguageData()['Language'],
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const Language()),
+                    );
+                  },
                 ),
                 PrimaryElevatedButton(
                   text: AppLanguage.getLanguageData()['Design'],

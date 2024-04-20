@@ -64,8 +64,8 @@ class Header extends StatelessWidget {
                           style: TextStyle(
                             fontFamily: 'EskapadeFrakturW04BlackFamily',
                             color: Colors.white,
-                            fontSize: ScreenSize.screenHeight * 0.025 +
-                                ScreenSize.screenWidth * 0.025,
+                            fontSize: ScreenSize.screenHeight * 0.024 +
+                                ScreenSize.screenWidth * 0.024,
                             height: 0.9,
                           ),
                         ),

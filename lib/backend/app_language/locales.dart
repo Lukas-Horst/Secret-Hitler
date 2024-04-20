@@ -31,6 +31,9 @@ mixin LocaleData {
     'Language': 'Language',
     'Design': 'Design',
     'Imprint': 'Imprint',
+    'Choose your language.': 'Choose your language.',
+    'German': 'German',
+    'English': 'English',
   };
 
   static const Map<String, dynamic> DE = {
@@ -63,5 +66,8 @@ mixin LocaleData {
     'Language': 'Sprache',
     'Design': 'Design',
     'Imprint': 'Impressum',
+    'Choose your language.': 'Wähle deine Sprache aus.',
+    'German': 'Deutsch',
+    'English': 'Englisch',
   };
 }

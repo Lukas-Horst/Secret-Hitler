@@ -10,7 +10,10 @@ import 'package:secret_hitler/frontend/pages/home/settings/settings_page.dart';
 import 'package:secret_hitler/frontend/widgets/components/bottom_navigation_bar.dart';
 
 class PageNavigation extends StatefulWidget {
-  const PageNavigation({super.key});
+
+  final int? startPage;
+
+  const PageNavigation({super.key, this.startPage});
 
   @override
   State<PageNavigation> createState() => _PageNavigationState();
@@ -33,6 +36,15 @@ class _PageNavigationState extends State<PageNavigation> {
   }
 
   @override
+  void initState() {
+    // Change the start page if we have a correct index
+    if (widget.startPage == 1 || widget.startPage == 2) {
+      _selectedIndex = widget.startPage!;
+    }
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF474747),
@@ -52,6 +64,7 @@ class _PageNavigationState extends State<PageNavigation> {
               color: Colors.white,
               activeColor: Colors.white,
               tabBackgroundColor: AppDesign.getPrimaryColor(),
+              selectedIndex: _selectedIndex,
               onTabChange: (index) {
                 setState(() {
                   _selectedIndex = index;
