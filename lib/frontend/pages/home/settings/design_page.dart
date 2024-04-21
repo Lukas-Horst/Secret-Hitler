@@ -1,6 +1,7 @@
 // author: Lukas Horst
 
 import 'package:flutter/material.dart';
+import 'package:secret_hitler/backend/app_design/app_design.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/frontend/widgets/components/bottom_navigation_bar.dart';
@@ -8,23 +9,23 @@ import 'package:secret_hitler/frontend/widgets/components/buttons.dart';
 import 'package:secret_hitler/frontend/widgets/components/text.dart';
 import 'package:secret_hitler/frontend/widgets/header/header.dart';
 
-class Language extends StatefulWidget {
+class Design extends StatefulWidget {
 
   final Function refresh;
 
-  const Language({super.key, required this.refresh});
+  const Design({super.key, required this.refresh});
 
   @override
-  State<Language> createState() => _LanguageState();
+  State<Design> createState() => _DesignState();
 }
 
-class _LanguageState extends State<Language> {
+class _DesignState extends State<Design> {
 
-  final String _currentLanguage = AppLanguage.getCurrentLanguage();
+  final Color _currentPrimaryColor = AppDesign.getPrimaryColor();
 
   void goBack(BuildContext context) {
     // If the language changed, we refresh the settings page
-    if (_currentLanguage != AppLanguage.getCurrentLanguage()) {
+    if (_currentPrimaryColor != AppDesign.getPrimaryColor()) {
       widget.refresh();
     }
     Navigator.pop(context);
@@ -45,33 +46,34 @@ class _LanguageState extends State<Language> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(height: ScreenSize.screenHeight * 0.02),
-              Header(headerText: AppLanguage.getLanguageData()['Language']),
+              Header(headerText: AppLanguage.getLanguageData()['Design']),
               SizedBox(height: ScreenSize.screenHeight * 0.02),
               ExplainingText(
-                text: AppLanguage.getLanguageData()['Choose your language.'],
+                text: AppLanguage.getLanguageData()['Choose theme.'],
               ),
-              SizedBox(
-                height: ScreenSize.screenHeight * 0.3,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    PrimaryElevatedButton(
-                      text: AppLanguage.getLanguageData()['German'],
-                      onPressed: () async {
-                        await AppLanguage.setCurrentLanguage('de');
-                        setState(()  {});
-                      },
-                    ),
-                    PrimaryElevatedButton(
-                      text: AppLanguage.getLanguageData()['English'],
-                      onPressed: () async {
-                        await AppLanguage.setCurrentLanguage('en');
-                        setState(() {});
-                      },
-                    ),
-                  ],
-                ),
+              SizedBox(height: ScreenSize.screenHeight * 0.1),
+              Image.asset(
+                'assets/images/${AppDesign.getCirclePNG()}.png',
+                height: ScreenSize.screenHeight * 0.15,
+                width: ScreenSize.screenHeight * 0.15,
+              ),
+              SizedBox(height: ScreenSize.screenHeight * 0.06),
+              CustomToggleButton(
+                height: ScreenSize.screenHeight * 0.065,
+                width: ScreenSize.screenWidth * 0.85,
+                leftColor: const Color(0xffDC0606),
+                rightColor: const Color(0xff004D65),
+                leftFunction: () async {
+                  await AppDesign.setPrimaryColor(const Color(0xffDC3B06));
+                  setState(() {});
+                },
+                rightFunction: () async {
+                  await AppDesign.setPrimaryColor(const Color(0xff479492));
+                  setState(() {});
+                },
+                leftText: AppLanguage.getLanguageData()['Fascist'],
+                rightText: AppLanguage.getLanguageData()['Liberal'],
+                leftActive: _currentPrimaryColor == const Color(0xffDC3B06),
               ),
             ],
           ),

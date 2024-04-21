@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:secret_hitler/backend/database/hive_database.dart';
+import 'package:secret_hitler/frontend/widgets/header/header_image.dart';
 
 class AppDesign {
 
@@ -9,6 +10,7 @@ class AppDesign {
   static late Color _currentSecondaryColor;
   static late Color _currentTertiaryColor;
   static late Color _contraryPrimaryColor;
+  static late Color _contrarySecondaryColor;
   static late String _currentCirclePNG;
 
   static Future<void> init() async {
@@ -28,6 +30,7 @@ class AppDesign {
     _setSecondaryColor();
     _setTertiaryColor();
     _setContraryPrimaryColor();
+    _setContrarySecondaryColor();
     _setCirclePNG();
   }
   
@@ -47,6 +50,10 @@ class AppDesign {
     return _contraryPrimaryColor;
   }
 
+  static Color getContrarySecondaryColor() {
+    return _contrarySecondaryColor;
+  }
+
   static String getCirclePNG() {
     return _currentCirclePNG;
   }
@@ -55,6 +62,7 @@ class AppDesign {
   static Future<void> setPrimaryColor(Color color) async {
     _currentPrimaryColor = color;
     _update();
+    HeaderImage.resetNewHeader();
     await HiveDatabase.insertData('color', _currentPrimaryColor.value.toRadixString(16));
   }
 
@@ -81,7 +89,16 @@ class AppDesign {
     if (_currentPrimaryColor == const Color(0xffDC3B06)) {
       _contraryPrimaryColor= const Color(0xff479492);
     } else {
-      _currentTertiaryColor = const Color(0xffDC3B06);
+      _contraryPrimaryColor = const Color(0xffDC3B06);
+    }
+  }
+
+  // Method to set the contrary secondary Color based on the primary color
+  static void _setContrarySecondaryColor() {
+    if (_currentPrimaryColor == const Color(0xffDC3B06)) {
+      _contrarySecondaryColor= const Color(0xff004D65);
+    } else {
+      _contrarySecondaryColor = const Color(0xffDC0606);
     }
   }
 

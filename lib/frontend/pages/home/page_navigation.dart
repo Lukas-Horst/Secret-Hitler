@@ -1,5 +1,7 @@
 // author: Lukas Horst
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:secret_hitler/backend/app_design/app_design.dart';
@@ -46,44 +48,47 @@ class _PageNavigationState extends State<PageNavigation> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF474747),
-      body: _pages[_selectedIndex],
-      bottomNavigationBar: CustomBottomNavigationBar(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(
-            width: ScreenSize.screenWidth * 0.9,
-            height: ScreenSize.screenHeight * 0.06,
-            child: GNav(
-              iconSize: ScreenSize.screenHeight * 0.08 +
-                  ScreenSize.screenWidth * 0.08,
-              padding: const EdgeInsets.symmetric(horizontal: 17, vertical: 0.5),
-              duration: const Duration(milliseconds: 300),
-              color: Colors.white,
-              activeColor: Colors.white,
-              tabBackgroundColor: AppDesign.getPrimaryColor(),
-              selectedIndex: _selectedIndex,
-              onTabChange: (index) {
-                setState(() {
-                  _selectedIndex = index;
-                });
-              },
-              tabs: const [
-                GButton(
-                  icon: Icons.home,
-                ),
-                GButton(
-                  icon: Icons.person,
-                ),
-                GButton(
-                  icon: Icons.settings,
-                ),
-              ],
-            ),
-          )
-        ],
+    return WillPopScope(
+      onWillPop: () async {return false;},
+      child: Scaffold(
+        backgroundColor: const Color(0xFF474747),
+        body: _pages[_selectedIndex],
+        bottomNavigationBar: CustomBottomNavigationBar(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: ScreenSize.screenWidth * 0.9,
+              height: ScreenSize.screenHeight * 0.06,
+              child: GNav(
+                iconSize: ScreenSize.screenHeight * 0.08 +
+                    ScreenSize.screenWidth * 0.08,
+                padding: const EdgeInsets.symmetric(horizontal: 17, vertical: 0.5),
+                duration: const Duration(milliseconds: 300),
+                color: Colors.white,
+                activeColor: Colors.white,
+                tabBackgroundColor: AppDesign.getPrimaryColor(),
+                selectedIndex: _selectedIndex,
+                onTabChange: (index) {
+                  setState(() {
+                    _selectedIndex = index;
+                  });
+                },
+                tabs: const [
+                  GButton(
+                    icon: Icons.home,
+                  ),
+                  GButton(
+                    icon: Icons.person,
+                  ),
+                  GButton(
+                    icon: Icons.settings,
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

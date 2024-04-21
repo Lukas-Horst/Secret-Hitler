@@ -34,4 +34,9 @@ class HeaderImage {
     }
     return headerImage;
   }
+
+  // To avoid that we get a wrong image if we change the color
+  static void resetNewHeader() {
+    newHeader = true;
+  }
 }

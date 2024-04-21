@@ -28,86 +28,89 @@ class _NewPasswordState extends State<NewPassword> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF474747),
-      body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(height: ScreenSize.screenHeight * 0.02),
-            Header(headerText: AppLanguage.getLanguageData()['New password']),
-            SizedBox(height: ScreenSize.screenHeight * 0.02),
-            ExplainingText(
-              text: AppLanguage.getLanguageData()['Enter your new password.'],
-            ),
+    return WillPopScope(
+      onWillPop: () async {return false;},
+      child: Scaffold(
+        backgroundColor: const Color(0xFF474747),
+        body: SafeArea(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(height: ScreenSize.screenHeight * 0.02),
+              Header(headerText: AppLanguage.getLanguageData()['New password']),
+              SizedBox(height: ScreenSize.screenHeight * 0.02),
+              ExplainingText(
+                text: AppLanguage.getLanguageData()['Enter your new password.'],
+              ),
 
-            SizedBox(height: ScreenSize.screenHeight * 0.04),
-            // Password text field
-            TextFieldHeadText(
-              text: AppLanguage.getLanguageData()['Password'],
-            ),
-            CustomTextFormField(
-              hintText: AppLanguage.getLanguageData()['Enter your password'],
-              obscureText: true,
-              textController: passwordTextController,
-              readOnly: false,
-              autoFocus: false,
-              width: ScreenSize.screenWidth * 0.85,
-              height: ScreenSize.screenHeight * 0.065,
-              currentFocusNode: passwordFocusNode,
-              nextFocusNode: confirmPasswordFocusNode,
-            ),
-            SizedBox(height: ScreenSize.screenHeight * 0.02),
-
-            // Confirm Password text field
-            TextFieldHeadText(
-              text: AppLanguage.getLanguageData()['Confirm password'],
-            ),
-            CustomTextFormField(
-                hintText: AppLanguage.getLanguageData()['Confirm your password'],
+              SizedBox(height: ScreenSize.screenHeight * 0.04),
+              // Password text field
+              TextFieldHeadText(
+                text: AppLanguage.getLanguageData()['Password'],
+              ),
+              CustomTextFormField(
+                hintText: AppLanguage.getLanguageData()['Enter your password'],
                 obscureText: true,
-                textController: confirmPasswordTextController,
+                textController: passwordTextController,
                 readOnly: false,
                 autoFocus: false,
                 width: ScreenSize.screenWidth * 0.85,
                 height: ScreenSize.screenHeight * 0.065,
-                currentFocusNode: confirmPasswordFocusNode
-            ),
-            SizedBox(height: ScreenSize.screenHeight * 0.04),
-
-            // Register button
-            PrimaryElevatedButton(
-              text: AppLanguage.getLanguageData()['Register'],
-              onPressed: () {},
-            ),
-
-            SizedBox(height: ScreenSize.screenHeight * 0.2),
-            SizedBox(
-              width: ScreenSize.screenWidth * 0.90,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Transform.rotate(
-                    angle: 330 * 3.1415926535 / 180,
-                    child: Image.asset(
-                      'assets/images/fascist_circle.png',
-                      height: ScreenSize.screenHeight * 0.075,
-                      width: ScreenSize.screenHeight * 0.07,
-                    ),
-                  ),
-                  Transform.rotate(
-                    angle: -330 * 3.1415926535 / 180,
-                    child: Image.asset(
-                      'assets/images/${AppDesign.getCirclePNG()}.png',
-                      height: ScreenSize.screenHeight * 0.075,
-                      width: ScreenSize.screenHeight * 0.07,
-                    ),
-                  ),
-                ],
+                currentFocusNode: passwordFocusNode,
+                nextFocusNode: confirmPasswordFocusNode,
               ),
-            ),
-          ],
+              SizedBox(height: ScreenSize.screenHeight * 0.02),
+
+              // Confirm Password text field
+              TextFieldHeadText(
+                text: AppLanguage.getLanguageData()['Confirm password'],
+              ),
+              CustomTextFormField(
+                  hintText: AppLanguage.getLanguageData()['Confirm your password'],
+                  obscureText: true,
+                  textController: confirmPasswordTextController,
+                  readOnly: false,
+                  autoFocus: false,
+                  width: ScreenSize.screenWidth * 0.85,
+                  height: ScreenSize.screenHeight * 0.065,
+                  currentFocusNode: confirmPasswordFocusNode
+              ),
+              SizedBox(height: ScreenSize.screenHeight * 0.04),
+
+              // Register button
+              PrimaryElevatedButton(
+                text: AppLanguage.getLanguageData()['Register'],
+                onPressed: () {},
+              ),
+
+              SizedBox(height: ScreenSize.screenHeight * 0.2),
+              SizedBox(
+                width: ScreenSize.screenWidth * 0.90,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Transform.rotate(
+                      angle: 330 * 3.1415926535 / 180,
+                      child: Image.asset(
+                        'assets/images/fascist_circle.png',
+                        height: ScreenSize.screenHeight * 0.075,
+                        width: ScreenSize.screenHeight * 0.07,
+                      ),
+                    ),
+                    Transform.rotate(
+                      angle: -330 * 3.1415926535 / 180,
+                      child: Image.asset(
+                        'assets/images/${AppDesign.getCirclePNG()}.png',
+                        height: ScreenSize.screenHeight * 0.075,
+                        width: ScreenSize.screenHeight * 0.07,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

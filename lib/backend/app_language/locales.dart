@@ -34,6 +34,9 @@ mixin LocaleData {
     'Choose your language.': 'Choose your language.',
     'German': 'German',
     'English': 'English',
+    'Choose theme.': 'Choose whether you want a liberal theme or a fascist theme.',
+    'Fascist': 'Fascist',
+    'Liberal': 'Liberal',
   };
 
   static const Map<String, dynamic> DE = {
@@ -69,5 +72,8 @@ mixin LocaleData {
     'Choose your language.': 'Wähle deine Sprache aus.',
     'German': 'Deutsch',
     'English': 'Englisch',
+    'Choose theme.': 'Wähle aus, ob du ein liberales Thema oder ein faschistisches Thema haben möchtest.',
+    'Fascist': 'Faschist',
+    'Liberal': 'Liberal',
   };
 }
