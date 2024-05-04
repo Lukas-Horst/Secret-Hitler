@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
+import 'package:secret_hitler/frontend/pages/home/account/user_data_page.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons.dart';
 import 'package:secret_hitler/frontend/widgets/header/header.dart';
 
@@ -28,7 +29,12 @@ class Account extends StatelessWidget {
               children: [
                 PrimaryElevatedButton(
                   text: AppLanguage.getLanguageData()['User data'],
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const UserData()),
+                    );
+                  },
                 ),
                 PrimaryElevatedButton(
                   text: AppLanguage.getLanguageData()['Statistics'],

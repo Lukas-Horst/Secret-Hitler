@@ -98,7 +98,7 @@ class _RegisterState extends State<Register> {
                         autoFocus: false,
                         width: ScreenSize.screenWidth * 0.85,
                         height: ScreenSize.screenHeight * 0.065,
-                        currentFocusNode: confirmPasswordFocusNode
+                        currentFocusNode: confirmPasswordFocusNode,
                       ),
                       SizedBox(height: ScreenSize.screenHeight * 0.04),
 

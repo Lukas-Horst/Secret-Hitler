@@ -44,7 +44,7 @@ class _SettingsState extends State<Settings> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => Language(refresh: refresh,)),
+                      MaterialPageRoute(builder: (context) => Language(refresh: () {refresh();},)),
                     );
                   },
                 ),
@@ -53,7 +53,7 @@ class _SettingsState extends State<Settings> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => Design(refresh: refresh,)),
+                      MaterialPageRoute(builder: (context) => const Design()),
                     );
                   },
                 ),

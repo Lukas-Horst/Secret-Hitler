@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:secret_hitler/backend/app_design/app_design.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
+import 'package:secret_hitler/frontend/pages/home/page_navigation.dart';
 import 'package:secret_hitler/frontend/widgets/components/bottom_navigation_bar.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons.dart';
 import 'package:secret_hitler/frontend/widgets/components/text.dart';
@@ -11,9 +12,7 @@ import 'package:secret_hitler/frontend/widgets/header/header.dart';
 
 class Design extends StatefulWidget {
 
-  final Function refresh;
-
-  const Design({super.key, required this.refresh});
+  const Design({super.key});
 
   @override
   State<Design> createState() => _DesignState();
@@ -24,11 +23,14 @@ class _DesignState extends State<Design> {
   final Color _currentPrimaryColor = AppDesign.getPrimaryColor();
 
   void goBack(BuildContext context) {
-    // If the language changed, we refresh the settings page
-    if (_currentPrimaryColor != AppDesign.getPrimaryColor()) {
-      widget.refresh();
-    }
     Navigator.pop(context);
+    // If the design changed, we replace the settings page
+    if (_currentPrimaryColor != AppDesign.getPrimaryColor()) {
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const PageNavigation(startPage: 2,))
+      );
+    }
   }
 
   @override

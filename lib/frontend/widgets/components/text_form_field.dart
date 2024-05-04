@@ -30,56 +30,56 @@ class CustomTextFormField extends StatefulWidget {
 class _CustomTextFormFieldState extends State<CustomTextFormField> {
 
   bool _passwordVisible = false;
-  final double _maxFontSize = ScreenSize.screenHeight * 0.018 +
+  late bool _textEditingActive;
+  final double _fontSize = ScreenSize.screenHeight * 0.018 +
       ScreenSize.screenWidth * 0.016;
-  double _fontSize = ScreenSize.screenHeight * 0.018 +
-      ScreenSize.screenWidth * 0.016;
-  late double _maxWidth;
-  int _textLength = 0;
 
-  // Methode to adjust the text length, to have it always in one line
-  void _adjustTextLength(value) {
-    final TextPainter textPainter = TextPainter(
-      text: TextSpan(
-        text: value,
-        style: TextStyle(
-          fontFamily: 'EskapadeFrakturW04BlackFamily',
-          color: Colors.black,
-          fontSize: _fontSize,
-          overflow: TextOverflow.ellipsis,
+  // Method to get the right suffix icon based on the given widget parameters
+  Widget? _getSuffixIcon() {
+    if (widget.readOnly) {
+      return IconButton(
+        onPressed: () {
+          _changeTextEditingStatus();
+        },
+        icon: Icon(
+          _textEditingActive
+              ? Icons.edit
+              : Icons.check,
+          size: ScreenSize.screenHeight * 0.025 +
+              ScreenSize.screenWidth * 0.025,
         ),
-      ),
-      textDirection: TextDirection.ltr,
-    );
-    textPainter.layout(maxWidth: _maxWidth);
-
-    // Detecting if text was added or deleted
-    bool textAdded = _textLength < value.length;
-
-    if (textPainter.maxIntrinsicWidth > _maxWidth && textAdded) {
-      setState(() {
-        _fontSize *= 0.90;
-      });
-      // Adjust it so often until it fits
-      _adjustTextLength(value);
-    } else if (textPainter.maxIntrinsicWidth < _maxWidth * 0.95 &&
-        _fontSize < _maxFontSize && !textAdded) {
-      setState(() {
-        _fontSize = min(_fontSize * 1.1, _maxFontSize);
-        _adjustTextLength(value);
-      });
-    } else {
-      _textLength = value.length;
+      );
+    } else if (widget.obscureText) {
+      return IconButton(
+        onPressed: () {
+          setState(() {
+            _passwordVisible = !_passwordVisible;
+          });
+        },
+        icon: Icon(
+          _passwordVisible
+              ? Icons.visibility
+              : Icons.visibility_off,
+          size: ScreenSize.screenHeight * 0.025 +
+              ScreenSize.screenWidth * 0.025,
+        ),
+      );
     }
+  }
+
+  void _changeTextEditingStatus() {
+    setState(() {
+      _textEditingActive = !_textEditingActive;
+      if (!_textEditingActive) {
+        // Focus on the text field if we click on the edit button
+        FocusScope.of(context).requestFocus(widget.currentFocusNode);
+      }
+    });
   }
 
   @override
   void initState() {
-    if (widget.obscureText) {
-      _maxWidth = ScreenSize.screenWidth * 0.63;
-    } else {
-      _maxWidth = ScreenSize.screenWidth * 0.7;
-    }
+    _textEditingActive = widget.readOnly;
     super.initState();
   }
 
@@ -88,10 +88,12 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
     return TextFormField(
       controller: widget.textController,
       obscureText: (widget.obscureText)? !_passwordVisible : false,
-      readOnly: widget.readOnly,
+      readOnly: _textEditingActive,
       focusNode: widget.currentFocusNode,
       onFieldSubmitted: (value) {
-        if (widget.nextFocusNode != null) {
+        if (widget.readOnly) {
+          _changeTextEditingStatus();
+        } else if (widget.nextFocusNode != null) {
           FocusScope.of(context).requestFocus(widget.nextFocusNode);
         }
       },
@@ -101,7 +103,9 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         filled: true,
         fillColor: AppDesign.getPrimaryColor(),
         // Size
-        contentPadding: EdgeInsets.fromLTRB(ScreenSize.screenWidth * 0.03, ScreenSize.screenHeight * 0.03, 0, 0),
+        contentPadding: EdgeInsets.fromLTRB(ScreenSize.screenWidth * 0.03,
+            ScreenSize.screenHeight * 0.03, ScreenSize.screenWidth * 0.03, 0
+        ),
         constraints: BoxConstraints(
           maxWidth: widget.width,
         ),
@@ -127,20 +131,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
           ),
         ),
         // hide button for the password
-        suffixIcon: (widget.obscureText)? IconButton(
-          onPressed: () {
-            setState(() {
-              _passwordVisible = !_passwordVisible;
-            });
-          },
-          icon: Icon(
-            _passwordVisible
-                ? Icons.visibility
-                : Icons.visibility_off,
-            size: ScreenSize.screenHeight * 0.025 +
-                ScreenSize.screenWidth * 0.025,
-          ),
-        ) : null,
+        suffixIcon: _getSuffixIcon(),
         suffixIconColor: Colors.black,
         // Style for the text
         hintText: widget.hintText,
@@ -157,9 +148,6 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
       ),
       textAlign: TextAlign.left,
       maxLines: 1,
-      onChanged: (value) {
-        _adjustTextLength(value);
-      },
     );
   }
 }

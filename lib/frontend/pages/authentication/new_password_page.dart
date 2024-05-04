@@ -41,7 +41,7 @@ class _NewPasswordState extends State<NewPassword> {
               Header(headerText: AppLanguage.getLanguageData()['New password']),
               SizedBox(height: ScreenSize.screenHeight * 0.02),
               ExplainingText(
-                text: AppLanguage.getLanguageData()['Enter your new password.'],
+                text: AppLanguage.getLanguageData()['Enter your new password'] + '.',
               ),
 
               SizedBox(height: ScreenSize.screenHeight * 0.04),
@@ -67,14 +67,14 @@ class _NewPasswordState extends State<NewPassword> {
                 text: AppLanguage.getLanguageData()['Confirm password'],
               ),
               CustomTextFormField(
-                  hintText: AppLanguage.getLanguageData()['Confirm your password'],
-                  obscureText: true,
-                  textController: confirmPasswordTextController,
-                  readOnly: false,
-                  autoFocus: false,
-                  width: ScreenSize.screenWidth * 0.85,
-                  height: ScreenSize.screenHeight * 0.065,
-                  currentFocusNode: confirmPasswordFocusNode
+                hintText: AppLanguage.getLanguageData()['Confirm your password'],
+                obscureText: true,
+                textController: confirmPasswordTextController,
+                readOnly: false,
+                autoFocus: false,
+                width: ScreenSize.screenWidth * 0.85,
+                height: ScreenSize.screenHeight * 0.065,
+                currentFocusNode: confirmPasswordFocusNode,
               ),
               SizedBox(height: ScreenSize.screenHeight * 0.04),
 

@@ -1,7 +1,5 @@
 // author: Lukas Horst
 
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:secret_hitler/backend/app_design/app_design.dart';
@@ -30,12 +28,6 @@ class _PageNavigationState extends State<PageNavigation> {
     const Account(),
     const Settings(),
   ];
-
-  void switchPage(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
 
   @override
   void initState() {
