@@ -53,7 +53,7 @@ class _MyAppState extends State<MyApp> {
           cursorColor: AppDesign.getTertiaryColor()
         ),
       ),
-      home: RulesNavigation(),
+      home: const RulesNavigation(),
       // home: const PageNavigation(),
       // home: const LoginRegisterSwitch(),
     );

@@ -15,6 +15,7 @@ class RulesPage7 extends StatelessWidget {
         child: SizedBox(
           width: ScreenSize.screenWidth * 0.98,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
 
             ],

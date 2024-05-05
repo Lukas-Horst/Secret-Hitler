@@ -80,35 +80,38 @@ class StrokeText extends StatefulWidget {
 class _StrokeTextState extends State<StrokeText> {
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        // Stroke text
-        Text(
-          widget.text,
-          style: TextStyle(
-            fontFamily: 'EskapadeFrakturW04BlackFamily',
-            fontSize: widget.fontSize,
-            foreground: Paint()
-              ..style = PaintingStyle.stroke
-              ..strokeWidth = widget.strokeWidth
-              ..color = widget.strokeColor,
+    return Padding(
+      padding: EdgeInsets.only(left: ScreenSize.screenWidth * 0.005),
+      child: Stack(
+        children: [
+          // Stroke text
+          Text(
+            widget.text,
+            style: TextStyle(
+              fontFamily: 'EskapadeFrakturW04BlackFamily',
+              fontSize: widget.fontSize,
+              foreground: Paint()
+                ..style = PaintingStyle.stroke
+                ..strokeWidth = widget.strokeWidth
+                ..color = widget.strokeColor,
+            ),
           ),
-        ),
-        // Main text
-        Text(
-          widget.text,
-          style: TextStyle(
-            fontFamily: 'EskapadeFrakturW04BlackFamily',
-            fontSize: widget.fontSize,
-            color: widget.textColor,
-            decoration: widget.underline
-                ? TextDecoration.underline
-                : null,
-            decorationColor: widget.textColor,
+          // Main text
+          Text(
+            widget.text,
+            style: TextStyle(
+              fontFamily: 'EskapadeFrakturW04BlackFamily',
+              fontSize: widget.fontSize,
+              color: widget.textColor,
+              decoration: widget.underline
+                  ? TextDecoration.underline
+                  : null,
+              decorationColor: widget.textColor,
+            ),
           ),
-        ),
 
-      ],
+        ],
+      ),
     );
   }
 }

@@ -1,6 +1,7 @@
 // author: Lukas Horst
 
 import 'package:flutter/material.dart';
+import 'package:secret_hitler/backend/app_design/app_design.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/frontend/pages/home/homepage/rules/rules_page_1.dart';
@@ -23,7 +24,7 @@ class RulesNavigation extends StatefulWidget {
 
 class _RulesNavigationState extends State<RulesNavigation> {
 
-  int _currentPage = 0;
+  int _currentPage = 4;
 
   void goBack(BuildContext context) {
     Navigator.pop(context);
@@ -39,6 +40,17 @@ class _RulesNavigationState extends State<RulesNavigation> {
     const RulesPage7(),
   ];
 
+  void changePage(int pageNumber) {
+    setState(() {
+      _currentPage = pageNumber;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -52,18 +64,35 @@ class _RulesNavigationState extends State<RulesNavigation> {
           body: Column(
             children: [
               SizedBox(height: ScreenSize.screenHeight * 0.02),
-              Header(headerText: AppLanguage.getLanguageData()['Rules'] + '\n(${_currentPage + 1}/7)'),
+              Header(headerText: AppLanguage.getLanguageData()['Rules'] +
+                  '\n(${_currentPage + 1}/7)'),
               SizedBox(height: ScreenSize.screenHeight * 0.02),
               _pages[_currentPage],
             ],
           ),
           bottomNavigationBar: CustomBottomNavigationBar(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               NavigationBackButton(onPressed: () {
                 goBack(context);
               }),
+              Center(
+                child: Padding(
+                  padding: EdgeInsets.only(right: ScreenSize.screenWidth * 0.05),
+                  child: SizedBox(
+                    width: ScreenSize.screenWidth * 0.45,
+                    child: Pagination(
+                      pages: 7,
+                      fontSize: ScreenSize.screenHeight * 0.03 +
+                          ScreenSize.screenWidth * 0.03,
+                      textColor: AppDesign.getContraryPrimaryColor(),
+                      pageChange: changePage,
+                      startIndex: 4,
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
