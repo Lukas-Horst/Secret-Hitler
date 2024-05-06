@@ -17,7 +17,41 @@ class RulesPage6 extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
+              StrokeText(
+                text: AppLanguage.getLanguageData()['Veto Power'].toString().toUpperCase(),
+                fontSize: ScreenSize.screenHeight * 0.015 + ScreenSize.screenWidth * 0.015,
+                textColor: Colors.white,
+                strokeWidth: 4,
+                strokeColor: Colors.black,
+                underline: true,
+              ),
+              SizedBox(height: ScreenSize.screenHeight * 0.005),
+              StrokeText(
+                text: AppLanguage.getLanguageData()['RulePage6Section1'],
+                fontSize: ScreenSize.screenHeight * 0.015 + ScreenSize.screenWidth * 0.015,
+                textColor: Colors.white,
+                strokeWidth: 4,
+                strokeColor: Colors.black,
+                underline: false,
+              ),
+              SizedBox(height: ScreenSize.screenHeight * 0.01),
+              StrokeText(
+                text: AppLanguage.getLanguageData()['RulePage6Section2'],
+                fontSize: ScreenSize.screenHeight * 0.015 + ScreenSize.screenWidth * 0.015,
+                textColor: Colors.white,
+                strokeWidth: 4,
+                strokeColor: Colors.black,
+                underline: false,
+              ),
+              SizedBox(height: ScreenSize.screenHeight * 0.01),
+              StrokeText(
+                text: AppLanguage.getLanguageData()['RulePage6Section3'],
+                fontSize: ScreenSize.screenHeight * 0.015 + ScreenSize.screenWidth * 0.015,
+                textColor: Colors.white,
+                strokeWidth: 4,
+                strokeColor: Colors.black,
+                underline: false,
+              ),
             ],
           ),
         ),

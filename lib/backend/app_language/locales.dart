@@ -46,6 +46,8 @@ mixin LocaleData {
     'Delete': 'Delete',
     'Please enter "DELETE"': 'Please enter "DELETE" in the text field to delete your account.',
     'Enter "DELETE"': 'Enter "DELETE"',
+
+    // Rules Pages
     'RulePage1Section1': 'The year is 1932. The place is pre-WWII Germany. In Secret Hitler, players are German politicians attempting to hold a fragile Liberal government together and stem the rising tide of Fascism. Watch out though-there are secret Fascists among you, and one player is Secret Hitler.',
     'Overview': 'Overview',
     'RulePage1Section2': 'At the beginning of the game, each player is secretly assigned to one of three roles: Liberal, Fascist, or Hitler. The Liberals have a majority, but they don’t know for sure who anyone is; Fascists must resort to secrecy and sabotage to accomplish their goals. Hitler plays for the Fascist team, and the Fascists know Hitler’s identity from the outset, but Hitler doesn’t know the Fascists and must work to figure them out.',
@@ -109,6 +111,18 @@ mixin LocaleData {
     'RulePage5Section6': 'The President secretly looks at the top three tiles in the Policy deck and then returns them to the top of the deck without changing the order.',
     'Execution': 'Execution',
     'RulePage5Section7': 'The President executes one player at the table by saying “I formally execute [player name].” If that player is Hitler, the game ends in a Liberal victory. If the executed player is not Hitler, the table should not learn whether a Fascist or a Liberal has been killed; players must try to work out for themselves the new table balance. Executed players are removed from the game and may not speak, vote, or run for office.',
+    'Veto Power': 'Veto Power',
+    'RulePage6Section1': 'The Veto Power is a special rule that comes into effect after five Fascist Policies have been enacted. For all Legislative Sessions after the fifth Fascist Policy is enacted, the Executive branch gains a permanent new ability to discard all three Policy tiles if both the Chancellor and President agree.',
+    'RulePage6Section2': 'The President draws three Policy tiles, discards one, and passes the remaining two to the Chancellor as usual. Then Chancellor may, instead of enacting either Policy, say “I wish to veto this agenda.” If the President consents by saying, “I agree to the veto,” both Policies are discarded and the President placard passes to the left as usual. If the President does not consent, the Chancellor must enact a Policy as normal.',
+    'RulePage6Section3': 'Each use of the Veto Power represents an inactive government and advances the Election Tracker by one.',
+    'Strategy Notes': 'Strategy Notes',
+    'RulePage7Section1': '• Everyone should claim to be a Liberal. Since the Liberal team has a voting majority, it can easily shut out any player claiming to be a Fascist. As a Fascist, there is no advantage to outing yourself to the majority. Additionally, Liberals should usually tell the truth. Liberals are trying to figure out the game like a puzzle, so lying can put their team at a significant disadvantage.',
+    'RulePage7Section2': '• If this is your first time playing Hitler, just remember: be as Liberal as possible. Enact Liberal Policies. Vote for Liberal governments. Kiss babies. Trust your fellow Fascists to create opportunities for you to enact Liberal Policies and to advance Fascism on their turns. The Fascists win by subtly manipulating the table and waiting for the right cover to enact Fascist Policies, not by overtly playing as evil.',
+    'RulePage7Section3': '• Liberals frequently benefit from slowing play down and discussing the available information. Fascists frequently benefit from rushing votes and creating confusion.',
+    'RulePage7Section4': '• Fascists most often win by electing Hitler, not by enacting six Policies! Electing Hitler isn’t an optional or secondary win condition, it’s the core of a successful Fascist strategy. Hitler should always play as a Liberal, and should generally avoid lying or getting into fights and disagreements with other players. When the time comes, Hitler needs the Liberals’ trust to get elected. Even if Hitler isn’t ultimately elected, the distrust sown among Liberals is key to getting Fascists elected late in the game.',
+    'RulePage7Section5': '• Ask other players to explain why they took an action. This is especially important with Presidential Powers—in fact, ask ahead of time whom a candidate is thinking of investigating/appointing/assassinating.',
+    'RulePage7Section6': '• If a Fascist Policy comes up, there are only three possible culprits: The President, the Chancellor, or the Policy Deck. Try to figure out who (or what!) put you in this position.',
+
   };
 
   static const Map<String, dynamic> DE = {
@@ -156,6 +170,8 @@ mixin LocaleData {
     'Delete': 'Löschen',
     'Please enter "DELETE"': 'Bitte gebe “LÖSCHEN” in das Textfeld ein um deinen Account zu löschen.',
     'Enter "DELETE"': 'Gebe "LÖSCHEN" ein',
+
+    // Rules Pages
     'RulePage1Section1': 'Wir schreiben das Jahr 1932 und befinden uns in Deutschland vor dem Zweiten Weltkrieg. In Secret Hitler sind die Spieler deutsche Politiker, die versuchen, eine fragile liberale Regierung zusammenzuhalten und die wachsende Welle des Faschismus einzudämmen. Aber Vorsicht, es gibt heimliche Faschisten unter ihnen, und ein Spieler ist Hitler.',
     'Overview': 'Übersicht',
     'RulePage1Section2': 'Zu Beginn des Spiels wird jedem Spieler heimlich eine von drei Rollen zugewiesen: Liberaler, Faschist oder Hitler. Die Liberalen haben die Mehrheit, aber sie wissen nicht, wer die anderen sind; Faschisten müssen auf Geheimhaltung und Sabotage zurückgreifen, um ihre Ziele zu erreichen. Hitler spielt für das faschistische Team und die Faschisten kennen Hitlers Identität von Anfang an, aber Hitler kennt die Faschisten nicht und muss daran arbeiten, sie herauszufinden.',
@@ -219,5 +235,17 @@ mixin LocaleData {
     'RulePage5Section6': 'Der Präsident schaut sich heimlich die obersten drei Karten des Policy-Stapels an und legt sie dann, ohne die Reihenfolge zu ändern, oben auf den Stapel zurück.',
     'Execution': 'Execution',
     'RulePage5Section7': 'Der Präsident exekutiert einen Spieler am Tisch, indem er sagt: „Ich exekutiere [Name des Spielers] offiziell.“ Wenn dieser Spieler Hitler ist, endet das Spiel mit einem Sieg der Liberalen. Wenn der hingerichtete Spieler nicht Hitler ist, sollte der Tisch nicht erfahren, ob ein Faschist oder ein Liberaler getötet wurde; Die Spieler müssen versuchen, die neue Verteilung selbst herauszufinden. Hingerichtete Spieler werden aus dem Spiel entfernt und dürfen nicht sprechen, abstimmen oder für ein Amt kandidieren.',
+    'Veto Power': 'Vetorecht',
+    'RulePage6Section1': 'Das Vetorecht ist eine Sonderregel, die nach der Verabschiedung von fünf faschistischen Richtlinien in Kraft tritt. Für alle Legislativsitzungen nach Inkrafttreten der fünften faschistischen Politik erhält die Exekutive eine permanente neue Möglichkeit, alle drei Politikkarten abzuwerfen, wenn sowohl der Kanzler als auch der Präsident zustimmen.',
+    'RulePage6Section2': 'Der Präsident zieht drei Politikkarten, wirft eine ab und gibt die restlichen zwei wie üblich an den Kanzler weiter. Dann kann der Kanzler, anstatt eine der beiden Richtlinien zu verabschieden, sagen: „Ich möchte gegen diese Agenda ein Veto einlegen.“ Wenn der Präsident zustimmt, indem er sagt: „Ich stimme dem Veto zu“, werden beide Richtlinien verworfen und das Präsidentenplakat wird wie gewohnt nach links verschoben. Wenn der Präsident nicht zustimmt, muss der Kanzler wie üblich eine Richtlinie erlassen.',
+    'RulePage6Section3': 'Jeder Einsatz des Vetorechts stellt eine inaktive Regierung dar und rückt den Wahl-Tracker um eins voran.',
+    'Strategy Notes': 'Strategietipps',
+    'RulePage7Section1': '• Jeder sollte behaupten, ein Liberaler zu sein. Da das liberale Team über eine Stimmenmehrheit verfügt, kann es problemlos jeden Spieler ausschließen, der behauptet, ein Faschist zu sein. Als Faschist hat es keinen Vorteil, sich vor der Mehrheit zu outen. Darüber hinaus sollten Liberale in der Regel die Wahrheit sagen. Die Liberalen versuchen, das Spiel wie ein Puzzle zu verstehen, daher kann Lügen ihrer Mannschaft einen erheblichen Nachteil verschaffen.',
+    'RulePage7Section2': '• Wenn du zum ersten Mal Hitler spielst, denke daran: Sei so liberal wie möglich. Verabschiedung einer liberalen Politik. Stimmen für liberale Regierungen. Küsse Babys. Vertrauen  darauf, dass deine Faschistenkollegen dir Gelegenheiten bieten, liberale Richtlinien umzusetzen und den Faschismus in ihren Reihen voranzutreiben. Die Faschisten gewinnen, indem sie den Tisch subtil manipulieren und auf die richtige Tarnung warten, um faschistische Richtlinien durchzusetzen, und nicht dadurch, dass sie sich offen als böse aufspielen.',
+    'RulePage7Section3': '• Liberale profitieren häufig davon, das Spiel langsamer anzugehen und die verfügbaren Informationen zu diskutieren. Faschisten profitieren häufig von überstürzten Abstimmungen und der Schaffung von Verwirrung.',
+    'RulePage7Section4': '• Faschisten gewinnen meistens durch die Wahl Hitlers, nicht durch die Verabschiedung von sechs Richtlinien! Die Wahl Hitlers ist keine optionale oder sekundäre Siegbedingung, sondern der Kern einer erfolgreichen faschistischen Strategie. Hitler sollte immer als Liberaler spielen und generell vermeiden, zu lügen oder sich mit anderen Spielern auf Streit und Meinungsverschiedenheiten einzulassen. Wenn es soweit ist, braucht Hitler das Vertrauen der Liberalen, um gewählt zu werden. Selbst wenn Hitler letztendlich nicht gewählt wird, ist das unter den Liberalen gesäte Misstrauen der Schlüssel dazu, dass die Faschisten spät im Spiel gewählt werden.',
+    'RulePage7Section5': '• Frage Spieler, zu erklären, warum sie eine Aktion ausgeführt haben. Dies ist besonders wichtig, wenn es um die Befugnisse des Präsidenten geht. Erkundige dich im Voraus, wen ein Kandidat untersuchen, ihn ernennen oder ermorden möchte.',
+    'RulePage7Section6': '• Wenn eine faschistische Politik auftaucht, gibt es nur drei mögliche Schuldige: den Präsidenten, den Kanzler oder das Policy Deck. Versuchen Sie herauszufinden, wer (oder was!) Sie in diese Position gebracht hat.',
+
   };
 }
