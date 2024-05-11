@@ -24,7 +24,7 @@ mixin LocaleData {
     'New Game': 'New Game',
     'Join Game': 'Join Game',
     'Rules': 'Rules',
-    'User data': 'User data',
+    'User data': 'User Data',
     'Statistics': 'Statistics',
     'Logout': 'Logout',
     'Settings': 'Settings',
@@ -123,6 +123,11 @@ mixin LocaleData {
     'RulePage7Section5': '• Ask other players to explain why they took an action. This is especially important with Presidential Powers—in fact, ask ahead of time whom a candidate is thinking of investigating/appointing/assassinating.',
     'RulePage7Section6': '• If a Fascist Policy comes up, there are only three possible culprits: The President, the Chancellor, or the Policy Deck. Try to figure out who (or what!) put you in this position.',
 
+    'Number of players': 'Number of players',
+    'Room name': 'Room name',
+    'Enter the room name': 'Enter the room name',
+    'Room password': 'Room password',
+    'Enter the room password': 'Enter the room password',
   };
 
   static const Map<String, dynamic> DE = {
@@ -247,5 +252,10 @@ mixin LocaleData {
     'RulePage7Section5': '• Frage Spieler, zu erklären, warum sie eine Aktion ausgeführt haben. Dies ist besonders wichtig, wenn es um die Befugnisse des Präsidenten geht. Erkundige dich im Voraus, wen ein Kandidat untersuchen, ihn ernennen oder ermorden möchte.',
     'RulePage7Section6': '• Wenn eine faschistische Politik auftaucht, gibt es nur drei mögliche Schuldige: den Präsidenten, den Kanzler oder das Policy Deck. Versuchen Sie herauszufinden, wer (oder was!) Sie in diese Position gebracht hat.',
 
+    'Number of players': 'Spieleranzahl',
+    'Room name': 'Raumname',
+    'Enter the room name': 'Gebe den Raumnamen ein',
+    'Room password': 'Raumpasswort',
+    'Enter the room password': 'Gebe das Raumpasswort ein',
   };
 }

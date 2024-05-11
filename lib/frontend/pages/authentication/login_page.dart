@@ -167,98 +167,23 @@ class _LoginState extends State<Login> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          IconButton(
+                          ThirdPartyButton(
+                            imageName: 'Google',
                             onPressed: () {},
-                            icon: Image.asset(
-                              'assets/images/Google.png',
-                            ),
-                            style: IconButton.styleFrom(
-                                backgroundColor: AppDesign.getSecondaryColor(),
-                                foregroundColor: Colors.black,
-                                fixedSize: Size(
-                                  ScreenSize.screenWidth * 0.2125,
-                                  ScreenSize.screenHeight * 0.065,
-                                ),
-                                side: const BorderSide(
-                                  color: Colors.black,
-                                  width: 3,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(50.0),
-                                )
-                            ),
                           ),
-                          IconButton(
+                          ThirdPartyButton(
+                            imageName: 'Apple',
                             onPressed: () {},
-                            icon: Image.asset(
-                              'assets/images/Apple.png',
-                            ),
-                            style: IconButton.styleFrom(
-                                backgroundColor: AppDesign.getSecondaryColor(),
-                                foregroundColor: Colors.black,
-                                fixedSize: Size(
-                                  ScreenSize.screenWidth * 0.2125,
-                                  ScreenSize.screenHeight * 0.065,
-                                ),
-                                side: const BorderSide(
-                                  color: Colors.black,
-                                  width: 3,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(50.0),
-                                )
-                            ),
                           ),
                         ],
                       ),
 
                       // Link to register page
                       SizedBox(height: ScreenSize.screenHeight * 0.04),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Transform.rotate(
-                            angle: 330 * 3.1415926535 / 180,
-                            child: Image.asset(
-                              'assets/images/fascist_circle.png',
-                              height: ScreenSize.screenHeight * 0.075,
-                              width: ScreenSize.screenHeight * 0.07,
-                            ),
-                          ),
-                          Column(
-                            children: [
-                              Text(
-                                AppLanguage.getLanguageData()['No Account yet?'],
-                                style: TextStyle(
-                                  fontFamily: 'EskapadeFrakturW04BlackFamily',
-                                  fontSize: ScreenSize.screenHeight * 0.017 +
-                                      ScreenSize.screenWidth * 0.017,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              SizedBox(height: ScreenSize.screenHeight * 0.005),
-                              CustomTextButton(
-                                text: AppLanguage.getLanguageData()['Register'],
-                                textStyle: TextStyle(
-                                  fontFamily: 'EskapadeFrakturW04BlackFamily',
-                                  fontSize: ScreenSize.screenHeight * 0.017 +
-                                      ScreenSize.screenWidth * 0.017,
-                                  color: AppDesign.getContraryPrimaryColor(),
-                                  decoration: TextDecoration.underline,
-                                ),
-                                onTap: () {widget.switchPages();},
-                              ),
-                            ],
-                          ),
-                          Transform.rotate(
-                            angle: -330 * 3.1415926535 / 180,
-                            child: Image.asset(
-                              'assets/images/${AppDesign.getCirclePNG()}.png',
-                              height: ScreenSize.screenHeight * 0.075,
-                              width: ScreenSize.screenHeight * 0.07,
-                            ),
-                          ),
-                        ],
+                      LoginRegisterSwitchButton(
+                        questionText: AppLanguage.getLanguageData()['No Account yet?'],
+                        buttonText: AppLanguage.getLanguageData()['Register'],
+                        onTap: () {widget.switchPages();},
                       ),
                       SizedBox(height: ScreenSize.screenHeight * 0.01),
                     ],

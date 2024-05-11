@@ -100,7 +100,7 @@ class _RegisterState extends State<Register> {
                         height: ScreenSize.screenHeight * 0.065,
                         currentFocusNode: confirmPasswordFocusNode,
                       ),
-                      SizedBox(height: ScreenSize.screenHeight * 0.04),
+                      SizedBox(height: ScreenSize.screenHeight * 0.06),
 
                       // Register button
                       PrimaryElevatedButton(
@@ -109,52 +109,11 @@ class _RegisterState extends State<Register> {
                       ),
 
                       // Link to login page
-                      SizedBox(height: ScreenSize.screenHeight * 0.14),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Transform.rotate(
-                            angle: 330 * 3.1415926535 / 180,
-                            child: Image.asset(
-                              'assets/images/fascist_circle.png',
-                              height: ScreenSize.screenHeight * 0.075,
-                              width: ScreenSize.screenHeight * 0.07,
-                            ),
-                          ),
-                          Column(
-                            children: [
-                              Text(
-                                AppLanguage.getLanguageData()['Already have an account?'],
-                                style: TextStyle(
-                                  fontFamily: 'EskapadeFrakturW04BlackFamily',
-                                  fontSize: ScreenSize.screenHeight * 0.017 +
-                                      ScreenSize.screenWidth * 0.017,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              SizedBox(height: ScreenSize.screenHeight * 0.005),
-                              CustomTextButton(
-                                text: AppLanguage.getLanguageData()['Login'],
-                                textStyle: TextStyle(
-                                  fontFamily: 'EskapadeFrakturW04BlackFamily',
-                                  fontSize: ScreenSize.screenHeight * 0.017 +
-                                      ScreenSize.screenWidth * 0.017,
-                                  color: AppDesign.getContraryPrimaryColor(),
-                                  decoration: TextDecoration.underline,
-                                ),
-                                onTap: () {widget.switchPages();},
-                              ),
-                            ],
-                          ),
-                          Transform.rotate(
-                            angle: -330 * 3.1415926535 / 180,
-                            child: Image.asset(
-                              'assets/images/${AppDesign.getCirclePNG()}.png',
-                              height: ScreenSize.screenHeight * 0.075,
-                              width: ScreenSize.screenHeight * 0.07,
-                            ),
-                          ),
-                        ],
+                      SizedBox(height: ScreenSize.screenHeight * 0.12),
+                      LoginRegisterSwitchButton(
+                        questionText: AppLanguage.getLanguageData()['Already have an account?'],
+                        buttonText: AppLanguage.getLanguageData()['Login'],
+                        onTap: () {widget.switchPages();},
                       ),
                       SizedBox(height: ScreenSize.screenHeight * 0.01),
                     ],

@@ -106,7 +106,7 @@ class _RulesPage5State extends State<RulesPage5> {
               ),
               SizedBox(height: ScreenSize.screenHeight * 0.015),
               TextWithImage(
-                imageLink: 'Investigate_Loyalty_White',
+                imageName: 'Investigate_Loyalty_White',
                 imageHeight: ScreenSize.screenHeight * 0.125,
                 imageWidth: ScreenSize.screenWidth * 0.25,
                 text: AppLanguage.getLanguageData()['RulePage5Section2'].toString(),
@@ -115,7 +115,7 @@ class _RulesPage5State extends State<RulesPage5> {
               ),
               SizedBox(height: ScreenSize.screenHeight * 0.01),
               TextWithImage(
-                imageLink: 'Call_Special_Election_White',
+                imageName: 'Call_Special_Election_White',
                 imageHeight: ScreenSize.screenHeight * 0.1,
                 imageWidth: ScreenSize.screenWidth * 0.25,
                 text: AppLanguage.getLanguageData()['RulePage5Section3'].toString(),
@@ -142,7 +142,7 @@ class _RulesPage5State extends State<RulesPage5> {
               ),
               SizedBox(height: ScreenSize.screenHeight * 0.01),
               TextWithImage(
-                imageLink: 'Policy_Peek_White',
+                imageName: 'Policy_Peek_White',
                 imageHeight: ScreenSize.screenHeight * 0.1,
                 imageWidth: ScreenSize.screenWidth * 0.25,
                 text: AppLanguage.getLanguageData()['RulePage5Section6'].toString(),
@@ -151,7 +151,7 @@ class _RulesPage5State extends State<RulesPage5> {
               ),
               SizedBox(height: ScreenSize.screenHeight * 0.01),
               TextWithImage(
-                imageLink: 'Execution_White',
+                imageName: 'Execution_White',
                 imageHeight: ScreenSize.screenHeight * 0.1,
                 imageWidth: ScreenSize.screenWidth * 0.25,
                 text: AppLanguage.getLanguageData()['RulePage5Section7'].toString(),

@@ -24,7 +24,7 @@ class RulesNavigation extends StatefulWidget {
 
 class _RulesNavigationState extends State<RulesNavigation> {
 
-  int _currentPage = 6;
+  int _currentPage = 0;
 
   void goBack(BuildContext context) {
     Navigator.pop(context);
@@ -88,7 +88,7 @@ class _RulesNavigationState extends State<RulesNavigation> {
                           ScreenSize.screenWidth * 0.03,
                       textColor: AppDesign.getContraryPrimaryColor(),
                       pageChange: changePage,
-                      startIndex: 6,
+                      startIndex: 0,
                     ),
                   ),
                 ),

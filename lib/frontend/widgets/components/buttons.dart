@@ -269,4 +269,107 @@ class _CustomToggleButtonState extends State<CustomToggleButton> {
   }
 }
 
+class ThirdPartyButton extends StatefulWidget {
+
+  final String imageName;
+  final Function onPressed;
+
+  const ThirdPartyButton({super.key, required this.imageName,
+    required this.onPressed});
+
+  @override
+  State<ThirdPartyButton> createState() => _ThirdPartyButtonState();
+}
+
+class _ThirdPartyButtonState extends State<ThirdPartyButton> {
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: () {widget.onPressed();},
+      icon: Image.asset(
+        'assets/images/${widget.imageName}.png',
+      ),
+      style: IconButton.styleFrom(
+          backgroundColor: AppDesign.getSecondaryColor(),
+          foregroundColor: Colors.black,
+          fixedSize: Size(
+            ScreenSize.screenWidth * 0.2125,
+            ScreenSize.screenHeight * 0.065,
+          ),
+          side: const BorderSide(
+            color: Colors.black,
+            width: 3,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(50.0),
+          )
+      ),
+    );
+  }
+}
+
+class LoginRegisterSwitchButton extends StatefulWidget {
+
+  final String questionText;
+  final String buttonText;
+  final Function onTap;
+
+  const LoginRegisterSwitchButton({super.key, required this.questionText,
+    required this.buttonText, required this.onTap});
+
+  @override
+  State<LoginRegisterSwitchButton> createState() => _LoginRegisterSwitchButtonState();
+}
+
+class _LoginRegisterSwitchButtonState extends State<LoginRegisterSwitchButton> {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        Transform.rotate(
+          angle: 330 * 3.1415926535 / 180,
+          child: Image.asset(
+            'assets/images/fascist_circle.png',
+            height: ScreenSize.screenHeight * 0.075,
+            width: ScreenSize.screenHeight * 0.07,
+          ),
+        ),
+        Column(
+          children: [
+            Text(
+              widget.questionText,
+              style: TextStyle(
+                fontFamily: 'EskapadeFrakturW04BlackFamily',
+                fontSize: ScreenSize.screenHeight * 0.017 +
+                    ScreenSize.screenWidth * 0.017,
+                color: Colors.white,
+              ),
+            ),
+            SizedBox(height: ScreenSize.screenHeight * 0.005),
+            CustomTextButton(
+              text: widget.buttonText,
+              textStyle: TextStyle(
+                fontFamily: 'EskapadeFrakturW04BlackFamily',
+                fontSize: ScreenSize.screenHeight * 0.017 +
+                    ScreenSize.screenWidth * 0.017,
+                color: AppDesign.getContraryPrimaryColor(),
+                decoration: TextDecoration.underline,
+              ),
+              onTap: () {widget.onTap();},
+            ),
+          ],
+        ),
+        Transform.rotate(
+          angle: -330 * 3.1415926535 / 180,
+          child: Image.asset(
+            'assets/images/${AppDesign.getCirclePNG()}.png',
+            height: ScreenSize.screenHeight * 0.075,
+            width: ScreenSize.screenHeight * 0.07,
+          ),
+        ),
+      ],
+    );
+  }
+}
 
