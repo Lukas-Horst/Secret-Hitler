@@ -28,8 +28,11 @@ class _NewPasswordState extends State<NewPassword> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {return false;},
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didpop) async {
+        if (!didpop) {}
+      },
       child: Scaffold(
         backgroundColor: const Color(0xFF474747),
         body: SafeArea(
@@ -101,7 +104,7 @@ class _NewPasswordState extends State<NewPassword> {
                     Transform.rotate(
                       angle: -330 * 3.1415926535 / 180,
                       child: Image.asset(
-                        'assets/images/${AppDesign.getCirclePNG()}.png',
+                        'assets/images/${AppDesign.getCurrentCirclePNG()}.png',
                         height: ScreenSize.screenHeight * 0.075,
                         width: ScreenSize.screenHeight * 0.07,
                       ),

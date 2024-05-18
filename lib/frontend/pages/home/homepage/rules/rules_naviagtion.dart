@@ -26,7 +26,7 @@ class _RulesNavigationState extends State<RulesNavigation> {
 
   int _currentPage = 0;
 
-  void goBack(BuildContext context) {
+  void _goBack(BuildContext context) {
     Navigator.pop(context);
   }
 
@@ -53,10 +53,12 @@ class _RulesNavigationState extends State<RulesNavigation> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        goBack(context);
-        return false;
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didpop) async {
+        if (!didpop) {
+          _goBack(context);
+        }
       },
       child: SafeArea(
         child: Scaffold(
@@ -75,7 +77,7 @@ class _RulesNavigationState extends State<RulesNavigation> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               NavigationBackButton(onPressed: () {
-                goBack(context);
+                _goBack(context);
               }),
               Center(
                 child: Padding(

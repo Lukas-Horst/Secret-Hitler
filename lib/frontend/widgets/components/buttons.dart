@@ -308,6 +308,7 @@ class _ThirdPartyButtonState extends State<ThirdPartyButton> {
   }
 }
 
+// The whole area on the login or register page where we switch the pages
 class LoginRegisterSwitchButton extends StatefulWidget {
 
   final String questionText;
@@ -363,7 +364,7 @@ class _LoginRegisterSwitchButtonState extends State<LoginRegisterSwitchButton> {
         Transform.rotate(
           angle: -330 * 3.1415926535 / 180,
           child: Image.asset(
-            'assets/images/${AppDesign.getCirclePNG()}.png',
+            'assets/images/${AppDesign.getCurrentCirclePNG()}.png',
             height: ScreenSize.screenHeight * 0.075,
             width: ScreenSize.screenHeight * 0.07,
           ),

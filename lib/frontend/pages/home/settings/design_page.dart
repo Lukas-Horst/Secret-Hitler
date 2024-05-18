@@ -5,6 +5,7 @@ import 'package:secret_hitler/backend/app_design/app_design.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/frontend/pages/home/page_navigation.dart';
+import 'package:secret_hitler/frontend/widgets/animations/coin_flip.dart';
 import 'package:secret_hitler/frontend/widgets/components/bottom_navigation_bar.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons.dart';
 import 'package:secret_hitler/frontend/widgets/components/text.dart';
@@ -21,8 +22,9 @@ class Design extends StatefulWidget {
 class _DesignState extends State<Design> {
 
   final Color _currentPrimaryColor = AppDesign.getPrimaryColor();
+  final GlobalKey<CoinFlipState> _coinFlipKey = GlobalKey<CoinFlipState>();
 
-  void goBack(BuildContext context) {
+  void _goBack(BuildContext context) {
     Navigator.pop(context);
     // If the design changed, we replace the settings page
     if (_currentPrimaryColor != AppDesign.getPrimaryColor()) {
@@ -35,10 +37,12 @@ class _DesignState extends State<Design> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        goBack(context);
-        return false;
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didpop) async {
+        if (!didpop) {
+          _goBack(context);
+        }
       },
       child: Scaffold(
         backgroundColor: const Color(0xFF474747),
@@ -54,10 +58,13 @@ class _DesignState extends State<Design> {
                 text: AppLanguage.getLanguageData()['Choose theme.'],
               ),
               SizedBox(height: ScreenSize.screenHeight * 0.1),
-              Image.asset(
-                'assets/images/${AppDesign.getCirclePNG()}.png',
-                height: ScreenSize.screenHeight * 0.15,
-                width: ScreenSize.screenHeight * 0.15,
+              CoinFlip(
+                key: _coinFlipKey,
+                duration: const Duration(milliseconds: 500),
+                firstImageName: AppDesign.getCurrentCirclePNG(),
+                secondImageName: AppDesign.getOppositeCirclePNG(),
+                imageHeight: ScreenSize.screenHeight * 0.15,
+                imageWidth: ScreenSize.screenHeight * 0.15,
               ),
               SizedBox(height: ScreenSize.screenHeight * 0.06),
               CustomToggleButton(
@@ -67,11 +74,13 @@ class _DesignState extends State<Design> {
                 rightColor: const Color(0xff004D65),
                 leftFunction: () async {
                   await AppDesign.setPrimaryColor(const Color(0xffDC3B06));
-                  setState(() {});
+                  // setState(() {});
+                  _coinFlipKey.currentState?.animate();
                 },
                 rightFunction: () async {
                   await AppDesign.setPrimaryColor(const Color(0xff479492));
-                  setState(() {});
+                  // setState(() {});
+                  _coinFlipKey.currentState?.animate();
                 },
                 leftText: AppLanguage.getLanguageData()['Fascist'],
                 rightText: AppLanguage.getLanguageData()['Liberal'],
@@ -85,7 +94,7 @@ class _DesignState extends State<Design> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             NavigationBackButton(onPressed: () {
-              goBack(context);
+              _goBack(context);
             }),
           ],
         ),

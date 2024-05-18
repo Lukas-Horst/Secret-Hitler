@@ -54,8 +54,16 @@ class AppDesign {
     return _contrarySecondaryColor;
   }
 
-  static String getCirclePNG() {
+  static String getCurrentCirclePNG() {
     return _currentCirclePNG;
+  }
+
+  static String getOppositeCirclePNG() {
+    if (_currentCirclePNG == 'fascist_circle') {
+      return 'liberal_circle';
+    } else {
+      return 'fascist_circle';
+    }
   }
 
   // Method to set the primary color and save it in the database

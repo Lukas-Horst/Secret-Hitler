@@ -29,16 +29,18 @@ class _ChangePasswordState extends State<ChangePassword> {
   final newPasswordFocusNode = FocusNode();
   final confirmNewPasswordFocusNode = FocusNode();
 
-  void goBack(BuildContext context) {
+  void _goBack(BuildContext context) {
     Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        goBack(context);
-        return false;
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didpop) async {
+        if (!didpop) {
+          _goBack(context);
+        }
       },
       child: Scaffold(
         backgroundColor: const Color(0xFF474747),
@@ -137,7 +139,7 @@ class _ChangePasswordState extends State<ChangePassword> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             NavigationBackButton(onPressed: () {
-              goBack(context);
+              _goBack(context);
             }),
           ],
         ),

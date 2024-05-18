@@ -22,7 +22,7 @@ class _LanguageState extends State<Language> {
 
   final String _currentLanguage = AppLanguage.getCurrentLanguage();
 
-  void goBack(BuildContext context) {
+  void _goBack(BuildContext context) {
     // If the language changed, we refresh the settings page
     if (_currentLanguage != AppLanguage.getCurrentLanguage()) {
       widget.refresh();
@@ -32,10 +32,12 @@ class _LanguageState extends State<Language> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        goBack(context);
-        return false;
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didpop) async {
+        if (!didpop) {
+          _goBack(context);
+        }
       },
       child: Scaffold(
         backgroundColor: const Color(0xFF474747),
@@ -81,7 +83,7 @@ class _LanguageState extends State<Language> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             NavigationBackButton(onPressed: () {
-              goBack(context);
+              _goBack(context);
             }),
           ],
         ),
