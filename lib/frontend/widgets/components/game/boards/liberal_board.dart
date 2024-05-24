@@ -40,7 +40,7 @@ class _LiberalBoardState extends State<LiberalBoard> {
 
   @override
   void initState() {
-    boardElements = BoardMethods.buildBoard(
+    BoardMethods.buildBoard(
       true,
       boardElements,
       widget.cards,

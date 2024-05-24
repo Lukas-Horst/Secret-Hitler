@@ -4,21 +4,21 @@ import 'package:flutter/material.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/frontend/widgets/components/game/piles/pile_methods.dart';
 
-class DrawPile extends StatefulWidget {
+class DiscardPile extends StatefulWidget {
 
   final int cards;
 
-  const DrawPile({super.key, required this.cards});
+  const DiscardPile({super.key, required this.cards});
 
   @override
-  State<DrawPile> createState() => DrawPileState();
+  State<DiscardPile> createState() => DiscardPileState();
 }
 
-class DrawPileState extends State<DrawPile> {
+class DiscardPileState extends State<DiscardPile> {
 
   List<Widget> pileElements = [
     Image.asset(
-      'assets/images/draw_pile.png',
+      'assets/images/discard_pile.png',
       height: ScreenSize.screenHeight * 0.15,
       width: ScreenSize.screenWidth * 0.3,
     ),
@@ -26,7 +26,7 @@ class DrawPileState extends State<DrawPile> {
 
   @override
   void initState() {
-    PileMethods.buildPile(pileElements, widget.cards, false);
+    PileMethods.buildPile(pileElements, widget.cards, true);
     super.initState();
   }
 

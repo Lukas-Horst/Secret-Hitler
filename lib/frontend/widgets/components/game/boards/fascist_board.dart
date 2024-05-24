@@ -52,7 +52,7 @@ class _FascistBoardState extends State<FascistBoard> {
         width: ScreenSize.screenWidth * 0.98,
       ),
     );
-    boardElements = BoardMethods.buildBoard(
+    BoardMethods.buildBoard(
       false,
       boardElements,
       widget.cards,
