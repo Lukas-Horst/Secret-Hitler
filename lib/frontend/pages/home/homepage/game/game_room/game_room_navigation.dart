@@ -60,9 +60,8 @@ class _GameRoomNavigationState extends State<GameRoomNavigation> {
           backgroundColor: const Color(0xFF474747),
           body: Column(
             children: [
-              SizedBox(height: ScreenSize.screenHeight * 0.02),
               SizedBox(
-                height: ScreenSize.screenHeight * 0.9,
+                height: ScreenSize.screenHeight * 0.88,
                 child: PageView(
                   controller: _pageViewController,
                   children: [

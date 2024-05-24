@@ -65,7 +65,6 @@ class _RulesNavigationState extends State<RulesNavigation> {
           backgroundColor: const Color(0xFF474747),
           body: Column(
             children: [
-              SizedBox(height: ScreenSize.screenHeight * 0.02),
               Header(headerText: AppLanguage.getLanguageData()['Rules'] +
                   '\n(${_currentPage + 1}/7)'),
               SizedBox(height: ScreenSize.screenHeight * 0.02),

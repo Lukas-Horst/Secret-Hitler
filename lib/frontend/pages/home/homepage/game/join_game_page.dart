@@ -44,7 +44,6 @@ class _JoinGameState extends State<JoinGame> {
           backgroundColor: const Color(0xFF474747),
           body: Column(
             children: [
-              SizedBox(height: ScreenSize.screenHeight * 0.02),
               Header(headerText: AppLanguage.getLanguageData()['Join Game']),
               Expanded(
                 child: SingleChildScrollView(

@@ -65,7 +65,6 @@ class _NewGameState extends State<NewGame> {
           backgroundColor: const Color(0xFF474747),
           body: Column(
             children: [
-              SizedBox(height: ScreenSize.screenHeight * 0.02),
               Header(headerText: AppLanguage.getLanguageData()['New Game']),
               Expanded(
                 child: SingleChildScrollView(

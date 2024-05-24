@@ -19,7 +19,6 @@ class Homepage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(height: ScreenSize.screenHeight * 0.02),
           Header(headerText: 'Homepage'),
           SizedBox(height: ScreenSize.screenHeight * 0.08),
           // Buttons

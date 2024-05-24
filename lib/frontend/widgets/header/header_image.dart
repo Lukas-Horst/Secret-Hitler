@@ -12,7 +12,7 @@ class HeaderImage {
   static late String headerImage;
 
   // Method to get a random image for the header
-  static String getHeaderImage(Color headerColor) {
+  static String getHeaderImage(Color? headerColor) {
     if (newHeader) {
       newHeader = false;
       late List<String> headerImages;

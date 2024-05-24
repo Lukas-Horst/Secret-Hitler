@@ -23,69 +23,74 @@ class Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: ScreenSize.screenHeight * 0.185,
-      child: Stack(
-        children: [
-          FractionallySizedBox(
-            widthFactor: 1.5,
-            heightFactor: 1,
-            child: CustomPaint(
-              painter: HalfCirclePainter(color: headerColor),
-            ),
-          ),
-          FractionallySizedBox(
-            widthFactor: 1,
-            heightFactor: 1,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Image.asset(
-                  'assets/images/${headerImage}.png',
-                  height: ScreenSize.screenHeight * 0.135,
-                  width: ScreenSize.screenWidth * 0.25,
+    return Column(
+      children: [
+        SizedBox(height: ScreenSize.screenHeight * 0.02),
+        SizedBox(
+          height: ScreenSize.screenHeight * 0.185,
+          child: Stack(
+            children: [
+              FractionallySizedBox(
+                widthFactor: 1.5,
+                heightFactor: 1,
+                child: CustomPaint(
+                  painter: HalfCirclePainter(color: headerColor),
                 ),
-                Column(
+              ),
+              FractionallySizedBox(
+                widthFactor: 1,
+                heightFactor: 1,
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Image.asset(
-                      'assets/images/Logo.png',
-                      height: ScreenSize.screenHeight * 0.1,
-                      width: ScreenSize.screenWidth * 0.3,
+                      'assets/images/${headerImage}.png',
+                      height: ScreenSize.screenHeight * 0.135,
+                      width: ScreenSize.screenWidth * 0.25,
                     ),
-                    SizedBox(
-                      width: ScreenSize.screenWidth * 0.47,
-                      height: ScreenSize.screenHeight * 0.07,
-                      child: Center(
-                        child: Text(
-                          headerText,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontFamily: 'EskapadeFrakturW04BlackFamily',
-                            color: Colors.white,
-                            fontSize: ScreenSize.screenHeight * 0.024 +
-                                ScreenSize.screenWidth * 0.024,
-                            height: 0.9,
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Image.asset(
+                          'assets/images/Logo.png',
+                          height: ScreenSize.screenHeight * 0.1,
+                          width: ScreenSize.screenWidth * 0.3,
+                        ),
+                        SizedBox(
+                          width: ScreenSize.screenWidth * 0.47,
+                          height: ScreenSize.screenHeight * 0.07,
+                          child: Center(
+                            child: Text(
+                              headerText,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontFamily: 'EskapadeFrakturW04BlackFamily',
+                                color: Colors.white,
+                                fontSize: ScreenSize.screenHeight * 0.024 +
+                                    ScreenSize.screenWidth * 0.024,
+                                height: 0.9,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+                        Container(
+                          height: ScreenSize.screenHeight * 0.005,
+                        )
+                      ],
                     ),
-                    Container(
-                      height: ScreenSize.screenHeight * 0.005,
-                    )
+                    Image.asset(
+                      'assets/images/${headerImage}_inverted.png',
+                      height: ScreenSize.screenHeight * 0.135,
+                      width: ScreenSize.screenWidth * 0.25,
+                    ),
                   ],
                 ),
-                Image.asset(
-                  'assets/images/${headerImage}_inverted.png',
-                  height: ScreenSize.screenHeight * 0.135,
-                  width: ScreenSize.screenWidth * 0.25,
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

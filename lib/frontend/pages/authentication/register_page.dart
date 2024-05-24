@@ -42,7 +42,6 @@ class _RegisterState extends State<Register> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(height: ScreenSize.screenHeight * 0.02),
               Header(headerText: AppLanguage.getLanguageData()['Register']),
               SizedBox(height: ScreenSize.screenHeight * 0.02),
 

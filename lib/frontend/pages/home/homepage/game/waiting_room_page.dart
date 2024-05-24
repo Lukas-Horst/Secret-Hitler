@@ -84,7 +84,6 @@ class _WaitingRoomState extends State<WaitingRoom> {
           backgroundColor: const Color(0xFF474747),
           body: Column(
             children: [
-              SizedBox(height: ScreenSize.screenHeight * 0.02),
               Header(headerText: AppLanguage.getLanguageData()['Waiting room']),
               SizedBox(height: ScreenSize.screenHeight * 0.02),
               ExplainingText(

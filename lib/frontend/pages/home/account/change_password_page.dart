@@ -47,7 +47,6 @@ class _ChangePasswordState extends State<ChangePassword> {
         body: SafeArea(
           child: Column(
             children: [
-              SizedBox(height: ScreenSize.screenHeight * 0.02),
               Header(headerText: AppLanguage.getLanguageData()['Change password']),
               SizedBox(height: ScreenSize.screenHeight * 0.02),
               Expanded(

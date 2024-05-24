@@ -46,7 +46,6 @@ class _LanguageState extends State<Language> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(height: ScreenSize.screenHeight * 0.02),
               Header(headerText: AppLanguage.getLanguageData()['Language']),
               SizedBox(height: ScreenSize.screenHeight * 0.02),
               ExplainingText(

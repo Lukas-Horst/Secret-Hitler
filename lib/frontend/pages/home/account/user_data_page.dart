@@ -47,7 +47,6 @@ class _UserDataState extends State<UserData> {
         body: SafeArea(
           child: Column(
             children: [
-              SizedBox(height: ScreenSize.screenHeight * 0.02),
               Header(headerText: AppLanguage.getLanguageData()['User data']),
               SizedBox(height: ScreenSize.screenHeight * 0.02),
               Expanded(

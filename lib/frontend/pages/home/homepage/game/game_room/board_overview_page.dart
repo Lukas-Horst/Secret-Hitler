@@ -2,7 +2,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
-import 'package:secret_hitler/frontend/widgets/components/text.dart';
+import 'package:secret_hitler/frontend/widgets/animations/flip_animation.dart';
+import 'package:secret_hitler/frontend/widgets/components/game/boards/fascist_board.dart';
+import 'package:secret_hitler/frontend/widgets/components/game/boards/liberal_board.dart';
+import 'package:secret_hitler/frontend/widgets/components/buttons.dart';
+import 'package:secret_hitler/frontend/widgets/components/game/piles/draw_pile.dart';
 
 class BoardOverview extends StatefulWidget {
 
@@ -16,31 +20,70 @@ class BoardOverview extends StatefulWidget {
 
 class _BoardOverviewState extends State<BoardOverview> {
 
-  // Get the right fascist board based on the player amount
-  String getFascistBoard(int playerAmount) {
-    if (playerAmount < 7) {
-      return 'fascist_board_5_6_players';
-    } else if (playerAmount < 9) {
-      return 'fascist_board_7_8_players';
-    } else {
-      return 'fascist_board_9_10_players';
-    }
-  }
+  final List<GlobalKey<FlipAnimationState>> _liberalCardFlipKeys = [
+    GlobalKey<FlipAnimationState>(),
+    GlobalKey<FlipAnimationState>(),
+    GlobalKey<FlipAnimationState>(),
+    GlobalKey<FlipAnimationState>(),
+    GlobalKey<FlipAnimationState>(),
+  ];
+
+  final List<GlobalKey<FlipAnimationState>> _fascistCardFlipKeys = [
+    GlobalKey<FlipAnimationState>(),
+    GlobalKey<FlipAnimationState>(),
+    GlobalKey<FlipAnimationState>(),
+    GlobalKey<FlipAnimationState>(),
+    GlobalKey<FlipAnimationState>(),
+    GlobalKey<FlipAnimationState>(),
+  ];
+
+  GlobalKey<DrawPileState> drawPileKey = GlobalKey<DrawPileState>();
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Image.asset(
-          'assets/images/${getFascistBoard(widget.playerAmount)}.png',
-          height: ScreenSize.screenHeight * 0.225,
-          width: ScreenSize.screenWidth * 0.98,
+        SizedBox(height: ScreenSize.screenHeight * 0.02),
+        SizedBox(
+          height: ScreenSize.screenHeight * 0.7,
+          child: Stack(
+            children: [
+              Positioned(
+                child: FascistBoard(
+                  playerAmount: widget.playerAmount,
+                  cards: 0,
+                  flippedCards: 0,
+                  cardFlipKeys: _fascistCardFlipKeys,
+                ),
+              ),
+              Positioned(
+                top: ScreenSize.screenHeight * 0.175,
+                child: LiberalBoard(
+                  cards: 0,
+                  flippedCards: 0,
+                  cardFlipKeys: _liberalCardFlipKeys,
+                ),
+              ),
+              Positioned(
+                top: ScreenSize.screenHeight * 0.4,
+                child: DrawPile(
+                  key: drawPileKey,
+                  cards: 2,
+                ),
+              ),
+              Positioned(
+                top: ScreenSize.screenHeight * 0.4,
+                left: ScreenSize.screenWidth * 0.675,
+                child: Image.asset(
+                  'assets/images/discard_pile.png',
+                  height: ScreenSize.screenHeight * 0.15,
+                  width: ScreenSize.screenWidth * 0.3,
+                ),
+              ),
+            ],
+          ),
         ),
-        Image.asset(
-          'assets/images/liberal_board.png',
-          height: ScreenSize.screenHeight * 0.225,
-          width: ScreenSize.screenWidth * 0.98,
-        ),
+        PrimaryElevatedButton(text: 'Test', onPressed: () {drawPileKey.currentState?.removeCard();})
       ],
     );
   }

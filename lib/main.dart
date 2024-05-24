@@ -6,10 +6,10 @@ import 'package:secret_hitler/backend/app_design/app_design.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/backend/database/hive_database.dart';
+import 'package:secret_hitler/frontend/pages/authentication/switches/login_register_switch.dart';
 import 'package:secret_hitler/frontend/pages/home/homepage/game/game_room/game_room_navigation.dart';
 import 'package:secret_hitler/frontend/pages/home/homepage/game/waiting_room_page.dart';
 import 'package:secret_hitler/frontend/pages/home/page_navigation.dart';
-import 'package:secret_hitler/frontend/pages/home/settings/design_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,8 +53,7 @@ class _MyAppState extends State<MyApp> {
           cursorColor: AppDesign.getTertiaryColor()
         ),
       ),
-      home: const Design(),
-      // home: const GameRoomNavigation(playerAmount: 6,),
+      home: const GameRoomNavigation(playerAmount: 5,),
       // home: const PageNavigation(),
       // home: const LoginRegisterSwitch(),
     );

@@ -43,7 +43,6 @@ class _LoginState extends State<Login> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(height: ScreenSize.screenHeight * 0.02),
               Header(headerText: AppLanguage.getLanguageData()['Login']),
               SizedBox(height: ScreenSize.screenHeight * 0.02),
 

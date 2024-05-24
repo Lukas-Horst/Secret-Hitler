@@ -42,7 +42,6 @@ class _DeleteAccountState extends State<DeleteAccount> {
         body: SafeArea(
           child: Column(
             children: [
-              SizedBox(height: ScreenSize.screenHeight * 0.02),
               Header(headerText: AppLanguage.getLanguageData()['Delete account']),
               SizedBox(height: ScreenSize.screenHeight * 0.02),
               ExplainingText(

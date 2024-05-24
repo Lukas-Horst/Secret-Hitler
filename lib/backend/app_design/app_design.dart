@@ -11,6 +11,7 @@ class AppDesign {
   static late Color _currentTertiaryColor;
   static late Color _contraryPrimaryColor;
   static late Color _contrarySecondaryColor;
+  static late Color _contraryTertiaryColor;
   static late String _currentCirclePNG;
 
   static Future<void> init() async {
@@ -31,6 +32,7 @@ class AppDesign {
     _setTertiaryColor();
     _setContraryPrimaryColor();
     _setContrarySecondaryColor();
+    _setContraryTertiaryColor();
     _setCirclePNG();
   }
   
@@ -52,6 +54,10 @@ class AppDesign {
 
   static Color getContrarySecondaryColor() {
     return _contrarySecondaryColor;
+  }
+
+  static Color getContraryTertiaryColor() {
+    return _contraryTertiaryColor;
   }
 
   static String getCurrentCirclePNG() {
@@ -107,6 +113,15 @@ class AppDesign {
       _contrarySecondaryColor= const Color(0xff004D65);
     } else {
       _contrarySecondaryColor = const Color(0xffDC0606);
+    }
+  }
+
+  // Method to set the contrary tertiary Color based on the primary color
+  static void _setContraryTertiaryColor() {
+    if (_currentPrimaryColor == const Color(0xffDC3B06)) {
+      _contraryTertiaryColor= const Color(0xff18312C);
+    } else {
+      _contraryTertiaryColor = const Color(0xff571C00);
     }
   }
 

@@ -40,7 +40,6 @@ class _NewPasswordState extends State<NewPassword> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(height: ScreenSize.screenHeight * 0.02),
               Header(headerText: AppLanguage.getLanguageData()['New password']),
               SizedBox(height: ScreenSize.screenHeight * 0.02),
               ExplainingText(
