@@ -1,8 +1,11 @@
 // author: Lukas Horst
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/frontend/widgets/animations/flip_animation.dart';
+import 'package:secret_hitler/frontend/widgets/animations/moving_animation.dart';
 import 'package:secret_hitler/frontend/widgets/components/game/boards/fascist_board.dart';
 import 'package:secret_hitler/frontend/widgets/components/game/boards/liberal_board.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons.dart';
@@ -41,6 +44,7 @@ class _BoardOverviewState extends State<BoardOverview> {
 
   GlobalKey<DrawPileState> drawPileKey = GlobalKey<DrawPileState>();
   GlobalKey<DiscardPileState> discardPileKey = GlobalKey<DiscardPileState>();
+  GlobalKey<MovingAnimationState> middleCardKey = GlobalKey<MovingAnimationState>();
 
   @override
   Widget build(BuildContext context) {
@@ -78,6 +82,13 @@ class _BoardOverviewState extends State<BoardOverview> {
                         key: drawPileKey,
                         cards: 14,
                       ),
+                      CustomTextButton(
+                        text: 'Test',
+                        textStyle: TextStyle(),
+                        onTap: () {
+                          middleCardKey.currentState?.animate();
+                        },
+                      ),
                       DiscardPile(
                         key: discardPileKey,
                         cards: 14,
@@ -86,7 +97,21 @@ class _BoardOverviewState extends State<BoardOverview> {
                   ),
                 ),
               ),
-
+              MovingAnimation(
+                key: middleCardKey,
+                duration: const Duration(milliseconds: 500),
+                firstTopPosition: ScreenSize.screenHeight * 0.65,
+                firstLeftPosition:  ScreenSize.screenWidth * 0.43,
+                firstRotationPosition: 0.0,
+                secondTopPosition: ScreenSize.screenHeight * 0.7,
+                secondLeftPosition: ScreenSize.screenWidth * 0.5,
+                secondRotationPosition: pi / 4,
+                animatedWidget: Image.asset(
+                  'assets/images/policy_card_liberal_without_background.png',
+                  height: ScreenSize.screenHeight * 0.08,
+                  width: ScreenSize.screenWidth * 0.115,
+                ),
+              ),
             ],
           ),
         ),
