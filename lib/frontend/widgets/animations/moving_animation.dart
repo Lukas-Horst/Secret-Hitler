@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:secret_hitler/frontend/widgets/animations/animation_controllers.dart';
+import 'package:secret_hitler/frontend/widgets/animations/rotation_animation.dart';
+import 'package:secret_hitler/frontend/widgets/animations/size_animation.dart';
 
 // Animation to move a widget and optionally rotate it also
 class MovingAnimation extends StatefulWidget {
@@ -14,12 +16,19 @@ class MovingAnimation extends StatefulWidget {
   final Widget animatedWidget;
   final double? firstRotationPosition;
   final double? secondRotationPosition;
+  final double? firstHeight;
+  final double? firstWidth;
+  final double? secondHeight;
+  final double? secondWidth;
+  final Duration? sizeDuration;
+  final Duration? rotatingDuration;
 
   const MovingAnimation({super.key, required this.duration,
     required this.firstTopPosition, required this.firstLeftPosition,
     required this.secondTopPosition, required this.secondLeftPosition,
     required this.animatedWidget, this.firstRotationPosition,
-    this.secondRotationPosition});
+    this.secondRotationPosition, this.rotatingDuration, this.firstHeight,
+    this.firstWidth, this.secondHeight, this.secondWidth, this.sizeDuration});
 
   @override
   State<MovingAnimation> createState() => MovingAnimationState();
@@ -30,24 +39,66 @@ class MovingAnimationState extends State<MovingAnimation> with SingleTickerProvi
   late AnimationController _controller;
   late Animation<double> _leftMovingAnimation;
   late Animation<double> _topMovingAnimation;
-  late Animation<double> _rotationAnimation;
+  late GlobalKey<RotationAnimationState> _rotationKey;
+  late GlobalKey<SizeAnimationState> _sizeKey;
   AnimationStatus _status = AnimationStatus.dismissed;
 
   late bool _withRotation;
+  late bool _withSize;
 
-  // Method to add the rotation if we have values for the rotation
-  Widget childWithRotation() {
+  // Method to add the rotation and size animation if we have values for these animations
+  Widget childWithRotationAndSize() {
+    // Set the rotation or size duration to the same duration as the moving if
+    // we haven't a specific one
+    Duration rotatingDuration;
+    Duration sizeDuration;
+    late Widget rotationAnimation;
+    if (widget.rotatingDuration == null) {
+      rotatingDuration = widget.duration;
+    } else {
+      rotatingDuration = widget.rotatingDuration!;
+    }
+    if (widget.sizeDuration == null) {
+      sizeDuration = widget.duration;
+    } else {
+      sizeDuration = widget.sizeDuration!;
+    }
+
     if (_withRotation) {
-      return Transform.rotate(
-        angle: _rotationAnimation.value,
-        child: widget.animatedWidget,
+      rotationAnimation = RotationAnimation(
+        key: _rotationKey,
+        duration: rotatingDuration,
+        firstRotationPosition: widget.firstRotationPosition!,
+        secondRotationPosition: widget.secondRotationPosition!,
+        animatedWidget: widget.animatedWidget,
+      );
+    } else {
+      rotationAnimation = widget.animatedWidget;
+    }
+
+    if (_withSize) {
+      return SizeAnimation(
+        key: _sizeKey,
+        duration: sizeDuration,
+        firstHeight: widget.firstHeight!,
+        firstWidth: widget.firstWidth!,
+        secondHeight: widget.secondHeight ?? widget.firstHeight!,
+        secondWidth: widget.secondWidth ?? widget.firstWidth!,
+        animatedWidget: rotationAnimation,
       );
     } else {
       return widget.animatedWidget;
     }
   }
 
+  // The moving and rotate animation
   void animate() {
+    move();
+    rotation();
+  }
+
+  // If we only want the move animation
+  void move() {
     if (_status == AnimationStatus.dismissed) {
       _controller.forward();
     } else {
@@ -55,10 +106,25 @@ class MovingAnimationState extends State<MovingAnimation> with SingleTickerProvi
     }
   }
 
+  // If we only want the rotate animation
+  void rotation() {
+    if (_withRotation) {
+      _rotationKey.currentState?.animate();
+    }
+  }
+
+  // If we only want the size animation
+  void size() {
+    if (_withSize) {
+      _sizeKey.currentState?.animate();
+    }
+  }
+
   @override
   void initState() {
     _withRotation = widget.firstRotationPosition != null
         && widget.secondRotationPosition != null;
+    _withSize = widget.firstHeight != null && widget.firstWidth != null;
 
     _controller = AnimationControllers.getController(widget.duration, this);
     _leftMovingAnimation = Tween(begin: widget.firstLeftPosition,
@@ -77,9 +143,13 @@ class MovingAnimationState extends State<MovingAnimation> with SingleTickerProvi
     _topMovingAnimation.addListener(() {setState(() {});});
 
     if (_withRotation) {
-      _rotationAnimation = Tween(begin: widget.firstRotationPosition,
-          end: widget.secondRotationPosition).animate(_controller);
+      _rotationKey = GlobalKey<RotationAnimationState>();
     }
+
+    if (_withSize) {
+      _sizeKey = GlobalKey<SizeAnimationState>();
+    }
+
     super.initState();
   }
 
@@ -97,7 +167,7 @@ class MovingAnimationState extends State<MovingAnimation> with SingleTickerProvi
         return Positioned(
           top: _topMovingAnimation.value,
           left: _leftMovingAnimation.value,
-          child: childWithRotation(),
+          child: childWithRotationAndSize(),
         );
       },
     );

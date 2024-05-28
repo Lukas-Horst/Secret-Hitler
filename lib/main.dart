@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:appwrite/appwrite.dart';
 import 'package:secret_hitler/backend/app_design/app_design.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
+import 'package:secret_hitler/backend/constants/board_overview_constants.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/backend/database/hive_database.dart';
 import 'package:secret_hitler/frontend/pages/authentication/switches/login_register_switch.dart';
@@ -47,6 +48,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     ScreenSize.init(context);  // Initialize the screen size
+    BoardOverviewPositions.init();  // Initialize the constants of the board overview page
     return MaterialApp(
       theme: ThemeData(
         textSelectionTheme: TextSelectionThemeData(

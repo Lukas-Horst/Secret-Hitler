@@ -33,7 +33,9 @@ class PileMethods{
   }
 
   static void removeCard(List<Widget> pileElements) {
-    pileElements.removeLast();
+    if (pileElements.length > 1) {
+      pileElements.removeLast();
+    }
   }
 
 }

@@ -3,6 +3,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:secret_hitler/backend/constants/board_overview_constants.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/frontend/widgets/animations/flip_animation.dart';
 import 'package:secret_hitler/frontend/widgets/components/game/boards/board_methods.dart';
@@ -22,13 +23,7 @@ class LiberalBoard extends StatefulWidget {
 
 class _LiberalBoardState extends State<LiberalBoard> {
 
-  List<double> cardPositions = [
-    ScreenSize.screenWidth * 0.1675,
-    ScreenSize.screenWidth * 0.3,
-    ScreenSize.screenWidth * 0.432,
-    ScreenSize.screenWidth * 0.5625,
-    ScreenSize.screenWidth * 0.6975,
-  ];
+  List<double> cardPositions = BoardOverviewPositions.liberalBoardLeftPositions;
 
   List<Widget> boardElements = [
     Image.asset(

@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:secret_hitler/backend/app_design/app_design.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
+import 'package:secret_hitler/frontend/widgets/components/transformedWidgets.dart';
 
 // Text button without too much space around
 class CustomTextButton extends StatefulWidget {
@@ -328,10 +329,10 @@ class _LoginRegisterSwitchButtonState extends State<LoginRegisterSwitchButton> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
-        Transform.rotate(
-          angle: 330 * 3.1415926535 / 180,
-          child: Image.asset(
-            'assets/images/fascist_circle.png',
+        AngleWidget(
+          angleDegree: 330,
+          angledWidget: Image.asset(
+            'assets/images/${AppDesign.getCurrentCirclePNG()}.png',
             height: ScreenSize.screenHeight * 0.075,
             width: ScreenSize.screenHeight * 0.07,
           ),
@@ -361,9 +362,9 @@ class _LoginRegisterSwitchButtonState extends State<LoginRegisterSwitchButton> {
             ),
           ],
         ),
-        Transform.rotate(
-          angle: -330 * 3.1415926535 / 180,
-          child: Image.asset(
+        AngleWidget(
+          angleDegree: -330,
+          angledWidget: Image.asset(
             'assets/images/${AppDesign.getCurrentCirclePNG()}.png',
             height: ScreenSize.screenHeight * 0.075,
             width: ScreenSize.screenHeight * 0.07,

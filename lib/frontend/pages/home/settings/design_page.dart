@@ -10,7 +10,7 @@ import 'package:secret_hitler/frontend/widgets/animations/flip_animation.dart';
 import 'package:secret_hitler/frontend/widgets/animations/header_animation.dart';
 import 'package:secret_hitler/frontend/widgets/components/bottom_navigation_bar.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons.dart';
-import 'package:secret_hitler/frontend/widgets/components/usefulWidgets.dart';
+import 'package:secret_hitler/frontend/widgets/components/transformedWidgets.dart';
 import 'package:secret_hitler/frontend/widgets/components/text.dart';
 import 'package:secret_hitler/frontend/widgets/header/header.dart';
 import 'package:secret_hitler/frontend/widgets/header/header_image.dart';

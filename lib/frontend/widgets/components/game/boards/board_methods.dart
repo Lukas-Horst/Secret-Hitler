@@ -18,30 +18,24 @@ class BoardMethods{
     } else {
       cardName = 'fascist';
     }
+    Widget backSide = Image.asset(
+      'assets/images/policy_card_back.png',
+      height: ScreenSize.screenHeight * 0.075,
+      width: ScreenSize.screenWidth * 0.115,
+    );
+    Widget frontSide = Image.asset(
+      'assets/images/policy_card_${cardName}_without_background.png',
+      height: ScreenSize.screenHeight * 0.075,
+      width: ScreenSize.screenWidth * 0.115,
+    );
     for (int i=0; i < cards; i++) {
       // Deciding if the card is already flipped or not
       if (i < flippedCards) {
-        firstWidget = Image.asset(
-          'assets/images/policy_card_${cardName}_without_background.png',
-          height: ScreenSize.screenHeight * 0.075,
-          width: ScreenSize.screenWidth * 0.115,
-        );
-        secondWidget = Image.asset(
-          'assets/images/policy_card_back.png',
-          height: ScreenSize.screenHeight * 0.075,
-          width: ScreenSize.screenWidth * 0.115,
-        );
+        firstWidget = frontSide;
+        secondWidget = backSide;
       } else {
-        firstWidget = Image.asset(
-          'assets/images/policy_card_back.png',
-          height: ScreenSize.screenHeight * 0.075,
-          width: ScreenSize.screenWidth * 0.115,
-        );
-        secondWidget = Image.asset(
-          'assets/images/policy_card_${cardName}_without_background.png',
-          height: ScreenSize.screenHeight * 0.075,
-          width: ScreenSize.screenWidth * 0.115,
-        );
+        firstWidget = backSide;
+        secondWidget = frontSide;
       }
       boardElements.add(
         Positioned(

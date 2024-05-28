@@ -1,6 +1,7 @@
 // author: Lukas Horst
 
 import 'package:flutter/material.dart';
+import 'package:secret_hitler/backend/constants/board_overview_constants.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/frontend/widgets/animations/flip_animation.dart';
 import 'package:secret_hitler/frontend/widgets/components/game/boards/board_methods.dart';
@@ -23,14 +24,7 @@ class FascistBoard extends StatefulWidget {
 class _FascistBoardState extends State<FascistBoard> {
 
   List<Widget> boardElements = [];
-  List<double> cardPositions = [
-    ScreenSize.screenWidth * 0.1035,
-    ScreenSize.screenWidth * 0.235,
-    ScreenSize.screenWidth * 0.3665,
-    ScreenSize.screenWidth * 0.499,
-    ScreenSize.screenWidth * 0.6325,
-    ScreenSize.screenWidth * 0.765,
-  ];
+  List<double> cardPositions = BoardOverviewPositions.fascistBoardLeftPositions;
 
   // Get the right fascist board based on the player amount
   String getFascistBoard(int playerAmount) {

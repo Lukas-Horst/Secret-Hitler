@@ -20,3 +20,21 @@ class MirroredWidget extends StatelessWidget {
     );
   }
 }
+
+class AngleWidget extends StatelessWidget {
+
+  final Widget angledWidget;
+  final double angleDegree;
+
+  const AngleWidget({super.key, required this.angledWidget,
+    required this.angleDegree});
+
+  @override
+  Widget build(BuildContext context) {
+    return Transform.rotate(
+      angle: angleDegree * (pi / 180),
+      child: angledWidget,
+    );
+  }
+}
+
