@@ -18,10 +18,10 @@ class FascistBoard extends StatefulWidget {
     required this.cardFlipKeys});
 
   @override
-  State<FascistBoard> createState() => _FascistBoardState();
+  State<FascistBoard> createState() => FascistBoardState();
 }
 
-class _FascistBoardState extends State<FascistBoard> {
+class FascistBoardState extends State<FascistBoard> {
 
   List<Widget> boardElements = [];
   List<double> cardPositions = BoardOverviewPositions.fascistBoardLeftPositions;

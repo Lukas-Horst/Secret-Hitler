@@ -8,11 +8,13 @@ import 'package:secret_hitler/backend/constants/board_overview_constants.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/frontend/widgets/animations/flip_animation.dart';
 import 'package:secret_hitler/frontend/widgets/animations/moving_animation.dart';
+import 'package:secret_hitler/frontend/widgets/components/game/boards/board_methods.dart';
 import 'package:secret_hitler/frontend/widgets/components/game/boards/fascist_board.dart';
 import 'package:secret_hitler/frontend/widgets/components/game/boards/liberal_board.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons.dart';
 import 'package:secret_hitler/frontend/widgets/components/game/piles/discard_pile.dart';
 import 'package:secret_hitler/frontend/widgets/components/game/piles/draw_pile.dart';
+import 'package:secret_hitler/frontend/widgets/components/game/piles/pile_methods.dart';
 
 class BoardOverview extends StatefulWidget {
 
@@ -43,8 +45,10 @@ class _BoardOverviewState extends State<BoardOverview> {
     GlobalKey<FlipAnimationState>(),
   ];
 
-  GlobalKey<DrawPileState> drawPileKey = GlobalKey<DrawPileState>();
-  GlobalKey<DiscardPileState> discardPileKey = GlobalKey<DiscardPileState>();
+  final GlobalKey<DrawPileState> _drawPileKey = GlobalKey<DrawPileState>();
+  final GlobalKey<DiscardPileState> _discardPileKey = GlobalKey<DiscardPileState>();
+  final GlobalKey<FascistBoardState> _fascistBoardKey = GlobalKey<FascistBoardState>();
+  final GlobalKey<LiberalBoardState> _liberalBoardKey = GlobalKey<LiberalBoardState>();
 
   final List<GlobalKey<MovingAnimationState>> _cardMovingKey = [
     GlobalKey<MovingAnimationState>(),  // Left card
@@ -59,9 +63,9 @@ class _BoardOverviewState extends State<BoardOverview> {
   ];
 
   final List<bool> _cardVisibility = [
-    true,  // Left card
-    true,  // Middle card
-    true,  // Right card
+    false,  // Left card
+    false,  // Middle card
+    false,  // Right card
   ];
 
   final List<List<double>> _cardTopPosition = [
@@ -88,12 +92,22 @@ class _BoardOverviewState extends State<BoardOverview> {
     const Duration(milliseconds: 1000),  // Right card
   ];
 
-  late int drawPileCardAmount;
-  int discardPileCardAmount = 0;
+  final List<bool> _cardColor = [
+    // True is liberal (blue) and false fascist (red)
+    false,  // Left card
+    true,  // Middle card
+    true,  // Right card
+  ];
+
+  int _drawPileCardAmount = 14;
+  int _discardPileCardAmount = 0;
+  int _fascistBoardCardAmount = 0;
+  int _fascistBoardFlippedCards = 0;
+  int _liberalBoardCardAmount = 0;
+  int _liberalBoardFlippedCards = 0;
 
   // Method to get one off the playing cards
-  Widget _getCard(bool isLiberal, bool isCovered,
-      GlobalKey<FlipAnimationState> flipKey) {
+  Widget _getCard(bool isLiberal, bool isCovered, int cardIndex) {
     Widget firstWidget;
     Widget secondWidget;
     String cardName;
@@ -118,7 +132,7 @@ class _BoardOverviewState extends State<BoardOverview> {
       secondWidget = backSide;
     }
     return FlipAnimation(
-      key: flipKey,
+      key: _cardFlipKey[cardIndex],
       duration: const Duration(milliseconds: 600),
       firstWidget: firstWidget,
       secondWidget: secondWidget,
@@ -142,7 +156,7 @@ class _BoardOverviewState extends State<BoardOverview> {
         secondHeight: BoardOverviewPositions.cardHeights[1],
         secondWidth: BoardOverviewPositions.cardWidth,
         rotatingDuration: const Duration(milliseconds: 500),
-        animatedWidget: _getCard(true, true, _cardFlipKey[cardIndex]),
+        animatedWidget: _getCard(_cardColor[cardIndex], true, cardIndex),
       );
     } else {
       return const SizedBox();
@@ -150,27 +164,28 @@ class _BoardOverviewState extends State<BoardOverview> {
   }
 
   // Method to put the given card amount to the draw pile inclusive the 3 cards with animation
-  void _updateDrawPile(int cardAmount) {
+  Future<void> _updateDrawPile() async {
     // Checking if enough cards are on the draw pile
-    if (cardAmount > 2) {
-      setState(() {
-        drawPileCardAmount = cardAmount - 3;
-        for (int i=0; i < 3; i++) {
-          _cardVisibility[i] = true;
-          _cardTopPosition[i][0] = BoardOverviewPositions.constantTopPositions[2]
-              + (13 - drawPileCardAmount - i) * ScreenSize.screenHeight * 0.001;
-          _cardLeftPosition[i][0] = BoardOverviewPositions.constantLeftPositions[0]
-              + (13 - drawPileCardAmount - i) * ScreenSize.screenWidth * 0.002;
-          _cardTopPosition[i][1] = BoardOverviewPositions.constantTopPositions[3];
-          _cardLeftPosition[i][1] = BoardOverviewPositions.constantLeftPositions[2];
+    if (_drawPileCardAmount > 2) {
+      for (int i=2; i > -1; i--) {
+        _drawPileCardAmount--;
+        await _updateAnimation('DrawPile', 'BottomCenter', i, 1000);
+      }
+      for (int i=0; i < 3; i++) {
+        _cardVisibility[i] = true;
+        if (true) {
+          setState(() {
+            PileMethods.removeCard(_drawPileKey.currentState!.pileElements);
+          });
         }
-      });
+      }
+      await Future.delayed(const Duration(milliseconds: 100));
     }
   }
 
   // Drawing 3 card from the draw pile
   Future<void> _drawCards() async {
-    for (int i=0; i < 3; i++) {
+    for (int i=2; i > -1; i--) {
       _drawCard(i);
       await Future.delayed(const Duration(milliseconds: 150));
     }
@@ -186,15 +201,16 @@ class _BoardOverviewState extends State<BoardOverview> {
 
   // Method to discover the playing cards
   Future<void> _discoverCards() async {
-    List<String> cardPositions = ['Left', '', 'Right'];
+    List<String> cardPositions = ['Left', 'Right', ''];
+    int count = 0;
     // Changing the move animation
     for (int i=0; i < 3; i++) {
       if (_cardVisibility[i]) {
         await _updateAnimation('BottomCenter',
-            'BottomCenter${cardPositions[i]}', i, 750);
+            'BottomCenter${cardPositions[count]}', i, 750);
+        count++;
       }
     }
-    await Future.delayed(const Duration(milliseconds: 100));
     // Spread out the card
     for (int i=0; i < 3; i++) {
       _cardMovingKey[i].currentState?.animate();
@@ -204,18 +220,43 @@ class _BoardOverviewState extends State<BoardOverview> {
     for (int i=0; i < 3; i++) {
       _cardFlipKey[i].currentState?.animate();
     }
+    await Future.delayed(const Duration(milliseconds: 600));
+  }
+
+  // Method to cover the playing cards
+  Future<void> _coverCards() async {
+    // Fold in the cards
+    for (int i=0; i < 3; i++) {
+      _cardMovingKey[i].currentState?.animate();
+    }
+    await Future.delayed(const Duration(milliseconds: 600));
+    // Flip the cards
+    for (int i=0; i < 3; i++) {
+      _cardFlipKey[i].currentState?.animate();
+    }
+    await Future.delayed(const Duration(milliseconds: 600));
   }
 
   // Method to update the moving animations of the given card
   Future<void> _updateAnimation(String start, String end, int cardIndex,
       int duration) async {
     Map<String, List<double>> positions = {
-      'DiscardPile': [BoardOverviewPositions.constantTopPositions[2], BoardOverviewPositions.constantLeftPositions[1], 10],
-      'BottomCenter': [BoardOverviewPositions.constantTopPositions[3], BoardOverviewPositions.constantLeftPositions[2], 0],
-      'BottomCenterLeft': [BoardOverviewPositions.constantTopPositions[3] + ScreenSize.screenHeight * 0.005, BoardOverviewPositions.constantLeftPositions[2] - ScreenSize.screenWidth * 0.13, -10],
-      'BottomCenterRight': [BoardOverviewPositions.constantTopPositions[3] + ScreenSize.screenHeight * 0.005, BoardOverviewPositions.constantLeftPositions[2] + ScreenSize.screenWidth * 0.13, 10],
-      'LiberalBoard': [BoardOverviewPositions.constantTopPositions[1], BoardOverviewPositions.liberalBoardLeftPositions[drawPileKey.currentState!.pileElements.length-1]],
-      'FascistBoard': [BoardOverviewPositions.constantTopPositions[0], BoardOverviewPositions.fascistBoardLeftPositions[discardPileKey.currentState!.pileElements.length-1]],
+      'DrawPile': [BoardOverviewPositions.constantTopPositions[2] + (13 - _drawPileCardAmount) * ScreenSize.screenHeight * 0.001,
+        BoardOverviewPositions.constantLeftPositions[0] + (13 - _drawPileCardAmount) * ScreenSize.screenWidth * 0.002, -10],
+      'DiscardPile': [BoardOverviewPositions.constantTopPositions[2] + (13 - _discardPileCardAmount) * ScreenSize.screenHeight * 0.001,
+        BoardOverviewPositions.constantLeftPositions[1] - (13 - _discardPileCardAmount) * ScreenSize.screenWidth * 0.002, 10],
+      'BottomCenter': [BoardOverviewPositions.constantTopPositions[3],
+        BoardOverviewPositions.constantLeftPositions[2], 0],
+      'BottomCenterLeft': [BoardOverviewPositions.constantTopPositions[3] + ScreenSize.screenHeight * 0.005,
+        BoardOverviewPositions.constantLeftPositions[2] - ScreenSize.screenWidth * 0.13, -10],
+      'BottomCenterRight': [BoardOverviewPositions.constantTopPositions[3] + ScreenSize.screenHeight * 0.005,
+        BoardOverviewPositions.constantLeftPositions[2] + ScreenSize.screenWidth * 0.13, 10],
+      'LiberalBoard': [BoardOverviewPositions.constantTopPositions[1],
+        BoardOverviewPositions.liberalBoardLeftPositions[_liberalBoardCardAmount],
+        -5 + (_liberalBoardCardAmount * 2.5)],
+      'FascistBoard': [BoardOverviewPositions.constantTopPositions[0],
+        BoardOverviewPositions.fascistBoardLeftPositions[_fascistBoardCardAmount],
+        -6 + (_fascistBoardCardAmount * 2.5)],
     };
     setState(() {
       _cardVisibility[cardIndex] = false;
@@ -226,14 +267,76 @@ class _BoardOverviewState extends State<BoardOverview> {
       _cardLeftPosition[cardIndex] = [positions[start]![1], positions[end]![1]];
       _rotationValues[cardIndex] = [0, positions[end]![2]];
       _durationValues[cardIndex] = Duration(milliseconds: duration);
-      _cardVisibility[cardIndex] = true;
+      if (start != 'DrawPile') {
+        _cardVisibility[cardIndex] = true;
+      }
     });
+    if (start != 'DrawPile') {
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
+  }
+
+  // Method to discard a playing card
+  Future<void> _discard(int cardIndex) async {
+    _discardPileCardAmount++;
+    await _updateAnimation('BottomCenter',
+        'DiscardPile', cardIndex, 1000);
+    _cardMovingKey[cardIndex].currentState?.animate();
+    await Future.delayed(const Duration(milliseconds: 500));
+    _cardMovingKey[cardIndex].currentState?.rotation();
+    await Future.delayed(const Duration(milliseconds: 500));
+    // Replacing the animated card with a normal card
+    setState(() {
+      PileMethods.addCard(_discardPileKey.currentState!.pileElements, true);
+      _cardVisibility[cardIndex] = false;
+    });
+  }
+
+  Future<void> playCard(int cardIndex) async {
+    String boardColor = _cardColor[cardIndex] ? 'LiberalBoard' : 'FascistBoard';
+    await _updateAnimation('BottomCenter',
+        boardColor, cardIndex, 1500);
+    _cardMovingKey[cardIndex].currentState?.animate();
+    _cardMovingKey[cardIndex].currentState?.size();
+    await Future.delayed(const Duration(milliseconds: 1000));
+    _cardMovingKey[cardIndex].currentState?.rotation();
+    await Future.delayed(const Duration(milliseconds: 750));
+    _cardFlipKey[cardIndex].currentState?.animate();
+    await Future.delayed(const Duration(milliseconds: 600));
+    setState(() {
+      if (_cardColor[cardIndex]) {
+        _liberalBoardCardAmount++;
+        _liberalBoardFlippedCards++;
+        BoardMethods.addCard(
+          _liberalBoardKey.currentState!.boardElements,
+          _liberalBoardKey.currentState!.cardPositions,
+          true,
+          true,
+        );
+      } else {
+        _fascistBoardCardAmount++;
+        _fascistBoardFlippedCards++;
+        BoardMethods.addCard(
+          _fascistBoardKey.currentState!.boardElements,
+          _fascistBoardKey.currentState!.cardPositions,
+          false,
+          true,
+        );
+      }
+      _cardVisibility[cardIndex] = false;
+    });
+    await Future.delayed(const Duration(milliseconds: 200));
   }
 
   @override
   void initState() {
-    _updateDrawPile(4);
+    initialize();
     super.initState();
+  }
+
+  Future<void> initialize() async {
+    await Future.delayed(const Duration(milliseconds: 50));
+    await _updateDrawPile();
   }
 
   @override
@@ -247,17 +350,19 @@ class _BoardOverviewState extends State<BoardOverview> {
             children: [
               Positioned(
                 child: FascistBoard(
+                  key: _fascistBoardKey,
                   playerAmount: widget.playerAmount,
-                  cards: 1,
-                  flippedCards: 0,
+                  cards: _fascistBoardCardAmount,
+                  flippedCards: _fascistBoardFlippedCards,
                   cardFlipKeys: _fascistCardFlipKeys,
                 ),
               ),
               Positioned(
                 top: ScreenSize.screenHeight * 0.175,
                 child: LiberalBoard(
-                  cards: 1,
-                  flippedCards: 0,
+                  key: _liberalBoardKey,
+                  cards: _liberalBoardCardAmount,
+                  flippedCards: _liberalBoardFlippedCards,
                   cardFlipKeys: _liberalCardFlipKeys,
                 ),
               ),
@@ -269,8 +374,8 @@ class _BoardOverviewState extends State<BoardOverview> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       DrawPile(
-                        key: drawPileKey,
-                        cards: drawPileCardAmount,
+                        key: _drawPileKey,
+                        cards: _drawPileCardAmount,
                       ),
                       CustomTextButton(
                         text: 'Test',
@@ -278,11 +383,18 @@ class _BoardOverviewState extends State<BoardOverview> {
                         onTap: () async {
                           await _drawCards();
                           await _discoverCards();
+                          await _coverCards();
+                          await _discard(2);
+                          await _discoverCards();
+                          await _coverCards();
+                          await _discard(0);
+                          await playCard(1);
+                          await _updateDrawPile();
                         },
                       ),
                       DiscardPile(
-                        key: discardPileKey,
-                        cards: discardPileCardAmount,
+                        key: _discardPileKey,
+                        cards: _discardPileCardAmount,
                       ),
                     ],
                   ),

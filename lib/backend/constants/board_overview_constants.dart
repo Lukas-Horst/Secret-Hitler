@@ -16,12 +16,12 @@ class BoardOverviewPositions{
     constantTopPositions = [
       ScreenSize.screenHeight * 0.075,  // Fascist board
       ScreenSize.screenHeight * 0.25,  // Liberal board
-      ScreenSize.screenHeight * 0.4155, // Draw and discard pile (top card)
+      ScreenSize.screenHeight * 0.416, // Draw and discard pile (top card)
       ScreenSize.screenHeight * 0.65,  // Bottom center
     ];
     constantLeftPositions = [
-      ScreenSize.screenWidth * 0.068, // Draw pile (top card)
-      ScreenSize.screenWidth * 0.8015,  // Discard pile (top card)
+      ScreenSize.screenWidth * 0.069, // Draw pile (top card)
+      ScreenSize.screenWidth * 0.8005,  // Discard pile (top card)
       ScreenSize.screenWidth * 0.43,  // Bottom center (middle card)
     ];
     fascistBoardLeftPositions = [
@@ -41,7 +41,7 @@ class BoardOverviewPositions{
     ];
     cardHeights = [
       ScreenSize.screenHeight * 0.08,  // Normal height
-      ScreenSize.screenHeight * 0.75  // Board height
+      ScreenSize.screenHeight * 0.075  // Board height
     ];
     cardWidth = ScreenSize.screenWidth * 0.115;
   }

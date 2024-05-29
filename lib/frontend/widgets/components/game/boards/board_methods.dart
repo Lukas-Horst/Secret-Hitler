@@ -10,6 +10,21 @@ class BoardMethods{
   static List<Widget> buildBoard(bool isLiberal, List<Widget> boardElements,
       int cards, int flippedCards, List<double> cardPositions,
       List<GlobalKey<FlipAnimationState>> cardFlipKeys) {
+    for (int i=0; i < cards; i++) {
+      // Deciding if the card is already flipped or not
+      bool isFlipped;
+      if (i < flippedCards) {
+        isFlipped = true;
+      } else {
+        isFlipped = false;
+      }
+      addCard(boardElements, cardPositions, isLiberal, isFlipped);
+    }
+    return boardElements;
+  }
+
+  static void addCard(List<Widget> boardElements, List<double> cardPositions,
+      bool isLiberal, bool isFlipped) {
     late Widget firstWidget;
     late Widget secondWidget;
     late String cardName;
@@ -28,29 +43,23 @@ class BoardMethods{
       height: ScreenSize.screenHeight * 0.075,
       width: ScreenSize.screenWidth * 0.115,
     );
-    for (int i=0; i < cards; i++) {
-      // Deciding if the card is already flipped or not
-      if (i < flippedCards) {
-        firstWidget = frontSide;
-        secondWidget = backSide;
-      } else {
-        firstWidget = backSide;
-        secondWidget = frontSide;
-      }
-      boardElements.add(
-        Positioned(
-          top: ScreenSize.screenHeight * 0.075,
-          left: cardPositions[i],
-          child: FlipAnimation(
-            key: cardFlipKeys[i],
-            duration: const Duration(milliseconds: 500),
-            firstWidget: firstWidget,
-            secondWidget: secondWidget,
-          ),
-        ),
-      );
+    if (isFlipped) {
+      firstWidget = frontSide;
+      secondWidget = backSide;
+    } else {
+      firstWidget = backSide;
+      secondWidget = frontSide;
     }
-    return boardElements;
+    boardElements.add(
+      Positioned(
+        top: ScreenSize.screenHeight * 0.075,
+        left: cardPositions[boardElements.length - 1],
+        child: FlipAnimation(
+          duration: const Duration(milliseconds: 500),
+          firstWidget: firstWidget,
+          secondWidget: secondWidget,
+        ),
+      ),
+    );
   }
-
 }

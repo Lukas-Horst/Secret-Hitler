@@ -18,10 +18,10 @@ class LiberalBoard extends StatefulWidget {
     required this.flippedCards});
 
   @override
-  State<LiberalBoard> createState() => _LiberalBoardState();
+  State<LiberalBoard> createState() => LiberalBoardState();
 }
 
-class _LiberalBoardState extends State<LiberalBoard> {
+class LiberalBoardState extends State<LiberalBoard> {
 
   List<double> cardPositions = BoardOverviewPositions.liberalBoardLeftPositions;
 
