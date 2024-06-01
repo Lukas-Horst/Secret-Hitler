@@ -45,7 +45,7 @@ class Header extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Image.asset(
-                      'assets/images/${headerImage}.png',
+                      'assets/images/$headerImage.png',
                       height: ScreenSize.screenHeight * 0.135,
                       width: ScreenSize.screenWidth * 0.25,
                     ),

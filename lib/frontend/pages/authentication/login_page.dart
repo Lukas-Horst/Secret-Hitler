@@ -34,8 +34,11 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {return false;},
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didpop) async {
+        if (!didpop) {}
+      },
       child: Scaffold(
         backgroundColor: const Color(0xFF474747),
         body: SafeArea(

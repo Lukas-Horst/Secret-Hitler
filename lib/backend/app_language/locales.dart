@@ -133,6 +133,11 @@ mixin LocaleData {
 
     'Waiting room': 'Waiting room',
     'Players': 'Players',
+
+    // Board overview page
+    'Draw 3 cards': 'Draw 3 cards',
+    'Discard a card': 'Discard a card',
+    'Play a card': 'Play a card',
   };
 
   static const Map<String, dynamic> DE = {
@@ -267,5 +272,10 @@ mixin LocaleData {
 
     'Waiting room': 'Warteraum',
     'Players': 'Spieler',
+
+    // Board overview page
+    'Draw 3 cards': 'Ziehe 3 Karten',
+    'Discard a card': 'Lege eine Karte ab',
+    'Play a card': 'Spiele eine Karte',
   };
 }

@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
+import 'package:secret_hitler/backend/pages/game/game_room/board_overview_backend.dart';
 import 'package:secret_hitler/frontend/pages/home/homepage/game/game_room/board_overview_page.dart';
 import 'package:secret_hitler/frontend/pages/home/homepage/game/game_room/game_room_settings_page.dart';
 import 'package:secret_hitler/frontend/pages/home/homepage/game/game_room/players_and_election_page.dart';
@@ -22,6 +23,8 @@ class GameRoomNavigation extends StatefulWidget {
 
 class _GameRoomNavigationState extends State<GameRoomNavigation> {
 
+  late GlobalKey<BoardOverviewState> boardOverviewFrontendKey;
+  late BoardOverviewBackend backend;
   final _pageViewController = PageController();
   late int _playerAmount;
 
@@ -39,6 +42,8 @@ class _GameRoomNavigationState extends State<GameRoomNavigation> {
 
   @override
   void initState() {
+    boardOverviewFrontendKey = GlobalKey<BoardOverviewState>();
+    backend = BoardOverviewBackend(boardOverviewFrontendKey);
     _playerAmount = widget.playerAmount;
     Timer(const Duration(milliseconds: 500), () {
       changePage(2);
@@ -67,7 +72,11 @@ class _GameRoomNavigationState extends State<GameRoomNavigation> {
                   children: [
                     const GameRoomSettings(),
                     const Roles(),
-                    BoardOverview(playerAmount: _playerAmount,),
+                    BoardOverview(
+                      key: boardOverviewFrontendKey,
+                      playerAmount: _playerAmount,
+                      backend: backend,
+                    ),
                     const PlayersAndElection(),
                   ],
                 ),

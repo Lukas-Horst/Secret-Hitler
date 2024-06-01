@@ -50,10 +50,11 @@ class BoardMethods{
       firstWidget = backSide;
       secondWidget = frontSide;
     }
+    int leftCardPosition = isLiberal ? boardElements.length - 3 : boardElements.length - 1;
     boardElements.add(
       Positioned(
         top: ScreenSize.screenHeight * 0.075,
-        left: cardPositions[boardElements.length - 1],
+        left: cardPositions[leftCardPosition],
         child: FlipAnimation(
           duration: const Duration(milliseconds: 500),
           firstWidget: firstWidget,

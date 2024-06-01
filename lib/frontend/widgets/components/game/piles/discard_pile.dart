@@ -26,7 +26,7 @@ class DiscardPileState extends State<DiscardPile> {
 
   @override
   void initState() {
-    PileMethods.buildPile(pileElements, widget.cards, true);
+    PileMethods.buildPile(pileElements, widget.cards, true, null);
     super.initState();
   }
 

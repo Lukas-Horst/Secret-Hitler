@@ -1,6 +1,5 @@
 // author: Lukas Horst
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';

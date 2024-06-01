@@ -16,7 +16,7 @@ class _GameRoomSettingsState extends State<GameRoomSettings> {
   
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return const Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
       ],

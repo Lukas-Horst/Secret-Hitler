@@ -38,15 +38,15 @@ class _NewGameState extends State<NewGame> {
 
   @override
   void initState() {
-    late int _controllerInitialItem;
+    late int controllerInitialItem;
 
     if (widget.scrollWheelStartNumber != null) {
-      _controllerInitialItem = widget.scrollWheelStartNumber! - 5;
+      controllerInitialItem = widget.scrollWheelStartNumber! - 5;
     } else {
-      _controllerInitialItem = 0;
+      controllerInitialItem = 0;
     }
     scrollWheelController = FixedExtentScrollController(
-      initialItem: _controllerInitialItem,
+      initialItem: controllerInitialItem,
     );
     super.initState();
   }
