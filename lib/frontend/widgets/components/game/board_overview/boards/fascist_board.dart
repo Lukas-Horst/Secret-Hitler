@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:secret_hitler/backend/constants/board_overview_constants.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/frontend/widgets/animations/flip_animation.dart';
-import 'package:secret_hitler/frontend/widgets/components/game/boards/board_methods.dart';
+import 'package:secret_hitler/frontend/widgets/components/game/board_overview/boards/board_functions.dart';
 
 class FascistBoard extends StatefulWidget {
 
@@ -46,7 +46,7 @@ class FascistBoardState extends State<FascistBoard> {
         width: ScreenSize.screenWidth * 0.98,
       ),
     );
-    BoardMethods.buildBoard(
+    buildBoard(
       false,
       boardElements,
       widget.cards,

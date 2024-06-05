@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/frontend/widgets/animations/rotation_animation.dart';
-import 'package:secret_hitler/frontend/widgets/components/game/piles/pile_methods.dart';
+import 'package:secret_hitler/frontend/widgets/components/game/board_overview/piles/pile_functions.dart';
 
 class DrawPile extends StatefulWidget {
 
@@ -47,7 +47,7 @@ class DrawPileState extends State<DrawPile> {
     for (int i=0; i < 14; i++) {
       _drawPileRotationKeys.add(GlobalKey<RotationAnimationState>());
     }
-    PileMethods.buildPile(pileElements, widget.cards, false, _drawPileRotationKeys);
+    buildPile(pileElements, widget.cards, false, _drawPileRotationKeys);
     super.initState();
   }
 

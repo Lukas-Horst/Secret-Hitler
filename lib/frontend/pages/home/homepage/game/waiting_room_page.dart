@@ -34,7 +34,7 @@ class _WaitingRoomState extends State<WaitingRoom> {
   // waiting room
   Column _showPlayerNames() {
     List<Widget> nameRows = [];
-    int maxIterations = MathFunctions.ceilingDivision(_playerNames.length, 2);
+    int maxIterations = ceilingDivision(_playerNames.length, 2);
     for (int i=0; i < maxIterations; i++) {
       List<AdjustableStandardText> names = [];
       // Always add the first name

@@ -22,7 +22,7 @@ class _RulesPage5State extends State<RulesPage5> {
 
   @override
   void initState() {
-    _investigateLoyaltyTextIndex = StringFunctions.calculateTextWidth(
+    _investigateLoyaltyTextIndex = calculateTextWidth(
       AppLanguage.getLanguageData()['RulePage5Section2'],
       TextStyle(
         fontFamily: 'EskapadeFrakturW04BlackFamily',
@@ -33,7 +33,7 @@ class _RulesPage5State extends State<RulesPage5> {
       ScreenSize.screenWidth * 0.68,
       ScreenSize.screenHeight * 0.125,
     );
-    _callSpecialElectionTextIndex = StringFunctions.calculateTextWidth(
+    _callSpecialElectionTextIndex = calculateTextWidth(
       AppLanguage.getLanguageData()['RulePage5Section3'],
       TextStyle(
         fontFamily: 'EskapadeFrakturW04BlackFamily',
@@ -44,7 +44,7 @@ class _RulesPage5State extends State<RulesPage5> {
       ScreenSize.screenWidth * 0.68,
       ScreenSize.screenHeight * 0.1,
     );
-    _policyPeekTextIndex = StringFunctions.calculateTextWidth(
+    _policyPeekTextIndex = calculateTextWidth(
       AppLanguage.getLanguageData()['RulePage5Section6'],
       TextStyle(
         fontFamily: 'EskapadeFrakturW04BlackFamily',
@@ -55,7 +55,7 @@ class _RulesPage5State extends State<RulesPage5> {
       ScreenSize.screenWidth * 0.68,
       ScreenSize.screenHeight * 0.1,
     );
-    _executionTextIndex = StringFunctions.calculateTextWidth(
+    _executionTextIndex = calculateTextWidth(
       AppLanguage.getLanguageData()['RulePage5Section7'],
       TextStyle(
         fontFamily: 'EskapadeFrakturW04BlackFamily',

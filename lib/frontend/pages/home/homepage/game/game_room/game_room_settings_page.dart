@@ -12,14 +12,18 @@ class GameRoomSettings extends StatefulWidget {
   State<GameRoomSettings> createState() => _GameRoomSettingsState();
 }
 
-class _GameRoomSettingsState extends State<GameRoomSettings> {
+class _GameRoomSettingsState extends State<GameRoomSettings> with AutomaticKeepAliveClientMixin {
   
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return const Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
       ],
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

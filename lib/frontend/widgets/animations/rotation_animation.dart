@@ -11,11 +11,11 @@ class RotationAnimation extends StatefulWidget {
   final Duration duration;
   final double firstRotationPosition;
   final double secondRotationPosition;
-  final Widget animatedWidget;
+  final Widget child;
 
   const RotationAnimation({super.key, required this.duration,
     required this.firstRotationPosition, required this.secondRotationPosition,
-    required this.animatedWidget});
+    required this.child});
 
   @override
   State<RotationAnimation> createState() => RotationAnimationState();
@@ -60,7 +60,7 @@ class RotationAnimationState extends State<RotationAnimation> with SingleTickerP
       builder: (context, _) {
         return AngleWidget(
           angleDegree: _rotationAnimation.value,
-          angledWidget: widget.animatedWidget,
+          child: widget.child,
         );
       },
     );

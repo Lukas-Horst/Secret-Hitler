@@ -9,9 +9,13 @@ class Roles extends StatefulWidget {
   State<Roles> createState() => _RolesState();
 }
 
-class _RolesState extends State<Roles> {
+class _RolesState extends State<Roles> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return const Placeholder();
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

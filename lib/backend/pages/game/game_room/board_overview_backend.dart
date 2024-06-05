@@ -9,10 +9,10 @@ import 'package:secret_hitler/frontend/pages/home/homepage/game/game_room/board_
 import 'package:secret_hitler/frontend/widgets/animations/flip_animation.dart';
 import 'package:secret_hitler/frontend/widgets/animations/moving_animation.dart';
 import 'package:secret_hitler/frontend/widgets/animations/transition_animation.dart';
-import 'package:secret_hitler/frontend/widgets/components/game/boards/fascist_board.dart';
-import 'package:secret_hitler/frontend/widgets/components/game/boards/liberal_board.dart';
-import 'package:secret_hitler/frontend/widgets/components/game/piles/discard_pile.dart';
-import 'package:secret_hitler/frontend/widgets/components/game/piles/draw_pile.dart';
+import 'package:secret_hitler/frontend/widgets/components/game/board_overview/boards/fascist_board.dart';
+import 'package:secret_hitler/frontend/widgets/components/game/board_overview/boards/liberal_board.dart';
+import 'package:secret_hitler/frontend/widgets/components/game/board_overview/piles/discard_pile.dart';
+import 'package:secret_hitler/frontend/widgets/components/game/board_overview/piles/draw_pile.dart';
 
 class BoardOverviewBackend{
   final List<GlobalKey<FlipAnimationState>> liberalCardFlipKeys = [

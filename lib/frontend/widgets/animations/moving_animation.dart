@@ -13,7 +13,7 @@ class MovingAnimation extends StatefulWidget {
   final double firstLeftPosition;
   final double secondTopPosition;
   final double secondLeftPosition;
-  final Widget animatedWidget;
+  final Widget child;
   final double? firstRotationPosition;
   final double? secondRotationPosition;
   final double? firstHeight;
@@ -26,7 +26,7 @@ class MovingAnimation extends StatefulWidget {
   const MovingAnimation({super.key, required this.duration,
     required this.firstTopPosition, required this.firstLeftPosition,
     required this.secondTopPosition, required this.secondLeftPosition,
-    required this.animatedWidget, this.firstRotationPosition,
+    required this.child, this.firstRotationPosition,
     this.secondRotationPosition, this.rotatingDuration, this.firstHeight,
     this.firstWidth, this.secondHeight, this.secondWidth, this.sizeDuration});
 
@@ -70,10 +70,10 @@ class MovingAnimationState extends State<MovingAnimation> with SingleTickerProvi
         duration: rotatingDuration,
         firstRotationPosition: widget.firstRotationPosition!,
         secondRotationPosition: widget.secondRotationPosition!,
-        animatedWidget: widget.animatedWidget,
+        child: widget.child,
       );
     } else {
-      rotationAnimation = widget.animatedWidget;
+      rotationAnimation = widget.child;
     }
 
     if (_withSize) {
@@ -84,10 +84,10 @@ class MovingAnimationState extends State<MovingAnimation> with SingleTickerProvi
         firstWidth: widget.firstWidth!,
         secondHeight: widget.secondHeight ?? widget.firstHeight!,
         secondWidth: widget.secondWidth ?? widget.firstWidth!,
-        animatedWidget: rotationAnimation,
+        child: rotationAnimation,
       );
     } else {
-      return widget.animatedWidget;
+      return widget.child;
     }
   }
 

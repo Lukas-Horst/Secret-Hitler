@@ -10,10 +10,10 @@ class SizeAnimation extends StatefulWidget {
   final double firstWidth;
   final double secondHeight;
   final double secondWidth;
-  final Widget animatedWidget;
+  final Widget child;
 
   const SizeAnimation({super.key, required this.duration, required this.firstHeight,
-    required this.firstWidth, required this.animatedWidget,
+    required this.firstWidth, required this.child,
     required this.secondHeight, required this.secondWidth});
 
   @override
@@ -65,7 +65,7 @@ class SizeAnimationState extends State<SizeAnimation> with SingleTickerProviderS
         return SizedBox(
           height: _heightAnimation.value,
           width: _widthAnimation.value,
-          child: widget.animatedWidget,
+          child: widget.child,
         );
       },
     );

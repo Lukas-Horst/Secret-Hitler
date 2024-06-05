@@ -331,7 +331,7 @@ class _LoginRegisterSwitchButtonState extends State<LoginRegisterSwitchButton> {
       children: [
         AngleWidget(
           angleDegree: 330,
-          angledWidget: Image.asset(
+          child: Image.asset(
             'assets/images/${AppDesign.getCurrentCirclePNG()}.png',
             height: ScreenSize.screenHeight * 0.075,
             width: ScreenSize.screenHeight * 0.07,
@@ -364,7 +364,7 @@ class _LoginRegisterSwitchButtonState extends State<LoginRegisterSwitchButton> {
         ),
         AngleWidget(
           angleDegree: -330,
-          angledWidget: Image.asset(
+          child: Image.asset(
             'assets/images/${AppDesign.getCurrentCirclePNG()}.png',
             height: ScreenSize.screenHeight * 0.075,
             width: ScreenSize.screenHeight * 0.07,

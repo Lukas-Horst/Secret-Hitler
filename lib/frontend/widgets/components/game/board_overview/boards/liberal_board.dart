@@ -7,7 +7,7 @@ import 'package:secret_hitler/backend/constants/board_overview_constants.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/frontend/widgets/animations/flip_animation.dart';
 import 'package:secret_hitler/frontend/widgets/animations/moving_animation.dart';
-import 'package:secret_hitler/frontend/widgets/components/game/boards/board_methods.dart';
+import 'package:secret_hitler/frontend/widgets/components/game/board_overview/boards/board_functions.dart';
 
 class LiberalBoard extends StatefulWidget {
 
@@ -74,7 +74,7 @@ class LiberalBoardState extends State<LiberalBoard> {
       firstLeftPosition: _electionTrackerLeftPositions[_currentElectionTrackerPosition],
       secondTopPosition: _electionTrackerTopPosition,
       secondLeftPosition: _electionTrackerLeftPositions[nextPosition],
-      animatedWidget: Image.asset(
+      child: Image.asset(
         'assets/images/election_tracker.png',
         height: ScreenSize.screenHeight * 0.035,
         width: ScreenSize.screenWidth * 0.035,
@@ -126,7 +126,7 @@ class LiberalBoardState extends State<LiberalBoard> {
   void initState() {
     boardElements.add(_getStaticElectionTracker(0));
     boardElements.add(_getAnimatedElectionTracker(1));
-    BoardMethods.buildBoard(
+    buildBoard(
       true,
       boardElements,
       widget.cards,

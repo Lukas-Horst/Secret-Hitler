@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
-import 'package:secret_hitler/frontend/widgets/components/game/piles/pile_methods.dart';
+import 'package:secret_hitler/frontend/widgets/components/game/board_overview/piles/pile_functions.dart';
 
 class DiscardPile extends StatefulWidget {
 
@@ -26,7 +26,7 @@ class DiscardPileState extends State<DiscardPile> {
 
   @override
   void initState() {
-    PileMethods.buildPile(pileElements, widget.cards, true, null);
+    buildPile(pileElements, widget.cards, true, null);
     super.initState();
   }
 

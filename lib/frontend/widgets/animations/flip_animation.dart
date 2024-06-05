@@ -37,7 +37,7 @@ class FlipAnimationState extends State<FlipAnimation> with SingleTickerProviderS
   @override
   void initState() {
     _controller = AnimationControllers.getController(widget.duration, this);
-    _animation = Tween(end: 1.0, begin: 0.0).animate(_controller);
+    _animation = Tween(begin: 0.0, end: 1.0).animate(_controller);
     _animation.addListener(() {setState(() {});});
     _animation.addStatusListener((status) {
       _status = status;
@@ -60,7 +60,7 @@ class FlipAnimationState extends State<FlipAnimation> with SingleTickerProviderS
         ..rotateY(pi * _animation.value),
       child: _animation.value <= 0.5
           ? widget.firstWidget
-          : MirroredWidget(mirroredWidget: widget.secondWidget,),
+          : MirroredWidget(child: widget.secondWidget,),
     );
   }
 }

@@ -4,20 +4,18 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:secret_hitler/backend/app_language/app_language.dart';
 import 'package:secret_hitler/backend/constants/board_overview_constants.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/backend/pages/game/game_room/board_overview_backend.dart';
 import 'package:secret_hitler/frontend/widgets/animations/flip_animation.dart';
 import 'package:secret_hitler/frontend/widgets/animations/moving_animation.dart';
 import 'package:secret_hitler/frontend/widgets/animations/transition_animation.dart';
-import 'package:secret_hitler/frontend/widgets/components/game/boards/board_methods.dart';
-import 'package:secret_hitler/frontend/widgets/components/game/boards/fascist_board.dart';
-import 'package:secret_hitler/frontend/widgets/components/game/boards/liberal_board.dart';
-import 'package:secret_hitler/frontend/widgets/components/buttons.dart';
-import 'package:secret_hitler/frontend/widgets/components/game/piles/discard_pile.dart';
-import 'package:secret_hitler/frontend/widgets/components/game/piles/draw_pile.dart';
-import 'package:secret_hitler/frontend/widgets/components/game/piles/pile_methods.dart';
+import 'package:secret_hitler/frontend/widgets/components/game/board_overview/boards/board_functions.dart' as board_functions;
+import 'package:secret_hitler/frontend/widgets/components/game/board_overview/boards/fascist_board.dart';
+import 'package:secret_hitler/frontend/widgets/components/game/board_overview/boards/liberal_board.dart';
+import 'package:secret_hitler/frontend/widgets/components/game/board_overview/piles/discard_pile.dart';
+import 'package:secret_hitler/frontend/widgets/components/game/board_overview/piles/draw_pile.dart';
+import 'package:secret_hitler/frontend/widgets/components/game/board_overview/piles/pile_functions.dart' as pile_functions;
 import 'package:secret_hitler/frontend/widgets/components/text.dart';
 
 class BoardOverview extends StatefulWidget {
@@ -32,7 +30,7 @@ class BoardOverview extends StatefulWidget {
   State<BoardOverview> createState() => BoardOverviewState();
 }
 
-class BoardOverviewState extends State<BoardOverview> {
+class BoardOverviewState extends State<BoardOverview> with AutomaticKeepAliveClientMixin {
 
   late BoardOverviewBackend backend;
   bool _explainingTextActive = true;
@@ -90,7 +88,7 @@ class BoardOverviewState extends State<BoardOverview> {
         secondHeight: BoardOverviewPositions.cardHeights[1],
         secondWidth: BoardOverviewPositions.cardWidth,
         rotatingDuration: const Duration(milliseconds: 500),
-        animatedWidget: _getCard(
+        child: _getCard(
           cardIndex == 3
               ? backend.cardColors[2]
               : backend.cardColors[cardIndex],
@@ -119,7 +117,7 @@ class BoardOverviewState extends State<BoardOverview> {
     }
     for (int i=0; i < 3; i++) {
       setState(() {
-        PileMethods.removeCard(backend.drawPileKey.currentState!.pileElements);
+        pile_functions.removeCard(backend.drawPileKey.currentState!.pileElements);
       });
     }
     await Future.delayed(const Duration(milliseconds: 100));
@@ -130,7 +128,7 @@ class BoardOverviewState extends State<BoardOverview> {
     for (int i=0; i < pileCardAmount; i++) {
       backend.discardPileCardAmount--;
       setState(() {
-        PileMethods.removeCard(backend.discardPileKey.currentState!.pileElements);
+        pile_functions.removeCard(backend.discardPileKey.currentState!.pileElements);
       });
       await Future.delayed(const Duration(milliseconds: 200));
     }
@@ -141,7 +139,7 @@ class BoardOverviewState extends State<BoardOverview> {
     for (int i=0; i < pileCardAmount; i++) {
       backend.drawPileCardAmount++;
       setState(() {
-        PileMethods.addCard(
+        pile_functions.addCard(
           backend.drawPileKey.currentState!.pileElements,
           false,
           backend.drawPileKey.currentState!.getNextRotationKey(),
@@ -267,7 +265,7 @@ class BoardOverviewState extends State<BoardOverview> {
     await Future.delayed(const Duration(milliseconds: 500));
     // Replacing the animated card with a normal card
     setState(() {
-      PileMethods.addCard(backend.discardPileKey.currentState!.pileElements, true, null);
+      pile_functions.addCard(backend.discardPileKey.currentState!.pileElements, true, null);
       backend.cardVisibility[cardIndex] = false;
     });
   }
@@ -291,7 +289,7 @@ class BoardOverviewState extends State<BoardOverview> {
       // Adding 2 normal cards back to the draw pile
       for (int i=0; i < 2; i++) {
         setState(() {
-          PileMethods.addCard(
+          pile_functions.addCard(
             backend.drawPileKey.currentState!.pileElements,
             false,
             backend.drawPileKey.currentState!.getNextRotationKey(),
@@ -319,7 +317,7 @@ class BoardOverviewState extends State<BoardOverview> {
       if (backend.cardColors[cardIndex]) {
         backend.liberalBoardCardAmount++;
         backend.liberalBoardFlippedCards++;
-        BoardMethods.addCard(
+        board_functions.addCard(
           backend.liberalBoardKey.currentState!.boardElements,
           backend.liberalBoardKey.currentState!.cardPositions,
           true,
@@ -328,7 +326,7 @@ class BoardOverviewState extends State<BoardOverview> {
       } else {
         backend.fascistBoardCardAmount++;
         backend.fascistBoardFlippedCards++;
-        BoardMethods.addCard(
+        board_functions.addCard(
           backend.fascistBoardKey.currentState!.boardElements,
           backend.fascistBoardKey.currentState!.cardPositions,
           false,
@@ -410,6 +408,7 @@ class BoardOverviewState extends State<BoardOverview> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Column(
       children: [
         SizedBox(height: ScreenSize.screenHeight * 0.02),
@@ -470,4 +469,7 @@ class BoardOverviewState extends State<BoardOverview> {
       ],
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

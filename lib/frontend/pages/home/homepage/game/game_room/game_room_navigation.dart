@@ -46,7 +46,7 @@ class _GameRoomNavigationState extends State<GameRoomNavigation> {
     backend = BoardOverviewBackend(boardOverviewFrontendKey);
     _playerAmount = widget.playerAmount;
     Timer(const Duration(milliseconds: 500), () {
-      changePage(2);
+      changePage(3);
     });
     super.initState();
   }
