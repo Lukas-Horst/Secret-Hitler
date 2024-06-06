@@ -28,22 +28,67 @@ class PlayerWidgetState extends State<PlayerWidget> {
     GlobalKey<OpacityAnimationState>(),
     GlobalKey<OpacityAnimationState>(),
     GlobalKey<OpacityAnimationState>(),
+    GlobalKey<OpacityAnimationState>(),
   ];
   final List<GlobalKey<SizeAnimationState>> _sizeAnimationKeys = [
     GlobalKey<SizeAnimationState>(),
   ];
-  bool dividerVisible = true;
+  bool dividerVisible = false;
   late int _activeExecutivePower;
+
+  List<OpacityAnimation> _getImages() {
+    List<OpacityAnimation> imagesList = [];
+    List<String> imagesNames = [
+      'Execution_White',
+      'Call_Special_Election_White',
+      'Investigate_Loyalty_White',
+    ];
+    for (int i=0; i < 4; i++) {
+      OpacityAnimation image = OpacityAnimation(
+        key: _opacityKeys[i + 1],
+        duration: const Duration(milliseconds: 0),
+        begin: 0.0,
+        end: 1.0,
+        child: Center(
+          child: Padding(
+            padding: i != 1
+                ? EdgeInsets.only(right: widget.width * 0.03)
+                : const EdgeInsets.all(0),
+            child: IconButton(
+              onPressed: () {},
+              icon: i == 3
+                  ? Icon(
+                Icons.how_to_vote,
+                color: Colors.white,
+                size: ScreenSize.screenHeight * 0.028 +
+                    ScreenSize.screenWidth * 0.028,)
+                  : Image.asset(
+                'assets/images/${imagesNames[i]}.png',
+                height: i != 1
+                    ? ScreenSize.screenHeight * 0.045
+                    : ScreenSize.screenHeight * 0.05,
+                width: i != 1
+                    ? ScreenSize.screenHeight * 0.045
+                    : ScreenSize.screenHeight * 0.05,
+              ),
+            ),
+          ),
+        ),
+      );
+      imagesList.add(image);
+    }
+    return imagesList;
+  }
 
   // Method to make the divider visible or invisible
   Future<void> dividerVisibility() async {
     if (dividerVisible) {
       _opacityKeys[0].currentState?.animate();
-      _opacityKeys[_activeExecutivePower].currentState?.animate();
       await Future.delayed(const Duration(milliseconds: 850));
       _sizeAnimationKeys[0].currentState?.animate();
       dividerVisible = false;
       await Future.delayed(const Duration(milliseconds: 1350));
+      _opacityKeys[_activeExecutivePower].currentState?.animate();
     } else {
       _sizeAnimationKeys[0].currentState?.animate();
       await Future.delayed(const Duration(milliseconds: 1500));
@@ -54,13 +99,10 @@ class PlayerWidgetState extends State<PlayerWidget> {
   }
 
   // Method to change the image of the next image
-  Future<void> changeActionImage(String executivePower) async {
-    if (executivePower == 'Kill') {
-      _activeExecutivePower = 1;
-    }
+  Future<void> changeActionImage(int executivePower) async {
+    _activeExecutivePower = executivePower;
     if (!dividerVisible) {
-      _opacityKeys[1].currentState?.animate();
-      await Future.delayed(const Duration(milliseconds: 1000));
+      _opacityKeys[_activeExecutivePower].currentState?.animate();
     }
   }
 
@@ -81,6 +123,8 @@ class PlayerWidgetState extends State<PlayerWidget> {
           OpacityAnimation(
             key: _opacityKeys[0],
             duration: const Duration(milliseconds: 1000),
+            begin: 0.0,
+            end: 1.0,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -143,22 +187,7 @@ class PlayerWidgetState extends State<PlayerWidget> {
                     ),
                   ),
                   child: Stack(
-                    children: [
-                      OpacityAnimation(
-                        key: _opacityKeys[1],
-                        duration: const Duration(milliseconds: 1000),
-                        child: Center(
-                          child: Padding(
-                            padding: EdgeInsets.only(right: widget.width * 0.03),
-                            child: Image.asset(
-                              'assets/images/Execution_White.png',
-                              height: ScreenSize.screenHeight * 0.045,
-                              width: ScreenSize.screenHeight * 0.045,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                    children: _getImages(),
                   ),
                 ),
               ],
@@ -168,9 +197,9 @@ class PlayerWidgetState extends State<PlayerWidget> {
             key: _sizeAnimationKeys[0],
             duration: const Duration(milliseconds: 1500),
             firstHeight: widget.height,
-            firstWidth: widget.width/1.4 - 1.5,
+            firstWidth: widget.width,
             secondHeight: widget.height,
-            secondWidth: widget.width,
+            secondWidth: widget.width/1.4 - 1.5,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Center(

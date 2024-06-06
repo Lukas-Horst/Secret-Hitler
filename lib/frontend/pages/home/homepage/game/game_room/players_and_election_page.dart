@@ -38,11 +38,11 @@ class _PlayersAndElectionState extends State<PlayersAndElection> with AutomaticK
                 children: [
                   PrimaryElevatedButton(text: 'Test', onPressed: () async {
                     for (int i=0; i < 2; i++) {
-                      await _playerWidgetsKeys[i].currentState?.changeActionImage('Kill');
+                      await _playerWidgetsKeys[i].currentState?.changeActionImage(4);
                       _playerWidgetsKeys[i].currentState?.dividerVisibility();
                     }
                   }),
-                  SizedBox(height: 100,),
+                  const SizedBox(height: 100,),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
