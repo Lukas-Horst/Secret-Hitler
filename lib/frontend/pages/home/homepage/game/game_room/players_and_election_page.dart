@@ -77,9 +77,6 @@ class PlayersAndElectionState extends State<PlayersAndElection> with AutomaticKe
           width: ScreenSize.screenWidth * 0.96,
           child: Stack(
             children: [
-              Stack(
-                children: _getPlayerWidgets(),
-              ),
               MovingAnimation(
                 duration: const Duration(milliseconds: 0),
                 firstTopPosition: PlayersAndElectionConstants.playerWidgetTopPositions[6],
@@ -103,6 +100,9 @@ class PlayersAndElectionState extends State<PlayersAndElection> with AutomaticKe
                   height: ScreenSize.screenHeight * 0.05,
                   width: ScreenSize.screenWidth * 0.45,
                 ),
+              ),
+              Stack(
+                children: _getPlayerWidgets(),
               ),
             ],
           ),
