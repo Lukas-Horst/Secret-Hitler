@@ -5,21 +5,21 @@ import 'package:secret_hitler/backend/constants/screen_size.dart';
 // All necessary positions on the board overview page
 class BoardOverviewPositions{
 
-  static late List<double> constantTopPositions;
-  static late List<double> constantLeftPositions;
+  static late List<double> topPositions;
+  static late List<double> leftPositions;
   static late List<double> fascistBoardLeftPositions;
   static late List<double> liberalBoardLeftPositions;
   static late List<double> cardHeights;
   static late double cardWidth;
 
   static void init() {
-    constantTopPositions = [
+    topPositions = [
       ScreenSize.screenHeight * 0.075,  // Fascist board
       ScreenSize.screenHeight * 0.25,  // Liberal board
       ScreenSize.screenHeight * 0.416, // Draw and discard pile (top card)
       ScreenSize.screenHeight * 0.65,  // Bottom center
     ];
-    constantLeftPositions = [
+    leftPositions = [
       ScreenSize.screenWidth * 0.069, // Draw pile (top card)
       ScreenSize.screenWidth * 0.8005,  // Discard pile (top card)
       ScreenSize.screenWidth * 0.43,  // Bottom center (middle card)

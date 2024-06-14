@@ -20,11 +20,9 @@ import 'package:secret_hitler/frontend/widgets/components/text.dart';
 
 class BoardOverview extends StatefulWidget {
 
-  final int playerAmount;
   final BoardOverviewBackend backend;
 
-  const BoardOverview({super.key, required this.playerAmount,
-    required this.backend,});
+  const BoardOverview({super.key, required this.backend,});
 
   @override
   State<BoardOverview> createState() => BoardOverviewState();
@@ -207,20 +205,20 @@ class BoardOverviewState extends State<BoardOverview> with AutomaticKeepAliveCli
   Future<void> _updateAnimation(String start, String end, int cardIndex,
       int duration) async {
     Map<String, List<double>> positions = {
-      'DrawPile': [BoardOverviewPositions.constantTopPositions[2] + (13 - backend.drawPileCardAmount) * ScreenSize.screenHeight * 0.001,
-        BoardOverviewPositions.constantLeftPositions[0] + (13 - backend.drawPileCardAmount) * ScreenSize.screenWidth * 0.002, -10],
-      'DiscardPile': [BoardOverviewPositions.constantTopPositions[2] + (13 - backend.discardPileCardAmount) * ScreenSize.screenHeight * 0.001,
-        BoardOverviewPositions.constantLeftPositions[1] - (13 - backend.discardPileCardAmount) * ScreenSize.screenWidth * 0.002, 10],
-      'BottomCenter': [BoardOverviewPositions.constantTopPositions[3],
-        BoardOverviewPositions.constantLeftPositions[2], 0],
-      'BottomCenterLeft': [BoardOverviewPositions.constantTopPositions[3] + ScreenSize.screenHeight * 0.005,
-        BoardOverviewPositions.constantLeftPositions[2] - ScreenSize.screenWidth * 0.13, -10],
-      'BottomCenterRight': [BoardOverviewPositions.constantTopPositions[3] + ScreenSize.screenHeight * 0.005,
-        BoardOverviewPositions.constantLeftPositions[2] + ScreenSize.screenWidth * 0.13, 10],
-      'LiberalBoard': [BoardOverviewPositions.constantTopPositions[1],
+      'DrawPile': [BoardOverviewPositions.topPositions[2] + (13 - backend.drawPileCardAmount) * ScreenSize.screenHeight * 0.001,
+        BoardOverviewPositions.leftPositions[0] + (13 - backend.drawPileCardAmount) * ScreenSize.screenWidth * 0.002, -10],
+      'DiscardPile': [BoardOverviewPositions.topPositions[2] + (13 - backend.discardPileCardAmount) * ScreenSize.screenHeight * 0.001,
+        BoardOverviewPositions.leftPositions[1] - (13 - backend.discardPileCardAmount) * ScreenSize.screenWidth * 0.002, 10],
+      'BottomCenter': [BoardOverviewPositions.topPositions[3],
+        BoardOverviewPositions.leftPositions[2], 0],
+      'BottomCenterLeft': [BoardOverviewPositions.topPositions[3] + ScreenSize.screenHeight * 0.005,
+        BoardOverviewPositions.leftPositions[2] - ScreenSize.screenWidth * 0.13, -10],
+      'BottomCenterRight': [BoardOverviewPositions.topPositions[3] + ScreenSize.screenHeight * 0.005,
+        BoardOverviewPositions.leftPositions[2] + ScreenSize.screenWidth * 0.13, 10],
+      'LiberalBoard': [BoardOverviewPositions.topPositions[1],
         BoardOverviewPositions.liberalBoardLeftPositions[backend.liberalBoardCardAmount],
         -5 + (backend.liberalBoardCardAmount * 2.5)],
-      'FascistBoard': [BoardOverviewPositions.constantTopPositions[0],
+      'FascistBoard': [BoardOverviewPositions.topPositions[0],
         BoardOverviewPositions.fascistBoardLeftPositions[backend.fascistBoardCardAmount],
         -6 + (backend.fascistBoardCardAmount * 2.5)],
     };
@@ -419,7 +417,7 @@ class BoardOverviewState extends State<BoardOverview> with AutomaticKeepAliveCli
               Positioned(
                 child: FascistBoard(
                   key: backend.fascistBoardKey,
-                  playerAmount: widget.playerAmount,
+                  playerAmount: backend.playerAmount,
                   cards: backend.fascistBoardCardAmount,
                   flippedCards: backend.fascistBoardFlippedCards,
                   cardFlipKeys: backend.fascistCardFlipKeys,

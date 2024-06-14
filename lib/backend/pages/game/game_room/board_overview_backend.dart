@@ -5,6 +5,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
+import 'package:secret_hitler/backend/pages/game/game_room/players_and_election_backend.dart';
 import 'package:secret_hitler/frontend/pages/home/homepage/game/game_room/board_overview_page.dart';
 import 'package:secret_hitler/frontend/widgets/animations/flip_animation.dart';
 import 'package:secret_hitler/frontend/widgets/animations/moving_animation.dart';
@@ -103,14 +104,23 @@ class BoardOverviewBackend{
   int playState = 0;  // The current state of the game
   List<int> playedCardIndices = [];
   late GlobalKey<BoardOverviewState> boardOverviewFrontendKey;
+  late int playerAmount;
+  late Function(int) changePage;
+  late PlayersAndElectionBackend playersAndElectionBackend;
   bool cardClickBlocked = false;
 
-  BoardOverviewBackend(this.boardOverviewFrontendKey) {
+  BoardOverviewBackend(this.boardOverviewFrontendKey, this.playerAmount,
+      this.changePage) {
     discardPileCardAmount = 14 - drawPileCardAmount -
         fascistBoardCardAmount - liberalBoardCardAmount;
     fascistBoardFlippedCards = fascistBoardCardAmount;
     liberalBoardFlippedCards = liberalBoardCardAmount;
     shuffleCards();
+  }
+
+  // Setter method for the playerAndElectionBackend cause this can only set after the constructor
+  void setPlayersAndElectionBackend(PlayersAndElectionBackend playersAndElectionBackend) {
+    this.playersAndElectionBackend = playersAndElectionBackend;
   }
 
   // Method to shuffle the cards on the draw pile
@@ -148,6 +158,7 @@ class BoardOverviewBackend{
     } else {
       cardClickBlocked = true;
     }
+
     // Drawing 3 cards from the draw pile
     if (playState == 0) {
       textTransitionKey.currentState?.animate();

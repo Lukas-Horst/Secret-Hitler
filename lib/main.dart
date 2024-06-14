@@ -5,6 +5,7 @@ import 'package:appwrite/appwrite.dart';
 import 'package:secret_hitler/backend/app_design/app_design.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
 import 'package:secret_hitler/backend/constants/board_overview_constants.dart';
+import 'package:secret_hitler/backend/constants/players_and_election_constants.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/backend/database/hive_database.dart';
 import 'package:secret_hitler/frontend/pages/authentication/switches/login_register_switch.dart';
@@ -49,13 +50,16 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     ScreenSize.init(context);  // Initialize the screen size
     BoardOverviewPositions.init();  // Initialize the constants of the board overview page
+    PlayersAndElectionConstants.init();  // Initialize the constants of the player and election page
     return MaterialApp(
       theme: ThemeData(
         textSelectionTheme: TextSelectionThemeData(
           cursorColor: AppDesign.getTertiaryColor()
         ),
       ),
-      home: const GameRoomNavigation(playerAmount: 5,),
+      home: const GameRoomNavigation(playerAmount: 7, playerNames: [
+        'test0', 'test1', 'test2', 'test3', 'test4',
+      ],),
       // home: const PageNavigation(),
       // home: const LoginRegisterSwitch(),
     );
