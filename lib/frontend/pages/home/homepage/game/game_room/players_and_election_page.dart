@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:secret_hitler/backend/constants/players_and_election_constants.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/backend/pages/game/game_room/players_and_election_backend.dart';
-import 'package:secret_hitler/frontend/widgets/animations/moving_animation.dart';
-import 'package:secret_hitler/frontend/widgets/components/buttons.dart';
+import 'package:secret_hitler/frontend/widgets/animations/flip_animation.dart';
 import 'package:secret_hitler/frontend/widgets/components/game/players_and_election/player_widget.dart';
+import 'package:secret_hitler/frontend/widgets/components/transformedWidgets.dart';
 
 class PlayersAndElection extends StatefulWidget {
 
@@ -25,29 +25,27 @@ class PlayersAndElectionState extends State<PlayersAndElection> with AutomaticKe
   // Method to build the player widgets
   List<Widget> _getPlayerWidgets() {
     List<Widget> playerWidgets = [];
-    int topPosition = -1;
+    int topPosition = 0;
+    bool evenPlayerAmount = backend.playerAmount % 2 == 0;
     for (int i=0; i < backend.playerAmount; i++) {
       late int leftPosition;
       // Middle position
-      if (i == 0 || (i == backend.playerAmount - 1 && backend.playerAmount % 2 == 0)) {
+      if (i == 0 && !evenPlayerAmount) {
         leftPosition = 2;
-        topPosition++;
       // Left position
       } else if (i % 2 == 0) {
         leftPosition = 0;
       // Right Position
       } else {
         leftPosition = 1;
-        topPosition++;
+        if (!evenPlayerAmount) {
+          topPosition++;
+        }
       }
       playerWidgets.add(
-        MovingAnimation(
-          key: backend.playerWidgetsMovingKeys[i],
-          duration: const Duration(milliseconds: 0),
-          firstTopPosition: PlayersAndElectionConstants.playerWidgetTopPositions[topPosition],
-          firstLeftPosition: PlayersAndElectionConstants.playerWidgetLeftPositions[leftPosition],
-          secondTopPosition: ScreenSize.screenHeight * 0,
-          secondLeftPosition: ScreenSize.screenWidth * 0,
+        Positioned(
+          top: playerWidgetTopPositions[topPosition],
+          left: playerWidgetPositions[leftPosition],
           child: PlayerWidget(
             key: backend.playerWidgetsOpacityKeys[i],
             playerName: 'TestTestTestTestTestTest',
@@ -56,6 +54,9 @@ class PlayersAndElectionState extends State<PlayersAndElection> with AutomaticKe
           ),
         ),
       );
+      if (i % 2 == 1 && evenPlayerAmount) {
+        topPosition++;
+      }
     }
     return playerWidgets;
   }
@@ -73,36 +74,54 @@ class PlayersAndElectionState extends State<PlayersAndElection> with AutomaticKe
       children: [
         SizedBox(height: ScreenSize.screenHeight * 0.02,),
         SizedBox(
-          height: ScreenSize.screenHeight * 0.8,
+          height: ScreenSize.screenHeight * 0.86,
           width: ScreenSize.screenWidth * 0.96,
           child: Stack(
             children: [
-              MovingAnimation(
-                duration: const Duration(milliseconds: 0),
-                firstTopPosition: PlayersAndElectionConstants.playerWidgetTopPositions[6],
-                firstLeftPosition: PlayersAndElectionConstants.playerWidgetLeftPositions[2],
-                secondTopPosition: PlayersAndElectionConstants.playerWidgetTopPositions[6],
-                secondLeftPosition: PlayersAndElectionConstants.playerWidgetLeftPositions[2],
-                child: Image.asset(
-                  'assets/images/president_card.png',
-                  height: ScreenSize.screenHeight * 0.05,
-                  width: ScreenSize.screenWidth * 0.45,
-                ),
-              ),
-              MovingAnimation(
-                duration: const Duration(milliseconds: 0),
-                firstTopPosition: PlayersAndElectionConstants.playerWidgetTopPositions[7],
-                firstLeftPosition: PlayersAndElectionConstants.playerWidgetLeftPositions[2],
-                secondTopPosition: PlayersAndElectionConstants.playerWidgetTopPositions[7],
-                secondLeftPosition: PlayersAndElectionConstants.playerWidgetLeftPositions[2],
-                child: Image.asset(
-                  'assets/images/chancellor_card.png',
-                  height: ScreenSize.screenHeight * 0.05,
-                  width: ScreenSize.screenWidth * 0.45,
-                ),
-              ),
               Stack(
                 children: _getPlayerWidgets(),
+              ),
+              Positioned(
+                top: ScreenSize.screenHeight * 0.73,
+                left: ScreenSize.screenWidth * 0.1,
+                child: AngleWidget(
+                  angleDegree: -15,
+                  child: FlipAnimation(
+                    key: backend.ballotCardFlipKeys[0],
+                    duration: const Duration(),
+                    firstWidget: Image.asset(
+                      'assets/images/ballot_card_back.png',
+                      height: ScreenSize.screenHeight * 0.1,
+                      width: ScreenSize.screenWidth * 0.3,
+                    ),
+                    secondWidget: Image.asset(
+                      'assets/images/ballot_no_card_without_background.png',
+                      height: ScreenSize.screenHeight * 0.1,
+                      width: ScreenSize.screenWidth * 0.3,
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                top: ScreenSize.screenHeight * 0.73,
+                left: ScreenSize.screenWidth * 0.58,
+                child: AngleWidget(
+                  angleDegree: 15,
+                  child: FlipAnimation(
+                    key: backend.ballotCardFlipKeys[1],
+                    duration: const Duration(),
+                    firstWidget: Image.asset(
+                      'assets/images/ballot_card_back.png',
+                      height: ScreenSize.screenHeight * 0.1,
+                      width: ScreenSize.screenWidth * 0.3,
+                    ),
+                    secondWidget: Image.asset(
+                      'assets/images/ballot_yes_card_without_background.png',
+                      height: ScreenSize.screenHeight * 0.1,
+                      width: ScreenSize.screenWidth * 0.3,
+                    ),
+                  ),
+                ),
               ),
             ],
           ),

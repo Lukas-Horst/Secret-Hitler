@@ -24,7 +24,7 @@ class FascistBoard extends StatefulWidget {
 class FascistBoardState extends State<FascistBoard> {
 
   List<Widget> boardElements = [];
-  List<double> cardPositions = BoardOverviewPositions.fascistBoardLeftPositions;
+  List<double> cardPositions = fascistBoardLeftPositions;
 
   // Get the right fascist board based on the player amount
   String getFascistBoard(int playerAmount) {

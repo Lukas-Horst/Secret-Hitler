@@ -1,9 +1,11 @@
 // author Lukas Horst
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:secret_hitler/backend/app_design/app_design.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
+import 'package:secret_hitler/backend/authentication/riverpod/provider.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/frontend/pages/authentication/reset_password_page.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons.dart';
@@ -12,28 +14,26 @@ import 'package:secret_hitler/frontend/widgets/components/text_form_field.dart';
 
 import '../../widgets/header/header.dart';
 
-class Login extends StatefulWidget {
+class Login extends ConsumerWidget {
 
   final Function switchPages;
 
-  const Login({super.key, required this.switchPages});
-
-  @override
-  State<Login> createState() => _LoginState();
-}
-
-class _LoginState extends State<Login> {
+  Login({super.key, required this.switchPages});
 
   // Controllers
   final emailTextController = TextEditingController();
+
   final passwordTextController = TextEditingController();
 
   // Focus nodes
   final emailFocusNode = FocusNode();
+
   final passwordFocusNode = FocusNode();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authApi = ref.watch(authApiProvider);
+    final userNotifier = ref.watch(userProvider.notifier);
     return PopScope(
       canPop: false,
       onPopInvoked: (didpop) async {
@@ -115,7 +115,17 @@ class _LoginState extends State<Login> {
                         children: [
                           PrimaryElevatedButton(
                             text: AppLanguage.getLanguageData()['Login'],
-                            onPressed: () {},
+                            onPressed: () async {
+                              try {
+                                await authApi.emailPasswordLogin(
+                                  emailTextController.text,
+                                  passwordTextController.text,
+                                );
+                                userNotifier.checkUserStatus();
+                              } catch(e) {
+                                print(e);
+                              }
+                            },
                           ),
                           CustomTextButton(
                             text: AppLanguage.getLanguageData()['Continue as guest'],
@@ -185,7 +195,7 @@ class _LoginState extends State<Login> {
                       LoginRegisterSwitchButton(
                         questionText: AppLanguage.getLanguageData()['No Account yet?'],
                         buttonText: AppLanguage.getLanguageData()['Register'],
-                        onTap: () {widget.switchPages();},
+                        onTap: () {switchPages();},
                       ),
                       SizedBox(height: ScreenSize.screenHeight * 0.01),
                     ],

@@ -1,7 +1,5 @@
 // author: Lukas Horst
 
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:secret_hitler/backend/constants/board_overview_constants.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
@@ -24,7 +22,7 @@ class LiberalBoard extends StatefulWidget {
 
 class LiberalBoardState extends State<LiberalBoard> {
 
-  List<double> cardPositions = BoardOverviewPositions.liberalBoardLeftPositions;
+  List<double> cardPositions = liberalBoardLeftPositions;
   final double _electionTrackerTopPosition = ScreenSize.screenHeight * 0.1477;
   final List<double> _electionTrackerLeftPositions = [
     ScreenSize.screenWidth * 0.3305,

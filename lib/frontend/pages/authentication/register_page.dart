@@ -1,38 +1,38 @@
 // author: Lukas Horst
 
 import 'package:flutter/material.dart';
-import 'package:secret_hitler/backend/app_design/app_design.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
+import 'package:secret_hitler/backend/authentication/riverpod/provider.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons.dart';
 import 'package:secret_hitler/frontend/widgets/components/text.dart';
 import 'package:secret_hitler/frontend/widgets/components/text_form_field.dart';
 import 'package:secret_hitler/frontend/widgets/header/header.dart';
 
-class Register extends StatefulWidget {
+class Register extends ConsumerWidget {
 
   final Function switchPages;
 
-  const Register({super.key, required this.switchPages});
-
-  @override
-  State<Register> createState() => _RegisterState();
-}
-
-class _RegisterState extends State<Register> {
+  Register({super.key, required this.switchPages});
 
   // Controllers
   final emailTextController = TextEditingController();
+
   final passwordTextController = TextEditingController();
+
   final confirmPasswordTextController = TextEditingController();
 
   // Focus nodes
   final emailFocusNode = FocusNode();
+
   final passwordFocusNode = FocusNode();
+
   final confirmPasswordFocusNode = FocusNode();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authApi = ref.watch(authApiProvider);
     return PopScope(
       canPop: false,
       onPopInvoked: (didpop) async {
@@ -107,7 +107,18 @@ class _RegisterState extends State<Register> {
                       // Register button
                       PrimaryElevatedButton(
                         text: AppLanguage.getLanguageData()['Register'],
-                        onPressed: () {},
+                        onPressed: () async {
+                          print(emailTextController.text);
+                          print(passwordTextController.text);
+                          try {
+                            await authApi.signIn(
+                              emailTextController.text,
+                              passwordTextController.text,
+                            );
+                          } catch(e) {
+                            print(e);
+                          }
+                        },
                       ),
 
                       // Link to login page
@@ -115,7 +126,7 @@ class _RegisterState extends State<Register> {
                       LoginRegisterSwitchButton(
                         questionText: AppLanguage.getLanguageData()['Already have an account?'],
                         buttonText: AppLanguage.getLanguageData()['Login'],
-                        onTap: () {widget.switchPages();},
+                        onTap: () {switchPages();},
                       ),
                       SizedBox(height: ScreenSize.screenHeight * 0.01),
                     ],

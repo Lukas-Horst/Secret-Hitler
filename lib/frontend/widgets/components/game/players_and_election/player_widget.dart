@@ -32,6 +32,8 @@ class PlayerWidgetState extends State<PlayerWidget> {
     GlobalKey<OpacityAnimationState>(), // Visibility of the voting icon
     GlobalKey<OpacityAnimationState>(), // Visibility of the former chancellor card
     GlobalKey<OpacityAnimationState>(), // Visibility of the former president card
+    GlobalKey<OpacityAnimationState>(), // Visibility of the chancellor card
+    GlobalKey<OpacityAnimationState>(), // Visibility of the president card
     GlobalKey<OpacityAnimationState>(), // Visibility of the yes card
     GlobalKey<OpacityAnimationState>(), // Visibility of the no card
   ];
@@ -50,6 +52,8 @@ class PlayerWidgetState extends State<PlayerWidget> {
   late bool _cardVoting;
   late bool _isFormerChancellor;
   late bool _isFormerPresident;
+  late bool _isChancellor;
+  late bool _isPresident;
 
   List<OpacityAnimation> _getImages() {
     List<OpacityAnimation> imagesList = [];
@@ -125,10 +129,10 @@ class PlayerWidgetState extends State<PlayerWidget> {
   Future<void> setVotingCard(bool voting) async {
     // Yes card
     if (voting) {
-      _opacityKeys[7].currentState?.animate();
+      _opacityKeys[9].currentState?.animate();
     // No card
     } else {
-      _opacityKeys[8].currentState?.animate();
+      _opacityKeys[10].currentState?.animate();
     }
     _cardVoting = voting;
     await Future.delayed(const Duration(milliseconds: 500));
@@ -161,22 +165,30 @@ class PlayerWidgetState extends State<PlayerWidget> {
     }
   }
 
-  // Method to make the former chancellor or president card visible
-  Future<void> setFormerCard(bool isFormerChancellor) async {
-    // Chancellor card
-    if (isFormerChancellor) {
+  // Method to make the (former) chancellor or president card visible
+  Future<void> setGovernmentCard(String role) async {
+    // Former chancellor card
+    if (role == 'formerChancellor') {
       _opacityKeys[5].currentState?.animate();
       _isFormerChancellor = true;
-      // President card
-    } else {
+    // Former president card
+    } else if (role == 'formerPresident') {
       _opacityKeys[6].currentState?.animate();
       _isFormerPresident = true;
+    // Chancellor card
+    } else if (role == 'chancellor') {
+      _opacityKeys[7].currentState?.animate();
+      _isChancellor = true;
+    // President card
+    } else if (role == 'president') {
+      _opacityKeys[8].currentState?.animate();
+      _isPresident = true;
     }
     await Future.delayed(const Duration(milliseconds: 500));
   }
 
-  // Method to hide the current former card if is it visible
-  Future<void> hideFormerCard() async {
+  // Method to hide the current (former) chancellor or president card if is it visible
+  Future<void> hideGovernmentCard() async {
     if (_isFormerChancellor) {
       _opacityKeys[5].currentState?.animate();
       _isFormerChancellor = false;
@@ -184,6 +196,14 @@ class PlayerWidgetState extends State<PlayerWidget> {
     if (_isFormerPresident) {
       _opacityKeys[6].currentState?.animate();
       _isFormerPresident = false;
+    }
+    if (_isChancellor) {
+      _opacityKeys[7].currentState?.animate();
+      _isChancellor = false;
+    }
+    if (_isPresident) {
+      _opacityKeys[8].currentState?.animate();
+      _isPresident = false;
     }
     await Future.delayed(const Duration(milliseconds: 500));
   }
@@ -339,6 +359,28 @@ class PlayerWidgetState extends State<PlayerWidget> {
                         width: ScreenSize.screenWidth * 0.375,
                       ),
                     ),
+                    OpacityAnimation(
+                      key: _opacityKeys[7],
+                      duration: const Duration(milliseconds: 500),
+                      begin: 0.0,
+                      end: 1.0,
+                      child: Image.asset(
+                        'assets/images/chancellor_card.png',
+                        height: ScreenSize.screenHeight * 0.0425,
+                        width: ScreenSize.screenWidth * 0.375,
+                      ),
+                    ),
+                    OpacityAnimation(
+                      key: _opacityKeys[8],
+                      duration: const Duration(milliseconds: 500),
+                      begin: 0.0,
+                      end: 1.0,
+                      child: Image.asset(
+                        'assets/images/president_card.png',
+                        height: ScreenSize.screenHeight * 0.0425,
+                        width: ScreenSize.screenWidth * 0.375,
+                      ),
+                    ),
                   ],
                 ),
               ],
@@ -355,7 +397,7 @@ class PlayerWidgetState extends State<PlayerWidget> {
                 Stack(
                   children: [
                     OpacityAnimation(
-                      key: _opacityKeys[7],
+                      key: _opacityKeys[9],
                       duration: const Duration(milliseconds: 500),
                       begin: 0.0,
                       end: 1.0,
@@ -375,7 +417,7 @@ class PlayerWidgetState extends State<PlayerWidget> {
                       ),
                     ),
                     OpacityAnimation(
-                      key: _opacityKeys[8],
+                      key: _opacityKeys[10],
                       duration: const Duration(milliseconds: 500),
                       begin: 0.0,
                       end: 1.0,
