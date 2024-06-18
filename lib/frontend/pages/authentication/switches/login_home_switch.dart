@@ -13,6 +13,7 @@ class LoginHomeSwitch extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(userProvider);
+    bool firstPageCall = true;
     if (user == null) {
       return const LoginRegisterSwitch();
     } else {

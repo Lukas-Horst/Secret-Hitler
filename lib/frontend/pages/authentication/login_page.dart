@@ -11,6 +11,7 @@ import 'package:secret_hitler/frontend/pages/authentication/reset_password_page.
 import 'package:secret_hitler/frontend/widgets/components/buttons.dart';
 import 'package:secret_hitler/frontend/widgets/components/text.dart';
 import 'package:secret_hitler/frontend/widgets/components/text_form_field.dart';
+import 'package:secret_hitler/frontend/widgets/loading_spin.dart';
 
 import '../../widgets/header/header.dart';
 
@@ -116,10 +117,14 @@ class Login extends ConsumerWidget {
                           PrimaryElevatedButton(
                             text: AppLanguage.getLanguageData()['Login'],
                             onPressed: () async {
+                              FocusScope.of(context).unfocus();
+                              loadingSpin(true, context);
                               try {
                                 await authApi.emailPasswordLogin(
-                                  emailTextController.text,
-                                  passwordTextController.text,
+                                  'lukashorst18.7@gmail.com',
+                                  '12345678'
+                                  // emailTextController.text.trim(),
+                                  // passwordTextController.text.trim(),
                                 );
                                 userNotifier.checkUserStatus();
                               } catch(e) {
@@ -181,11 +186,15 @@ class Login extends ConsumerWidget {
                         children: [
                           ThirdPartyButton(
                             imageName: 'Google',
-                            onPressed: () {},
+                            onPressed: () {
+                              FocusScope.of(context).unfocus();
+                            },
                           ),
                           ThirdPartyButton(
                             imageName: 'Apple',
-                            onPressed: () {},
+                            onPressed: () {
+                              FocusScope.of(context).unfocus();
+                            },
                           ),
                         ],
                       ),

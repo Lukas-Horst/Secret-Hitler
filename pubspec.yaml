@@ -40,6 +40,9 @@ dependencies:
   google_nav_bar: ^5.0.6
   smooth_page_indicator: ^1.1.0
   flutter_riverpod: ^2.5.1
+  flutter_native_splash: ^2.4.0
+  flutter_spinkit: ^5.2.1
+  shimmer: ^3.0.0
 
 dev_dependencies:
   flutter_test:
@@ -87,3 +90,11 @@ flutter:
 
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+flutter_native_splash:
+  android: true
+  ios: true
+  web: false
+
+  color: "#571C00"
+  image: "assets/images/Logo.png"

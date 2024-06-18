@@ -108,8 +108,7 @@ class Register extends ConsumerWidget {
                       PrimaryElevatedButton(
                         text: AppLanguage.getLanguageData()['Register'],
                         onPressed: () async {
-                          print(emailTextController.text);
-                          print(passwordTextController.text);
+                          FocusScope.of(context).unfocus();
                           try {
                             await authApi.signIn(
                               emailTextController.text,

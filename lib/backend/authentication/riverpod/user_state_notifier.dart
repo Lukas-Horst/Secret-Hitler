@@ -12,13 +12,9 @@ class UserStateNotifier extends StateNotifier<User?> {
     checkUserStatus();
   }
 
+  // Method to check if the user is logged in
   Future<void> checkUserStatus() async {
     final user = await authApi.getCurrentUser();
     state = user;
-  }
-
-  Future<void> logout() async {
-    await authApi.logout();
-    state = null;
   }
 }

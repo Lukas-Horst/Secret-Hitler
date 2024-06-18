@@ -41,7 +41,8 @@ class Account extends ConsumerWidget {
                 ),
                 PrimaryElevatedButton(
                   text: AppLanguage.getLanguageData()['Statistics'],
-                  onPressed: () {},
+                  onPressed: () async {
+                  },
                 ),
                 PrimaryElevatedButton(
                   text: AppLanguage.getLanguageData()['Logout'],
