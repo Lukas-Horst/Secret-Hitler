@@ -8,6 +8,7 @@ import 'package:secret_hitler/frontend/widgets/components/buttons.dart';
 import 'package:secret_hitler/frontend/widgets/components/text.dart';
 import 'package:secret_hitler/frontend/widgets/components/text_form_field.dart';
 import 'package:secret_hitler/frontend/widgets/header/header.dart';
+import 'package:secret_hitler/frontend/widgets/loading_spin.dart';
 
 class NewPassword extends StatefulWidget {
   const NewPassword({super.key});
@@ -28,6 +29,7 @@ class _NewPasswordState extends State<NewPassword> {
 
   @override
   Widget build(BuildContext context) {
+    LoadingSpin.closeLoadingSpin(context);
     return PopScope(
       canPop: false,
       onPopInvoked: (didpop) async {

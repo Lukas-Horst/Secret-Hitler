@@ -1,11 +1,15 @@
 
 
 import 'package:appwrite/appwrite.dart';
+import 'package:appwrite/enums.dart';
 import 'package:appwrite/models.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:secret_hitler/backend/constants/appwrite_constants.dart';
+import 'package:secret_hitler/frontend/widgets/loading_spin.dart';
 
 // Class for all authentication method to AppWrite
 class AuthApi {
+
   final Client _client = Client()
       .setEndpoint(appwriteUrl)
       .setProject(appwriteProjectId)
@@ -18,36 +22,61 @@ class AuthApi {
   }
 
   // Method to sign in with an email and a password
-  Future<User> signIn(String email, String password) async {
+  Future<bool> signIn(String email, String password,
+      BuildContext context) async {
+    LoadingSpin.openLoadingSpin(context);
     try {
-      final user = _account.create(
+      await _account.create(
         userId: ID.unique(),
         email: email,
         password: password,
       );
-      return user;
+      return true;
     } catch (e) {
-      throw Exception('Failed to login: $e');
+      LoadingSpin.closeLoadingSpin(context);
+      return false;
     }
   }
 
   // Method to login with the email and password
-  Future<User> emailPasswordLogin(String email, String password) async {
+  Future<bool> emailPasswordLogin(String email, String password,
+      BuildContext context) async {
+    LoadingSpin.openLoadingSpin(context);
     try {
-      final session = await _account.createEmailPasswordSession(
+      await _account.createEmailPasswordSession(
           email: email,
           password: password);
-      return _account.get();
+      return true;
     } catch (e) {
-      throw Exception('Failed to login: $e');
+      LoadingSpin.closeLoadingSpin(context);
+      print(e);
+      return false;
+    }
+  }
+
+  // Method to login with google
+  Future<bool> googleLogin(BuildContext context) async {
+    LoadingSpin.openLoadingSpin(context);
+    try {
+      await _account.createOAuth2Session(
+        provider: OAuthProvider.google,
+        scopes: ['profile', 'email'],
+      );
+      return true;
+    } catch (e) {
+      LoadingSpin.closeLoadingSpin(context);
+      print(e);
+      return false;
     }
   }
 
   // Method to logout from AppWrite
-  Future<void> logout() async {
+  Future<void> logout(BuildContext context) async {
+    LoadingSpin.openLoadingSpin(context);
     try {
       await _account.deleteSession(sessionId: 'current');
     } catch(e) {
+      LoadingSpin.closeLoadingSpin(context);
       throw Exception('Failed to logout: $e');
     }
   }

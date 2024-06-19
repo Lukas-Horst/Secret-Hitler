@@ -6,11 +6,9 @@ import 'package:secret_hitler/backend/app_design/app_design.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/backend/database/hive_database.dart';
-import 'package:secret_hitler/frontend/pages/authentication/switches/login_home_switch.dart';
-import 'package:secret_hitler/frontend/pages/authentication/switches/login_register_switch.dart';
-import 'package:secret_hitler/frontend/pages/home/homepage/game/game_room/game_room_navigation.dart';
-import 'package:secret_hitler/frontend/pages/home/homepage/game/waiting_room_page.dart';
-import 'package:secret_hitler/frontend/pages/home/page_navigation.dart';
+import 'package:secret_hitler/frontend/pages/authentication/login_page.dart';
+import 'package:secret_hitler/frontend/pages/authentication/switches/loading_page.dart';
+import 'package:secret_hitler/frontend/pages/authentication/switches/login_confirm_email_switch.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,7 +46,7 @@ class _MyAppState extends State<MyApp> {
       // home: const GameRoomNavigation(playerAmount: 9, playerNames: [
       //   'test0', 'test1', 'test2', 'test3', 'test4',
       // ],),
-      home: const LoginHomeSwitch(),
+      home: const LoginConfirmEmailSwitch(),
     );
   }
 }

@@ -46,6 +46,11 @@ mixin LocaleData {
     'Delete': 'Delete',
     'Please enter "DELETE"': 'Please enter "DELETE" in the text field to delete your account.',
     'Enter "DELETE"': 'Enter "DELETE"',
+    'Confirm E-Mail': 'Confirm E-Mail',
+    'Send confirmation e-mail': 'Bestätigungsmail senden',
+    'Confirm your current email': 'Please confirm your current email or change it.',
+    'Continue without confirmation': 'Continue without confirmation',
+    'OR': 'OR',
 
     // Rules Pages
     'RulePage1Section1': 'The year is 1932. The place is pre-WWII Germany. In Secret Hitler, players are German politicians attempting to hold a fragile Liberal government together and stem the rising tide of Fascism. Watch out though-there are secret Fascists among you, and one player is Secret Hitler.',
@@ -185,6 +190,11 @@ mixin LocaleData {
     'Delete': 'Löschen',
     'Please enter "DELETE"': 'Bitte gebe “LÖSCHEN” in das Textfeld ein um deinen Account zu löschen.',
     'Enter "DELETE"': 'Gebe "LÖSCHEN" ein',
+    'Confirm E-Mail': 'E-Mail bestätigen',
+    'Send confirmation e-mail': 'Bestätigungsmail senden',
+    'Confirm your current email': 'Bitte bestätige deine aktuelle E-mail, oder ändere sie.',
+    'Continue without confirmation': 'Ohne Bestätigung fortfahren',
+    'OR': 'ODER',
 
     // Rules Pages
     'RulePage1Section1': 'Wir schreiben das Jahr 1932 und befinden uns in Deutschland vor dem Zweiten Weltkrieg. In Secret Hitler sind die Spieler deutsche Politiker, die versuchen, eine fragile liberale Regierung zusammenzuhalten und die wachsende Welle des Faschismus einzudämmen. Aber Vorsicht, es gibt heimliche Faschisten unter ihnen, und ein Spieler ist Hitler.',

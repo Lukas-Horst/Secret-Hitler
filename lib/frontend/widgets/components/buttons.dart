@@ -39,8 +39,10 @@ class PrimaryElevatedButton extends StatefulWidget {
 
   final String text;
   final Function() onPressed;
+  final double? textSize;
 
-  const PrimaryElevatedButton({super.key, required this.text, required this.onPressed});
+  const PrimaryElevatedButton({super.key, required this.text,
+    required this.onPressed, this.textSize});
 
   @override
   State<PrimaryElevatedButton> createState() => _PrimaryElevatedButtonState();
@@ -70,7 +72,7 @@ class _PrimaryElevatedButtonState extends State<PrimaryElevatedButton> {
         widget.text,
         style: TextStyle(
           fontFamily: 'EskapadeFrakturW04BlackFamily',
-          fontSize: ScreenSize.screenHeight * 0.025 +
+          fontSize: widget.textSize ?? ScreenSize.screenHeight * 0.025 +
               ScreenSize.screenWidth * 0.025,
         ),
       ),

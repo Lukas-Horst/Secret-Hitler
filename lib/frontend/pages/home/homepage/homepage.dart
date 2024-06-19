@@ -10,12 +10,17 @@ import 'package:secret_hitler/frontend/widgets/components/buttons.dart';
 import 'package:secret_hitler/frontend/widgets/header/header.dart';
 import 'package:secret_hitler/frontend/widgets/loading_spin.dart';
 
-class Homepage extends StatelessWidget {
+class Homepage extends StatefulWidget {
   const Homepage({super.key});
 
   @override
+  State<Homepage> createState() => _HomepageState();
+}
+
+class _HomepageState extends State<Homepage> {
+  @override
   Widget build(BuildContext context) {
-    loadingSpin(false, context);
+    LoadingSpin.closeLoadingSpin(context);
     return SafeArea(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,

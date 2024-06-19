@@ -33,6 +33,7 @@ class Register extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authApi = ref.watch(authApiProvider);
+    final userStateNotifier = ref.watch(userStateProvider.notifier);
     return PopScope(
       canPop: false,
       onPopInvoked: (didpop) async {
@@ -108,12 +109,21 @@ class Register extends ConsumerWidget {
                       PrimaryElevatedButton(
                         text: AppLanguage.getLanguageData()['Register'],
                         onPressed: () async {
-                          FocusScope.of(context).unfocus();
                           try {
-                            await authApi.signIn(
-                              emailTextController.text,
-                              passwordTextController.text,
+                            final response = await authApi.signIn(
+                              emailTextController.text.trim(),
+                              passwordTextController.text.trim(),
+                              context,
                             );
+                            // If the sign in was successful the user will be logged in
+                            if (response) {
+                              await authApi.emailPasswordLogin(
+                                  emailTextController.text.trim(),
+                                  passwordTextController.text.trim(),
+                                  context,
+                              );
+                              userStateNotifier.checkUserStatus();
+                            }
                           } catch(e) {
                             print(e);
                           }

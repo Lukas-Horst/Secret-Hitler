@@ -15,7 +15,7 @@ class Account extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authApi = ref.watch(authApiProvider);
-    final userNotifier = ref.watch(userProvider.notifier);
+    final userNotifier = ref.watch(userStateProvider.notifier);
     return SafeArea(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -47,12 +47,9 @@ class Account extends ConsumerWidget {
                 PrimaryElevatedButton(
                   text: AppLanguage.getLanguageData()['Logout'],
                   onPressed: () async {
-                    try {
-                      await authApi.logout();
-                      userNotifier.checkUserStatus();
-                    } catch(e) {
-                      print(e);
-                    }
+                    await authApi.logout(context);
+                    userNotifier.checkUserStatus();
+                    userNotifier.changeVerificationState();
                   },
                 ),
               ],

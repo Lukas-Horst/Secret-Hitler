@@ -25,7 +25,7 @@ class Header extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(height: ScreenSize.screenHeight * 0.02),
+        // SizedBox(height: ScreenSize.screenHeight * 0.02),
         SizedBox(
           height: ScreenSize.screenHeight * 0.185,
           child: Stack(

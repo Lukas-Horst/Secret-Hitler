@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:secret_hitler/frontend/pages/authentication/login_page.dart';
 import 'package:secret_hitler/frontend/pages/authentication/register_page.dart';
 
+// Switch between the login and register page
 class LoginRegisterSwitch extends StatefulWidget {
   const LoginRegisterSwitch({super.key});
 

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:secret_hitler/backend/app_design/app_design.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
+import 'package:secret_hitler/backend/database/hive_database.dart';
 import 'package:secret_hitler/frontend/pages/home/account/account_page.dart';
 import 'package:secret_hitler/frontend/pages/home/homepage/homepage.dart';
 import 'package:secret_hitler/frontend/pages/home/settings/settings_page.dart';

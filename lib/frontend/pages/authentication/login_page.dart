@@ -7,6 +7,7 @@ import 'package:secret_hitler/backend/app_design/app_design.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
 import 'package:secret_hitler/backend/authentication/riverpod/provider.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
+import 'package:secret_hitler/backend/database/hive_database.dart';
 import 'package:secret_hitler/frontend/pages/authentication/reset_password_page.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons.dart';
 import 'package:secret_hitler/frontend/widgets/components/text.dart';
@@ -33,8 +34,9 @@ class Login extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    LoadingSpin.closeLoadingSpin(context);
     final authApi = ref.watch(authApiProvider);
-    final userNotifier = ref.watch(userProvider.notifier);
+    final userStateNotifier = ref.watch(userStateProvider.notifier);
     return PopScope(
       canPop: false,
       onPopInvoked: (didpop) async {
@@ -117,19 +119,14 @@ class Login extends ConsumerWidget {
                           PrimaryElevatedButton(
                             text: AppLanguage.getLanguageData()['Login'],
                             onPressed: () async {
-                              FocusScope.of(context).unfocus();
-                              loadingSpin(true, context);
-                              try {
-                                await authApi.emailPasswordLogin(
-                                  'lukashorst18.7@gmail.com',
-                                  '12345678'
-                                  // emailTextController.text.trim(),
-                                  // passwordTextController.text.trim(),
-                                );
-                                userNotifier.checkUserStatus();
-                              } catch(e) {
-                                print(e);
-                              }
+                              await authApi.emailPasswordLogin(
+                                  'lukashorst2003@yahoo.com',
+                                  '12345678',
+                                  context,
+                                // emailTextController.text.trim(),
+                                // passwordTextController.text.trim(),
+                              );
+                              userStateNotifier.checkUserStatus();
                             },
                           ),
                           CustomTextButton(
@@ -186,15 +183,14 @@ class Login extends ConsumerWidget {
                         children: [
                           ThirdPartyButton(
                             imageName: 'Google',
-                            onPressed: () {
-                              FocusScope.of(context).unfocus();
+                            onPressed: () async {
+                              await authApi.googleLogin(context);
+                              userStateNotifier.checkUserStatus();
                             },
                           ),
                           ThirdPartyButton(
                             imageName: 'Apple',
-                            onPressed: () {
-                              FocusScope.of(context).unfocus();
-                            },
+                            onPressed: () {},
                           ),
                         ],
                       ),
