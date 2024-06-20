@@ -1,7 +1,5 @@
 // author: Lukas Horst
 
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:secret_hitler/backend/app_design/app_design.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';

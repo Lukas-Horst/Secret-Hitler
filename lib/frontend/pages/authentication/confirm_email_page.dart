@@ -6,9 +6,12 @@ import 'package:secret_hitler/backend/app_language/app_language.dart';
 import 'package:secret_hitler/backend/authentication/riverpod/provider.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons.dart';
+import 'package:secret_hitler/frontend/widgets/components/divider_with_text.dart';
+import 'package:secret_hitler/frontend/widgets/components/snackbar.dart';
 import 'package:secret_hitler/frontend/widgets/components/text.dart';
 import 'package:secret_hitler/frontend/widgets/components/text_form_field.dart';
 import 'package:secret_hitler/frontend/widgets/header/header.dart';
+import 'package:secret_hitler/frontend/widgets/loading_spin.dart';
 
 class ConfirmEmail extends ConsumerStatefulWidget {
   const ConfirmEmail({super.key});
@@ -21,11 +24,14 @@ class _ConfirmEmailState extends ConsumerState<ConfirmEmail> {
 
   // Controller
   final emailTextController = TextEditingController();
+  bool _emailSended = false;
 
   @override
   Widget build(BuildContext context) {
+    final authApi = ref.watch(authApiProvider);
     final userState = ref.watch(userStateProvider);
     final userStateNotifier = ref.watch(userStateProvider.notifier);
+    LoadingSpin.closeLoadingSpin(context);
     return PopScope(
       canPop: false,
       onPopInvoked: (didpop) async {
@@ -58,38 +64,40 @@ class _ConfirmEmailState extends ConsumerState<ConfirmEmail> {
                 text: AppLanguage.getLanguageData()['Send confirmation e-mail'],
                 textSize: ScreenSize.screenHeight * 0.0175 +
                     ScreenSize.screenWidth * 0.0175,
-                onPressed: () async {},
+                onPressed: () async {
+                  if (!_emailSended) {
+                    bool response = await authApi.sendVerificationMail(context);
+                    if (response) {
+                      _emailSended = true;
+                      showSnackbar(
+                        context,
+                        AppLanguage.getLanguageData()['Confirmation email sent'],
+                        Colors.green,
+                        const Duration(seconds: 3),
+                      );
+                    } else {
+                      showSnackbar(
+                        context,
+                        AppLanguage.getLanguageData()['Confirmation email could not be sent'],
+                        Colors.red,
+                        const Duration(seconds: 3),
+                      );
+                    }
+                  } else {
+                    showSnackbar(
+                      context,
+                      AppLanguage.getLanguageData()['Email already sent'],
+                      Colors.green,
+                      const Duration(seconds: 3),
+                    );
+                  }
+                },
               ),
               SizedBox(height: ScreenSize.screenHeight * 0.04),
               SizedBox(
                 width: ScreenSize.screenWidth * 0.85,
-                child: Row(
-                  children: [
-                    const Expanded(
-                      child: Divider(
-                        thickness: 3,
-                        color: Colors.white,
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: ScreenSize.screenWidth * 0.02),
-                      child: Text(
-                        AppLanguage.getLanguageData()['OR'],
-                        style: TextStyle(
-                          fontFamily: 'EskapadeFrakturW04BlackFamily',
-                          fontSize: ScreenSize.screenHeight * 0.02 +
-                              ScreenSize.screenWidth * 0.02,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                    const Expanded(
-                      child: Divider(
-                        thickness: 3,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
+                child: DividerWithText(
+                  text: AppLanguage.getLanguageData()['OR'],
                 ),
               ),
               SizedBox(height: ScreenSize.screenHeight * 0.04),

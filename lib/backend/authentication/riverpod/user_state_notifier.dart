@@ -1,5 +1,6 @@
 // author: Lukas Horst
 
+import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/models.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/authentication/appwrite/auth_api.dart';
@@ -8,31 +9,66 @@ class UserState {
   final User? user;
   final bool firstCheck;
   final bool withoutVerification;
+  final bool isGuest;
 
   UserState({required this.user, required this.firstCheck,
-    required this.withoutVerification});
+    required this.withoutVerification, required this.isGuest});
 }
 
 // Notifier to check if the user is logged in or not
 class UserStateNotifier extends StateNotifier<UserState> {
   late final AuthApi _authApi;
+  late RealtimeSubscription _subscription;
+  bool _isSubscribed = false;
 
   UserStateNotifier(this._authApi) :super(UserState(user: null,
-      firstCheck: false, withoutVerification: false)) {
+      firstCheck: false, withoutVerification: false, isGuest: false)) {
     checkUserStatus();
   }
 
   // Method to check if the user is logged in
   Future<void> checkUserStatus() async {
     final user = await _authApi.getCurrentUser();
+    bool newVerificationState = state.withoutVerification;
+    bool isGuest = false;
+    if (user != null) {
+      // If the user hasn't an email, he is a guest
+      if (user.email.isEmpty) {
+        isGuest = true;
+      }
+      // Setting the verification state equal to the email verification value
+      if (!state.withoutVerification) {
+        newVerificationState = user.emailVerification;
+      }
+    }
     state = UserState(user: user, firstCheck: true,
-        withoutVerification: state.withoutVerification);
+        withoutVerification: newVerificationState, isGuest: isGuest);
+  }
+
+  // Method which starts a stream to any changes from the user account
+  void subscribeUserUpdates() {
+    if (!_isSubscribed) {
+      _isSubscribed = true;
+      Realtime realtime = Realtime(_authApi.getClient());
+      _subscription = realtime.subscribe(['account']);
+      _subscription.stream.listen((response) {
+        checkUserStatus();
+      });
+    }
+  }
+
+  // Method to close the user subscription
+  void unsubscribeUserUpdates() {
+    if (_isSubscribed) {
+      _subscription.close();
+      _isSubscribed = false;
+    }
   }
 
   // Method to change the without verification variable (when true the email
   // verification page will be skipped).
   Future<void> changeVerificationState() async {
     state = UserState(user: state.user, firstCheck: state.firstCheck,
-        withoutVerification: !state.withoutVerification);
+        withoutVerification: !state.withoutVerification, isGuest: state.isGuest);
   }
 }

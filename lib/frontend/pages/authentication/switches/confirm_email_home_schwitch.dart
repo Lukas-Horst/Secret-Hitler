@@ -13,7 +13,11 @@ class ConfirmEmailHomeSwitch extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userState = ref.watch(userStateProvider);
-    if (userState.user!.emailVerification || userState.withoutVerification) {
+    final userStateNotifier = ref.watch(userStateProvider.notifier);
+    userStateNotifier.subscribeUserUpdates();
+    if (userState.user!.emailVerification || userState.withoutVerification
+        || userState.isGuest) {
+      userStateNotifier.unsubscribeUserUpdates();
       return const PageNavigation();
     } else {
       return const ConfirmEmail();

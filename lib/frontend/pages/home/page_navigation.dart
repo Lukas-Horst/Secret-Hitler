@@ -1,26 +1,28 @@
 // author: Lukas Horst
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:secret_hitler/backend/app_design/app_design.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
-import 'package:secret_hitler/backend/database/hive_database.dart';
 import 'package:secret_hitler/frontend/pages/home/account/account_page.dart';
 import 'package:secret_hitler/frontend/pages/home/homepage/homepage.dart';
 import 'package:secret_hitler/frontend/pages/home/settings/settings_page.dart';
 import 'package:secret_hitler/frontend/widgets/components/bottom_navigation_bar.dart';
 
-class PageNavigation extends StatefulWidget {
+import '../../../backend/authentication/riverpod/provider.dart';
+
+class PageNavigation extends ConsumerStatefulWidget {
 
   final int? startPage;
 
   const PageNavigation({super.key, this.startPage});
 
   @override
-  State<PageNavigation> createState() => _PageNavigationState();
+  ConsumerState<PageNavigation> createState() => _PageNavigationState();
 }
 
-class _PageNavigationState extends State<PageNavigation> {
+class _PageNavigationState extends ConsumerState<PageNavigation> {
 
   int _selectedIndex = 0;
 

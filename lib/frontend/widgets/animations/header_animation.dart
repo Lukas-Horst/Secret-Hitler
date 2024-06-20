@@ -1,11 +1,6 @@
 // author: Lukas Horst
 
-import 'dart:async';
-import 'dart:ffi';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/frontend/widgets/animations/animation_controllers.dart';
 import 'package:secret_hitler/frontend/widgets/header/header.dart';

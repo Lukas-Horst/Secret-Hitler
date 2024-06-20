@@ -21,6 +21,10 @@ class AuthApi {
     _account = Account(_client);
   }
 
+  Client getClient() {
+    return _client;
+  }
+
   // Method to sign in with an email and a password
   Future<bool> signIn(String email, String password,
       BuildContext context) async {
@@ -70,6 +74,19 @@ class AuthApi {
     }
   }
 
+  // Method to login as a guest
+  Future<bool> guestLogin(BuildContext context) async {
+    LoadingSpin.openLoadingSpin(context);
+    try {
+      await _account.createAnonymousSession();
+      return true;
+    } catch (e) {
+      LoadingSpin.closeLoadingSpin(context);
+      print(e);
+      return false;
+    }
+  }
+
   // Method to logout from AppWrite
   Future<void> logout(BuildContext context) async {
     LoadingSpin.openLoadingSpin(context);
@@ -93,13 +110,16 @@ class AuthApi {
   }
 
   // Method to send a verification email to the user. Returns true if the email is submitted successfully
-  Future<bool> sendVerificationMail() async {
+  Future<bool> sendVerificationMail(BuildContext context) async {
+    LoadingSpin.openLoadingSpin(context);
     try {
       await _account.createVerification(
         url: 'http://reset-password-and-verify-email.onrender.com/verify',
       );
+      LoadingSpin.closeLoadingSpin(context);
       return true;
     } catch(e) {
+      LoadingSpin.closeLoadingSpin(context);
       return false;
     }
   }
@@ -113,6 +133,20 @@ class AuthApi {
       );
       return true;
     } catch(e) {
+      return false;
+    }
+  }
+
+  // Method to update the email address
+  Future<bool> updateEmail(String email, String password,
+      BuildContext context) async {
+    LoadingSpin.openLoadingSpin(context);
+    try {
+      await _account.updateEmail(email: email, password: password);
+      return true;
+    } catch (e) {
+      LoadingSpin.closeLoadingSpin(context);
+      print(e);
       return false;
     }
   }

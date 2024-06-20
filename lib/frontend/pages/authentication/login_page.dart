@@ -10,6 +10,7 @@ import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/backend/database/hive_database.dart';
 import 'package:secret_hitler/frontend/pages/authentication/reset_password_page.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons.dart';
+import 'package:secret_hitler/frontend/widgets/components/divider_with_text.dart';
 import 'package:secret_hitler/frontend/widgets/components/text.dart';
 import 'package:secret_hitler/frontend/widgets/components/text_form_field.dart';
 import 'package:secret_hitler/frontend/widgets/loading_spin.dart';
@@ -138,7 +139,10 @@ class Login extends ConsumerWidget {
                                     ScreenSize.screenWidth * 0.015,
                                 decoration: TextDecoration.underline,
                             ),
-                            onTap: () {},
+                            onTap: () async {
+                              await authApi.guestLogin(context);
+                              userStateNotifier.checkUserStatus();
+                            },
                           ),
                         ],
                       ),
@@ -146,33 +150,8 @@ class Login extends ConsumerWidget {
                       SizedBox(height: ScreenSize.screenHeight * 0.04),
                       SizedBox(
                         width: ScreenSize.screenWidth * 0.85,
-                        child: Row(
-                          children: [
-                            const Expanded(
-                              child: Divider(
-                                thickness: 3,
-                                color: Colors.white,
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: ScreenSize.screenWidth * 0.02),
-                              child: Text(
-                                AppLanguage.getLanguageData()['OR CONTINUE WITH'],
-                                style: TextStyle(
-                                  fontFamily: 'EskapadeFrakturW04BlackFamily',
-                                  fontSize: ScreenSize.screenHeight * 0.02 +
-                                      ScreenSize.screenWidth * 0.02,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                            const Expanded(
-                              child: Divider(
-                                thickness: 3,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ],
+                        child:DividerWithText(
+                          text: AppLanguage.getLanguageData()['OR CONTINUE WITH'],
                         ),
                       ),
 

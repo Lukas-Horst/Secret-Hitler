@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:secret_hitler/backend/app_design/app_design.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
-import 'package:secret_hitler/backend/helper/math_functions.dart';
 import 'package:secret_hitler/frontend/widgets/animations/flip_animation.dart';
 import 'package:secret_hitler/frontend/widgets/animations/opacity_animation.dart';
 import 'package:secret_hitler/frontend/widgets/animations/size_animation.dart';

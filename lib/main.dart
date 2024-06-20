@@ -6,8 +6,6 @@ import 'package:secret_hitler/backend/app_design/app_design.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/backend/database/hive_database.dart';
-import 'package:secret_hitler/frontend/pages/authentication/login_page.dart';
-import 'package:secret_hitler/frontend/pages/authentication/switches/loading_page.dart';
 import 'package:secret_hitler/frontend/pages/authentication/switches/login_confirm_email_switch.dart';
 
 void main() async {

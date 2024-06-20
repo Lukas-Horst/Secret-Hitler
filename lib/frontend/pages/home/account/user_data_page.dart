@@ -1,8 +1,11 @@
 // author: Lukas Horst
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/app_design/app_design.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
+import 'package:secret_hitler/backend/authentication/riverpod/provider.dart';
+import 'package:secret_hitler/backend/authentication/riverpod/user_state_notifier.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/frontend/pages/home/account/change_password_page.dart';
 import 'package:secret_hitler/frontend/pages/home/account/delete_account_page.dart';
@@ -12,14 +15,14 @@ import 'package:secret_hitler/frontend/widgets/components/text.dart';
 import 'package:secret_hitler/frontend/widgets/components/text_form_field.dart';
 import 'package:secret_hitler/frontend/widgets/header/header.dart';
 
-class UserData extends StatefulWidget {
+class UserData extends ConsumerStatefulWidget {
   const UserData({super.key});
 
   @override
-  State<UserData> createState() => _UserDataState();
+  ConsumerState<UserData> createState() => _UserDataState();
 }
 
-class _UserDataState extends State<UserData> {
+class _UserDataState extends ConsumerState<UserData> {
 
   // Controllers
   final nameTextController = TextEditingController();
@@ -29,17 +32,22 @@ class _UserDataState extends State<UserData> {
   final nameFocusNode = FocusNode();
   final emailFocusNode = FocusNode();
 
-  void _goBack(BuildContext context) {
+  void _goBack(BuildContext context, UserStateNotifier userStateNotifier) {
     Navigator.pop(context);
+    userStateNotifier.unsubscribeUserUpdates();
   }
 
   @override
   Widget build(BuildContext context) {
+    final authApi = ref.watch(authApiProvider);
+    final userState = ref.watch(userStateProvider);
+    final userStateNotifier = ref.watch(userStateProvider.notifier);
+    userStateNotifier.subscribeUserUpdates();
     return PopScope(
       canPop: false,
       onPopInvoked: (didpop) async {
         if (!didpop) {
-          _goBack(context);
+          _goBack(context, userStateNotifier);
         }
       },
       child: Scaffold(
@@ -60,7 +68,7 @@ class _UserDataState extends State<UserData> {
                         text: AppLanguage.getLanguageData()['Name'],
                       ),
                       CustomTextFormField(
-                        hintText: AppLanguage.getLanguageData()['Enter your name'],
+                        hintText: userState.user!.name,
                         obscureText: false,
                         textController: nameTextController,
                         readOnly: true,
@@ -76,7 +84,7 @@ class _UserDataState extends State<UserData> {
                         text: AppLanguage.getLanguageData()['E-Mail'],
                       ),
                       CustomTextFormField(
-                        hintText: AppLanguage.getLanguageData()['Enter your e-mail'],
+                        hintText: userState.user!.email,
                         obscureText: false,
                         textController: emailTextController,
                         readOnly: true,
@@ -125,7 +133,7 @@ class _UserDataState extends State<UserData> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             NavigationBackButton(onPressed: () {
-              _goBack(context);
+              _goBack(context, userStateNotifier);
             }),
             SizedBox(width: ScreenSize.screenWidth * 0.19),
             CustomTextButton(
