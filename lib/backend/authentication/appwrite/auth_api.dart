@@ -4,7 +4,9 @@ import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/enums.dart';
 import 'package:appwrite/models.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/constants/appwrite_constants.dart';
+import 'package:secret_hitler/backend/database/appwrite/authentication_functions.dart';
 import 'package:secret_hitler/frontend/widgets/loading_spin.dart';
 
 // Class for all authentication method to AppWrite
@@ -27,7 +29,7 @@ class AuthApi {
 
   // Method to sign in with an email and a password
   Future<bool> signIn(String email, String password,
-      BuildContext context) async {
+      BuildContext context, WidgetRef ref) async {
     LoadingSpin.openLoadingSpin(context);
     try {
       await _account.create(
@@ -35,8 +37,10 @@ class AuthApi {
         email: email,
         password: password,
       );
+      // TODO Checken ob das so klappt, weil user wahrscheinlich noch nicht geupdatet wurde
       return true;
     } catch (e) {
+      print(e);
       LoadingSpin.closeLoadingSpin(context);
       return false;
     }
@@ -44,12 +48,13 @@ class AuthApi {
 
   // Method to login with the email and password
   Future<bool> emailPasswordLogin(String email, String password,
-      BuildContext context) async {
+      BuildContext context, WidgetRef ref) async {
     LoadingSpin.openLoadingSpin(context);
     try {
       await _account.createEmailPasswordSession(
           email: email,
           password: password);
+      await changeOnlineStatus(ref, true);
       return true;
     } catch (e) {
       LoadingSpin.closeLoadingSpin(context);
@@ -59,13 +64,14 @@ class AuthApi {
   }
 
   // Method to login with google
-  Future<bool> googleLogin(BuildContext context) async {
+  Future<bool> googleLogin(BuildContext context, WidgetRef ref) async {
     LoadingSpin.openLoadingSpin(context);
     try {
       await _account.createOAuth2Session(
         provider: OAuthProvider.google,
         scopes: ['profile', 'email'],
       );
+      await changeOnlineStatus(ref, true);
       return true;
     } catch (e) {
       LoadingSpin.closeLoadingSpin(context);
@@ -88,13 +94,16 @@ class AuthApi {
   }
 
   // Method to logout from AppWrite
-  Future<void> logout(BuildContext context) async {
+  Future<bool> logout(BuildContext context, WidgetRef ref) async {
     LoadingSpin.openLoadingSpin(context);
     try {
       await _account.deleteSession(sessionId: 'current');
+      await changeOnlineStatus(ref, false);
+      return true;
     } catch(e) {
       LoadingSpin.closeLoadingSpin(context);
-      throw Exception('Failed to logout: $e');
+      print(e);
+      return false;
     }
   }
 

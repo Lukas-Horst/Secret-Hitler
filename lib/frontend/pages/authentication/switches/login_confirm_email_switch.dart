@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:secret_hitler/backend/authentication/riverpod/provider.dart';
+import 'package:secret_hitler/backend/riverpod/provider.dart';
 import 'package:secret_hitler/frontend/pages/authentication/switches/confirm_email_home_schwitch.dart';
 import 'package:secret_hitler/frontend/pages/authentication/switches/loading_page.dart';
 import 'package:secret_hitler/frontend/pages/authentication/switches/login_register_switch.dart';

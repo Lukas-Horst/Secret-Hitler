@@ -1,22 +1,26 @@
 // author: Lukas Horst
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
+import 'package:secret_hitler/backend/constants/appwrite_constants.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
+import 'package:secret_hitler/backend/database/appwrite/authentication_functions.dart';
+import 'package:secret_hitler/backend/riverpod/provider.dart';
 import 'package:secret_hitler/frontend/pages/home/settings/design_page.dart';
 import 'package:secret_hitler/frontend/pages/home/settings/language_page.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons.dart';
 import 'package:secret_hitler/frontend/widgets/header/header.dart';
 
-class Settings extends StatefulWidget {
+class Settings extends ConsumerStatefulWidget {
 
   const Settings({super.key});
 
   @override
-  State<Settings> createState() => _SettingsState();
+  ConsumerState<Settings> createState() => _SettingsState();
 }
 
-class _SettingsState extends State<Settings> {
+class _SettingsState extends ConsumerState<Settings> {
 
   void refresh() {
     setState(() {});
@@ -24,6 +28,8 @@ class _SettingsState extends State<Settings> {
 
   @override
   Widget build(BuildContext context) {
+    final databaseApi = ref.watch(databaseApiProvider);
+    final userState = ref.watch(userStateProvider);
     return SafeArea(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -58,7 +64,10 @@ class _SettingsState extends State<Settings> {
                 ),
                 PrimaryElevatedButton(
                   text: AppLanguage.getLanguageData()['Imprint'],
-                  onPressed: () {},
+                  onPressed: () async {
+                    bool response = await changeOnlineStatus(ref, true);
+                    print(response);
+                  },
                 ),
               ],
             ),

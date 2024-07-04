@@ -5,9 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:secret_hitler/backend/app_design/app_design.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
-import 'package:secret_hitler/backend/authentication/riverpod/provider.dart';
+import 'package:secret_hitler/backend/riverpod/provider.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
-import 'package:secret_hitler/backend/database/hive_database.dart';
+import 'package:secret_hitler/backend/database/local/hive_database.dart';
 import 'package:secret_hitler/frontend/pages/authentication/reset_password_page.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons.dart';
 import 'package:secret_hitler/frontend/widgets/components/divider_with_text.dart';
@@ -121,11 +121,10 @@ class Login extends ConsumerWidget {
                             text: AppLanguage.getLanguageData()['Login'],
                             onPressed: () async {
                               await authApi.emailPasswordLogin(
-                                  'lukashorst2003@yahoo.com',
-                                  '12345678',
-                                  context,
-                                // emailTextController.text.trim(),
-                                // passwordTextController.text.trim(),
+                                emailTextController.text.trim(),
+                                passwordTextController.text.trim(),
+                                context,
+                                ref,
                               );
                               userStateNotifier.checkUserStatus();
                             },
@@ -163,7 +162,7 @@ class Login extends ConsumerWidget {
                           ThirdPartyButton(
                             imageName: 'Google',
                             onPressed: () async {
-                              await authApi.googleLogin(context);
+                              await authApi.googleLogin(context, ref);
                               userStateNotifier.checkUserStatus();
                             },
                           ),

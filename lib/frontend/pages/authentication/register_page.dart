@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
-import 'package:secret_hitler/backend/authentication/riverpod/provider.dart';
+import 'package:secret_hitler/backend/riverpod/provider.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons.dart';
 import 'package:secret_hitler/frontend/widgets/components/text.dart';
@@ -114,13 +114,15 @@ class Register extends ConsumerWidget {
                               emailTextController.text.trim(),
                               passwordTextController.text.trim(),
                               context,
+                              ref,
                             );
                             // If the sign in was successful the user will be logged in
                             if (response) {
                               await authApi.emailPasswordLogin(
-                                  emailTextController.text.trim(),
-                                  passwordTextController.text.trim(),
-                                  context,
+                                emailTextController.text.trim(),
+                                passwordTextController.text.trim(),
+                                context,
+                                ref,
                               );
                               userStateNotifier.checkUserStatus();
                             }

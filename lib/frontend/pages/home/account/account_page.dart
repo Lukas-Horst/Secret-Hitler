@@ -3,7 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
-import 'package:secret_hitler/backend/authentication/riverpod/provider.dart';
+import 'package:secret_hitler/backend/database/appwrite/authentication_functions.dart';
+import 'package:secret_hitler/backend/riverpod/provider.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/frontend/pages/home/account/user_data_page.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons.dart';
@@ -47,7 +48,7 @@ class Account extends ConsumerWidget {
                 PrimaryElevatedButton(
                   text: AppLanguage.getLanguageData()['Logout'],
                   onPressed: () async {
-                    await authApi.logout(context);
+                    await authApi.logout(context, ref);
                     userNotifier.checkUserStatus();
                     userNotifier.changeVerificationState();
                   },

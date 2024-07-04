@@ -1,7 +1,7 @@
 // author: Lukas Horst
 
 import 'package:flutter/material.dart';
-import 'package:secret_hitler/backend/database/hive_database.dart';
+import 'package:secret_hitler/backend/database/local/hive_database.dart';
 import 'package:secret_hitler/frontend/widgets/header/header_image.dart';
 
 class AppDesign {

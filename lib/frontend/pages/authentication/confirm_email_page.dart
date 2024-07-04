@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
-import 'package:secret_hitler/backend/authentication/riverpod/provider.dart';
+import 'package:secret_hitler/backend/riverpod/provider.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons.dart';
 import 'package:secret_hitler/frontend/widgets/components/divider_with_text.dart';
@@ -24,7 +24,7 @@ class _ConfirmEmailState extends ConsumerState<ConfirmEmail> {
 
   // Controller
   final emailTextController = TextEditingController();
-  bool _emailSended = false;
+  bool _emailSent = false;
 
   @override
   Widget build(BuildContext context) {
@@ -65,10 +65,10 @@ class _ConfirmEmailState extends ConsumerState<ConfirmEmail> {
                 textSize: ScreenSize.screenHeight * 0.0175 +
                     ScreenSize.screenWidth * 0.0175,
                 onPressed: () async {
-                  if (!_emailSended) {
+                  if (!_emailSent) {
                     bool response = await authApi.sendVerificationMail(context);
                     if (response) {
-                      _emailSended = true;
+                      _emailSent = true;
                       showSnackbar(
                         context,
                         AppLanguage.getLanguageData()['Confirmation email sent'],

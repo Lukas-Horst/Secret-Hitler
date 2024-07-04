@@ -2,7 +2,7 @@
 
 import 'dart:ui';
 
-import 'package:secret_hitler/backend/database/hive_database.dart';
+import 'package:secret_hitler/backend/database/local/hive_database.dart';
 
 import 'locales.dart';
 
