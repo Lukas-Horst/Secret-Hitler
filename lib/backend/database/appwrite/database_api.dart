@@ -32,8 +32,8 @@ class DatabaseApi {
     }
   }
 
-  // Method to get a document by id from a specific collection
-  Future<Document?> getDocument(String collectionId, String documentId) async {
+  // Method to get a document by the id from a specific collection
+  Future<Document?> getDocumentById(String collectionId, String documentId) async {
     try {
       return await _database.getDocument(
         databaseId: databaseId,
@@ -46,12 +46,34 @@ class DatabaseApi {
     }
   }
 
+  // Method to get a document by the attribute from a specific collection
+  Future<Document?> getDocumentByAttribute(String collectionId,
+      {List<String>? queries}) async {
+    try {
+      DocumentList? documents = await listDocuments(
+        collectionId,
+        queries: queries,
+      );
+      // If we get more than one document, the first one will be returned
+      if (documents!.total > 0) {
+        return documents.documents.first;
+      } else {
+        return null;
+      }
+    } catch(e) {
+      print(e);
+      return null;
+    }
+  }
+
   // Method to list all documents from a collection
-  Future<DocumentList?> listDocuments(String collectionId) async {
+  Future<DocumentList?> listDocuments(String collectionId,
+      {List<String>? queries}) async {
     try {
       return await _database.listDocuments(
         databaseId: databaseId,
         collectionId: collectionId,
+        queries: queries ?? [],
       );
     } catch(e) {
       print(e);

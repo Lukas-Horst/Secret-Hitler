@@ -5,9 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:secret_hitler/backend/app_design/app_design.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
+import 'package:secret_hitler/backend/database/appwrite/collections/user_collection_functions.dart';
 import 'package:secret_hitler/backend/riverpod/provider.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
-import 'package:secret_hitler/backend/database/local/hive_database.dart';
 import 'package:secret_hitler/frontend/pages/authentication/reset_password_page.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons.dart';
 import 'package:secret_hitler/frontend/widgets/components/divider_with_text.dart';
@@ -124,9 +124,8 @@ class Login extends ConsumerWidget {
                                 emailTextController.text.trim(),
                                 passwordTextController.text.trim(),
                                 context,
-                                ref,
                               );
-                              userStateNotifier.checkUserStatus();
+                              await userStateNotifier.checkUserStatus();
                             },
                           ),
                           CustomTextButton(
@@ -140,7 +139,7 @@ class Login extends ConsumerWidget {
                             ),
                             onTap: () async {
                               await authApi.guestLogin(context);
-                              userStateNotifier.checkUserStatus();
+                              await userStateNotifier.checkUserStatus();
                             },
                           ),
                         ],
@@ -162,8 +161,8 @@ class Login extends ConsumerWidget {
                           ThirdPartyButton(
                             imageName: 'Google',
                             onPressed: () async {
-                              await authApi.googleLogin(context, ref);
-                              userStateNotifier.checkUserStatus();
+                              await authApi.googleLogin(context);
+                              await userStateNotifier.checkUserStatus();
                             },
                           ),
                           ThirdPartyButton(

@@ -1,9 +1,14 @@
 // author: Lukas Horst
 
+import 'package:appwrite/models.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/app_design/app_design.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
+import 'package:secret_hitler/backend/database/appwrite/collections/game_room_collection_functions.dart';
+import 'package:secret_hitler/backend/riverpod/provider.dart';
+import 'package:secret_hitler/frontend/pages/home/homepage/game/waiting_room_page.dart';
 import 'package:secret_hitler/frontend/widgets/components/bottom_navigation_bar.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons.dart';
 import 'package:secret_hitler/frontend/widgets/components/scroll_wheel.dart';
@@ -11,18 +16,17 @@ import 'package:secret_hitler/frontend/widgets/components/text.dart';
 import 'package:secret_hitler/frontend/widgets/components/text_form_field.dart';
 import 'package:secret_hitler/frontend/widgets/header/header.dart';
 
-class NewGame extends StatefulWidget {
+class NewGame extends ConsumerStatefulWidget {
 
   final int? scrollWheelStartNumber;
 
   const NewGame({super.key, this.scrollWheelStartNumber,});
 
   @override
-  State<NewGame> createState() => _NewGameState();
+  ConsumerState<NewGame> createState() => _NewGameState();
 }
 
-class _NewGameState extends State<NewGame> {
-
+class _NewGameState extends ConsumerState<NewGame> {
   // Controllers
   final roomNameTextController = TextEditingController();
   final roomPasswordTextController = TextEditingController();
@@ -53,6 +57,8 @@ class _NewGameState extends State<NewGame> {
 
   @override
   Widget build(BuildContext context) {
+    final gameRoomStateNotifier = ref.watch(gameRoomStateProvider.notifier);
+    gameRoomStateNotifier.resetGameRoom();
     return PopScope(
       canPop: false,
       onPopInvoked: (didpop) async {
@@ -104,24 +110,7 @@ class _NewGameState extends State<NewGame> {
                           )
                         ],
                       ),
-                      SizedBox(height: ScreenSize.screenHeight * 0.02),
-                      // Room name text field
-                      TextFieldHeadText(
-                        text: AppLanguage.getLanguageData()['Room name'],
-                      ),
-                      CustomTextFormField(
-                        hintText: AppLanguage.getLanguageData()['Enter the room name'],
-                        obscureText: false,
-                        textController: roomNameTextController,
-                        readOnly: false,
-                        autoFocus: false,
-                        width: ScreenSize.screenWidth * 0.85,
-                        height: ScreenSize.screenHeight * 0.065,
-                        currentFocusNode: roomNameFocusNode,
-                        nextFocusNode: roomPasswordFocusNode,
-                      ),
-
-                      SizedBox(height: ScreenSize.screenHeight * 0.02),
+                      SizedBox(height: ScreenSize.screenHeight * 0.04),
                       // Room password text field
                       TextFieldHeadText(
                         text: AppLanguage.getLanguageData()['Room password'],
@@ -137,10 +126,26 @@ class _NewGameState extends State<NewGame> {
                         currentFocusNode: roomPasswordFocusNode,
                       ),
 
-                      SizedBox(height: ScreenSize.screenHeight * 0.06),
+                      SizedBox(height: ScreenSize.screenHeight * 0.08),
                       PrimaryElevatedButton(
                         text: AppLanguage.getLanguageData()['Continue'],
-                        onPressed: () {},
+                        onPressed: () async {
+                          Document? gameRoomDocument = await createGameRoom(
+                            ref,
+                            roomPasswordTextController.text.trim(),
+                            scrollWheelController.selectedItem + 5,
+                            context,
+                          );
+                          if (gameRoomDocument != null) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => WaitingRoom(
+                                  playerAmount: gameRoomDocument.data['playerAmount'],
+                                  gameRoomId: gameRoomDocument.$id),
+                              ),
+                            );
+                          }
+                        },
                       ),
                       SizedBox(height: ScreenSize.screenHeight * 0.01),
                     ],

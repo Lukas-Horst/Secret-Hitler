@@ -1,28 +1,32 @@
 // author: Lukas Horst
 
+import 'package:appwrite/models.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
+import 'package:secret_hitler/backend/constants/appwrite_constants.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
+import 'package:secret_hitler/backend/database/appwrite/database_api.dart';
 import 'package:secret_hitler/backend/helper/math_functions.dart';
+import 'package:secret_hitler/backend/riverpod/provider.dart';
 import 'package:secret_hitler/frontend/widgets/components/bottom_navigation_bar.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons.dart';
 import 'package:secret_hitler/frontend/widgets/components/text.dart';
 import 'package:secret_hitler/frontend/widgets/header/header.dart';
 
-class WaitingRoom extends StatefulWidget {
+class WaitingRoom extends ConsumerStatefulWidget {
 
   final int playerAmount;
-  final String roomName;
-  final String hostName;
+  final String gameRoomId;
 
   const WaitingRoom({super.key, required this.playerAmount,
-    required this.roomName, required this.hostName});
+    required this.gameRoomId});
 
   @override
-  State<WaitingRoom> createState() => _WaitingRoomState();
+  ConsumerState<WaitingRoom> createState() => _WaitingRoomState();
 }
 
-class _WaitingRoomState extends State<WaitingRoom> {
+class _WaitingRoomState extends ConsumerState<WaitingRoom> {
 
   late List _playerNames;
 
@@ -64,14 +68,40 @@ class _WaitingRoomState extends State<WaitingRoom> {
     );
   }
 
+  // Method to update the player names with all names which are currently in
+  // the game room
+  Future<void> _updatePlayerName(DatabaseApi databaseApi) async {
+    Document? gameRoomDocument = await databaseApi.getDocumentById(
+      gameRoomCollectionId,
+      widget.gameRoomId,
+    );
+    List<dynamic> players = gameRoomDocument!.data['users'];
+    List<String> playerNames = [];
+    for (Map<String, dynamic> player in players) {
+      playerNames.add(player['userName']);
+    }
+    setState(() {
+      _playerNames = playerNames;
+    });
+  }
+
   @override
   void initState() {
-    _playerNames = [widget.hostName, 'Test', 'Test'];
+    _playerNames = [];
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final databaseApi = ref.watch(databaseApiProvider);
+    final gameRoomStateNotifier = ref.watch(gameRoomStateProvider.notifier);
+    final gameRoomState = ref.watch(gameRoomStateProvider);
+    if (gameRoomState.gameRoomDocument == null) {
+      gameRoomStateNotifier.setGameRoom(widget.gameRoomId);
+    } else if (gameRoomState.gameRoomDocument!.data['users'].length
+        != _playerNames.length) {
+      _updatePlayerName(databaseApi);
+    }
     return PopScope(
       canPop: false,
       onPopInvoked: (didpop) async {
@@ -85,13 +115,6 @@ class _WaitingRoomState extends State<WaitingRoom> {
           body: Column(
             children: [
               Header(headerText: AppLanguage.getLanguageData()['Waiting room']),
-              SizedBox(height: ScreenSize.screenHeight * 0.02),
-              ExplainingText(
-                text: '${AppLanguage.getLanguageData()['Room name']}:',
-              ),
-              ExplainingText(
-                text: widget.roomName,
-              ),
               SizedBox(height: ScreenSize.screenHeight * 0.04),
               ExplainingText(
                 text: '${AppLanguage.getLanguageData()['Number of players']}:',
@@ -99,7 +122,7 @@ class _WaitingRoomState extends State<WaitingRoom> {
               ExplainingText(
                 text: '${widget.playerAmount}',
               ),
-              SizedBox(height: ScreenSize.screenHeight * 0.04),
+              SizedBox(height: ScreenSize.screenHeight * 0.06),
               ExplainingText(
                 text: '${AppLanguage.getLanguageData()['Players']}:',
               ),

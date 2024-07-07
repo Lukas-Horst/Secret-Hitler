@@ -14,8 +14,11 @@ class LoginConfirmEmailSwitch extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userState = ref.watch(userStateProvider);
+    final timer = ref.watch(timerProvider);
     if (userState.user == null) {
       if (userState.firstCheck) {
+        // Stop the timer for the user activity updates
+        timer.stopTimer();
         return const LoginRegisterSwitch();
       } else {
         return const LoadingPage();

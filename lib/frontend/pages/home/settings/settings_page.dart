@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
 import 'package:secret_hitler/backend/constants/appwrite_constants.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
-import 'package:secret_hitler/backend/database/appwrite/authentication_functions.dart';
+import 'package:secret_hitler/backend/database/appwrite/collections/user_collection_functions.dart';
 import 'package:secret_hitler/backend/riverpod/provider.dart';
 import 'package:secret_hitler/frontend/pages/home/settings/design_page.dart';
 import 'package:secret_hitler/frontend/pages/home/settings/language_page.dart';
@@ -65,7 +65,7 @@ class _SettingsState extends ConsumerState<Settings> {
                 PrimaryElevatedButton(
                   text: AppLanguage.getLanguageData()['Imprint'],
                   onPressed: () async {
-                    bool response = await changeOnlineStatus(ref, true);
+                    bool response = await updateOnlineStatus(ref, true);
                     print(response);
                   },
                 ),

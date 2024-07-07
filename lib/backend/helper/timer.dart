@@ -9,14 +9,20 @@ class CustomTimer {
   Timer? _timer;
 
   Future<void> startTimer(Duration interval, Function function,
-      Duration maxTime) async {
-    _timerActive = true;
-    _timer = Timer.periodic(interval, (Timer timer) {
+      Duration? maxTime) async {
+    if (!_timerActive) {
+      _timerActive = true;
+      // Run the function also on the initialization
       function();
-    });
-    // Closing the timer after the max time
-    await Future.delayed(maxTime);
-    stopTimer();
+      _timer = Timer.periodic(interval, (Timer timer) {
+        function();
+      });
+      // Closing the timer after the max time if it is given
+      if (maxTime != null) {
+        await Future.delayed(maxTime);
+        stopTimer();
+      }
+    }
   }
 
   void stopTimer() {

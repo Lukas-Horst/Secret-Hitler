@@ -3,16 +3,18 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/backend/pages/game/game_room/board_overview_backend.dart';
 import 'package:secret_hitler/backend/pages/game/game_room/players_and_election_backend.dart';
+import 'package:secret_hitler/backend/riverpod/provider.dart';
 import 'package:secret_hitler/frontend/pages/home/homepage/game/game_room/board_overview_page.dart';
 import 'package:secret_hitler/frontend/pages/home/homepage/game/game_room/game_room_settings_page.dart';
 import 'package:secret_hitler/frontend/pages/home/homepage/game/game_room/players_and_election_page.dart';
 import 'package:secret_hitler/frontend/pages/home/homepage/game/game_room/roles_page.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-class GameRoomNavigation extends StatefulWidget {
+class GameRoomNavigation extends ConsumerStatefulWidget {
 
   final int playerAmount;
   final List<String> playerNames;
@@ -21,10 +23,10 @@ class GameRoomNavigation extends StatefulWidget {
     required this.playerNames});
 
   @override
-  State<GameRoomNavigation> createState() => _GameRoomNavigationState();
+  ConsumerState<GameRoomNavigation> createState() => _GameRoomNavigationState();
 }
 
-class _GameRoomNavigationState extends State<GameRoomNavigation> {
+class _GameRoomNavigationState extends ConsumerState<GameRoomNavigation> {
 
   late GlobalKey<BoardOverviewState> boardOverviewFrontendKey;
   late BoardOverviewBackend boardOverviewBackend;
@@ -61,6 +63,8 @@ class _GameRoomNavigationState extends State<GameRoomNavigation> {
 
   @override
   Widget build(BuildContext context) {
+    final gameRoomStateNotifier = ref.watch(gameRoomStateProvider.notifier);
+    gameRoomStateNotifier.resetGameRoom();
     return PopScope(
       canPop: false,
       onPopInvoked: (didpop) async {
