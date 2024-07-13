@@ -10,8 +10,9 @@ import 'package:secret_hitler/backend/database/appwrite/database_api.dart';
 import 'package:secret_hitler/backend/helper/math_functions.dart';
 import 'package:secret_hitler/backend/riverpod/provider.dart';
 import 'package:secret_hitler/frontend/widgets/components/bottom_navigation_bar.dart';
-import 'package:secret_hitler/frontend/widgets/components/buttons.dart';
-import 'package:secret_hitler/frontend/widgets/components/text.dart';
+import 'package:secret_hitler/frontend/widgets/components/buttons/navigation_back_button.dart';
+import 'package:secret_hitler/frontend/widgets/components/text/adjustable_standard_text.dart';
+import 'package:secret_hitler/frontend/widgets/components/text/explaining_text.dart';
 import 'package:secret_hitler/frontend/widgets/header/header.dart';
 
 class WaitingRoom extends ConsumerStatefulWidget {

@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
-import 'package:secret_hitler/frontend/widgets/components/text.dart';
 
 // Function to open a snackbar with a text
 void showSnackbar(BuildContext context, String text, Color color, Duration duration) {

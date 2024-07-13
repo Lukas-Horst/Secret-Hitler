@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
-import 'package:secret_hitler/frontend/widgets/components/text.dart';
+import 'package:secret_hitler/frontend/widgets/components/text/stroke_text.dart';
 
 class RulesPage4 extends StatelessWidget {
   const RulesPage4({super.key});

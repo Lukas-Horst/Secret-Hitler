@@ -3,10 +3,10 @@
 import 'package:flutter/material.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
-import 'package:secret_hitler/frontend/pages/home/homepage/game/join_game_page.dart';
-import 'package:secret_hitler/frontend/pages/home/homepage/game/new_game_page.dart';
+import 'package:secret_hitler/frontend/pages/home/homepage/game/waiting_room/join_game/join_game_page.dart';
+import 'package:secret_hitler/frontend/pages/home/homepage/game/waiting_room/new_game_page.dart';
 import 'package:secret_hitler/frontend/pages/home/homepage/rules/rules_naviagtion.dart';
-import 'package:secret_hitler/frontend/widgets/components/buttons.dart';
+import 'package:secret_hitler/frontend/widgets/components/buttons/primary_elevated_button.dart';
 import 'package:secret_hitler/frontend/widgets/header/header.dart';
 import 'package:secret_hitler/frontend/widgets/loading_spin.dart';
 

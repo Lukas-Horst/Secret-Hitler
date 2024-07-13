@@ -9,8 +9,8 @@ import 'package:secret_hitler/backend/constants/appwrite_constants.dart';
 import 'package:secret_hitler/backend/riverpod/provider.dart';
 import 'package:secret_hitler/frontend/widgets/loading_spin.dart';
 
-Future<Document?> createGameRoom(WidgetRef ref, String password, int playerAmount,
-    BuildContext context) async {
+Future<Document?> createGameRoom(WidgetRef ref, String password,
+    int playerAmount, BuildContext context) async {
   LoadingSpin.openLoadingSpin(context);
   final databaseApi = ref.watch(databaseApiProvider);
   final userState = ref.watch(userStateProvider);
@@ -54,4 +54,17 @@ Future<int> getFreeRoomNumber(WidgetRef ref) async {
     }
   }
   return unusedNumber;
+}
+
+// Function to get a game room by the given id
+Future<Document?> getGameRoom(WidgetRef ref, String roomId,
+    BuildContext context) async {
+  LoadingSpin.openLoadingSpin(context);
+  final databaseApi = ref.watch(databaseApiProvider);
+  Document? gameRoomDocument = await databaseApi.getDocumentById(
+    gameRoomCollectionId,
+    roomId,
+  );
+  LoadingSpin.closeLoadingSpin(context);
+  return gameRoomDocument;
 }

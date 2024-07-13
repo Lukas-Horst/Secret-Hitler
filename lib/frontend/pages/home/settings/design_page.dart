@@ -8,8 +8,9 @@ import 'package:secret_hitler/frontend/pages/home/page_navigation.dart';
 import 'package:secret_hitler/frontend/widgets/animations/bottom_navigation_bar_animation.dart';
 import 'package:secret_hitler/frontend/widgets/animations/flip_animation.dart';
 import 'package:secret_hitler/frontend/widgets/animations/header_animation.dart';
-import 'package:secret_hitler/frontend/widgets/components/buttons.dart';
-import 'package:secret_hitler/frontend/widgets/components/text.dart';
+import 'package:secret_hitler/frontend/widgets/components/buttons/custom_toggle_button.dart';
+import 'package:secret_hitler/frontend/widgets/components/buttons/navigation_back_button.dart';
+import 'package:secret_hitler/frontend/widgets/components/text/explaining_text.dart';
 
 class Design extends StatefulWidget {
 

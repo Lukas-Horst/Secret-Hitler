@@ -8,11 +8,13 @@ import 'package:secret_hitler/backend/app_language/app_language.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/backend/database/appwrite/collections/game_room_collection_functions.dart';
 import 'package:secret_hitler/backend/riverpod/provider.dart';
-import 'package:secret_hitler/frontend/pages/home/homepage/game/waiting_room_page.dart';
+import 'package:secret_hitler/frontend/pages/home/homepage/game/waiting_room/waiting_room_page.dart';
 import 'package:secret_hitler/frontend/widgets/components/bottom_navigation_bar.dart';
-import 'package:secret_hitler/frontend/widgets/components/buttons.dart';
+import 'package:secret_hitler/frontend/widgets/components/buttons/navigation_back_button.dart';
+import 'package:secret_hitler/frontend/widgets/components/buttons/primary_elevated_button.dart';
 import 'package:secret_hitler/frontend/widgets/components/scroll_wheel.dart';
-import 'package:secret_hitler/frontend/widgets/components/text.dart';
+import 'package:secret_hitler/frontend/widgets/components/text/adjustable_standard_text.dart';
+import 'package:secret_hitler/frontend/widgets/components/text/text_field_head_text.dart';
 import 'package:secret_hitler/frontend/widgets/components/text_form_field.dart';
 import 'package:secret_hitler/frontend/widgets/header/header.dart';
 

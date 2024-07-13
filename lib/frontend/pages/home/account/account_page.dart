@@ -7,7 +7,7 @@ import 'package:secret_hitler/backend/database/appwrite/collections/user_collect
 import 'package:secret_hitler/backend/riverpod/provider.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/frontend/pages/home/account/user_data_page.dart';
-import 'package:secret_hitler/frontend/widgets/components/buttons.dart';
+import 'package:secret_hitler/frontend/widgets/components/buttons/primary_elevated_button.dart';
 import 'package:secret_hitler/frontend/widgets/header/header.dart';
 
 class Account extends ConsumerWidget {

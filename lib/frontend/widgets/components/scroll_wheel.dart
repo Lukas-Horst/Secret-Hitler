@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
-import 'package:secret_hitler/frontend/widgets/components/text.dart';
+import 'package:secret_hitler/frontend/widgets/components/text/adjustable_standard_text.dart';
 
 class ScrollWheel extends StatefulWidget {
 

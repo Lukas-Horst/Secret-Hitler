@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/backend/helper/string_functions.dart';
-import 'package:secret_hitler/frontend/widgets/components/text.dart';
+import 'package:secret_hitler/frontend/widgets/components/text/stroke_text.dart';
+import 'package:secret_hitler/frontend/widgets/components/text/text_with_image.dart';
 
 class RulesPage5 extends StatefulWidget {
   const RulesPage5({super.key});

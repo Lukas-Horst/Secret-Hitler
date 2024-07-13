@@ -16,7 +16,7 @@ import 'package:secret_hitler/frontend/widgets/components/game/board_overview/bo
 import 'package:secret_hitler/frontend/widgets/components/game/board_overview/piles/discard_pile.dart';
 import 'package:secret_hitler/frontend/widgets/components/game/board_overview/piles/draw_pile.dart';
 import 'package:secret_hitler/frontend/widgets/components/game/board_overview/piles/pile_functions.dart' as pile_functions;
-import 'package:secret_hitler/frontend/widgets/components/text.dart';
+import 'package:secret_hitler/frontend/widgets/components/text/explaining_text.dart';
 
 class BoardOverview extends StatefulWidget {
 

@@ -133,11 +133,12 @@ mixin LocaleData {
 
     // New game & join game page
     'Number of players': 'Number of players',
-    'Room name': 'Room name',
-    'Enter the room name': 'Enter the room name',
+    'Room id': 'Room id',
+    'Enter the room id': 'Enter the room id',
     'Room password': 'Room password',
     'Enter the room password': 'Enter the room password',
     'Join': 'Join',
+    'Search game session': 'Search game session',
 
     'Waiting room': 'Waiting room',
     'Players': 'Players',
@@ -280,11 +281,12 @@ mixin LocaleData {
 
     // New game & join game page
     'Number of players': 'Spieleranzahl',
-    'Room name': 'Raumname',
-    'Enter the room name': 'Gebe den Raumnamen ein',
+    'Room id': 'Raum-Id',
+    'Enter the room id': 'Gebe die Raum-Id ein',
     'Room password': 'Raumpasswort',
     'Enter the room password': 'Gebe das Raumpasswort ein',
     'Join': 'Beitreten',
+    'Search game session': 'Spielsitzung suchen',
 
     'Waiting room': 'Warteraum',
     'Players': 'Spieler',
