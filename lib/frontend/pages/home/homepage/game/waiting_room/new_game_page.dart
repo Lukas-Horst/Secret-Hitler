@@ -7,7 +7,6 @@ import 'package:secret_hitler/backend/app_design/app_design.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/backend/database/appwrite/collections/game_room_collection_functions.dart';
-import 'package:secret_hitler/backend/riverpod/provider.dart';
 import 'package:secret_hitler/frontend/pages/home/homepage/game/waiting_room/waiting_room_page.dart';
 import 'package:secret_hitler/frontend/widgets/components/bottom_navigation_bar.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons/navigation_back_button.dart';
@@ -59,8 +58,6 @@ class _NewGameState extends ConsumerState<NewGame> {
 
   @override
   Widget build(BuildContext context) {
-    final gameRoomStateNotifier = ref.watch(gameRoomStateProvider.notifier);
-    gameRoomStateNotifier.resetGameRoom();
     return PopScope(
       canPop: false,
       onPopInvoked: (didpop) async {
@@ -132,21 +129,12 @@ class _NewGameState extends ConsumerState<NewGame> {
                       PrimaryElevatedButton(
                         text: AppLanguage.getLanguageData()['Continue'],
                         onPressed: () async {
-                          Document? gameRoomDocument = await createGameRoom(
+                          await createWaitingRoom(
                             ref,
                             roomPasswordTextController.text.trim(),
                             scrollWheelController.selectedItem + 5,
                             context,
                           );
-                          if (gameRoomDocument != null) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => WaitingRoom(
-                                  playerAmount: gameRoomDocument.data['playerAmount'],
-                                  gameRoomId: gameRoomDocument.$id),
-                              ),
-                            );
-                          }
                         },
                       ),
                       SizedBox(height: ScreenSize.screenHeight * 0.01),

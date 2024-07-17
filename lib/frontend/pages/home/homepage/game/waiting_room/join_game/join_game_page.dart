@@ -39,8 +39,6 @@ class _JoinGameState extends ConsumerState<JoinGame> {
 
   @override
   Widget build(BuildContext context) {
-    final gameRoomStateNotifier = ref.watch(gameRoomStateProvider.notifier);
-    gameRoomStateNotifier.resetGameRoom();
     return PopScope(
       canPop: false,
       onPopInvoked: (didpop) async {
@@ -97,19 +95,13 @@ class _JoinGameState extends ConsumerState<JoinGame> {
                       PrimaryElevatedButton(
                         text: AppLanguage.getLanguageData()['Join'],
                         onPressed: () async {
-                          Document? gameRoomDocument = await getGameRoom(
+                          Document? gameRoomDocument = await getWaitingRoom(
                             ref,
                             roomIdTextController.text.trim(),
                             context,
                           );
                           if (gameRoomDocument != null) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => WaitingRoom(
-                                  playerAmount: gameRoomDocument.data['playerAmount'],
-                                  gameRoomId: gameRoomDocument.$id),
-                              ),
-                            );
+                            joinWaitingRoom(ref, gameRoomDocument, context, false);
                           }
                         },
                       ),
@@ -127,19 +119,32 @@ class _JoinGameState extends ConsumerState<JoinGame> {
               NavigationBackButton(onPressed: () {
                 _goBack(context);
               }),
-              IconButton(
-                icon: Icon(
-                  Icons.search,
-                  size: ScreenSize.screenHeight * 0.04 +
-                      ScreenSize.screenWidth * 0.04,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const SearchGameRoom()),
-                  );
-                },
+              Row(
+                children: [
+                  IconButton(
+                    icon: Icon(
+                      Icons.qr_code_scanner,
+                      size: ScreenSize.screenHeight * 0.04 +
+                          ScreenSize.screenWidth * 0.04,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {},
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      Icons.search,
+                      size: ScreenSize.screenHeight * 0.04 +
+                          ScreenSize.screenWidth * 0.04,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const SearchGameRoom()),
+                      );
+                    },
+                  ),
+                ],
               ),
             ],
           ),

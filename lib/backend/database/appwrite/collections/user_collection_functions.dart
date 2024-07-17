@@ -15,6 +15,7 @@ Future<bool> createUser(WidgetRef ref) async {
       'online': false,
       'userName': userState.user!.name,
       'lastActive': DateTime.now().toIso8601String(),
+      'guest': false,
     },
   );
   return response;

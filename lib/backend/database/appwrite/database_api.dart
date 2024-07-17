@@ -35,11 +35,15 @@ class DatabaseApi {
   // Method to get a document by the id from a specific collection
   Future<Document?> getDocumentById(String collectionId, String documentId) async {
     try {
-      return await _database.getDocument(
+      Document? document = await _database.getDocument(
         databaseId: databaseId,
         collectionId: collectionId,
         documentId: documentId,
       );
+      if (document.data['\$id'] == null) {
+        return null;
+      }
+      return document;
     } catch(e) {
       print(e);
       return null;
@@ -99,8 +103,7 @@ class DatabaseApi {
   }
 
   // Method to delete a document
-  Future<bool> deleteDocument(String collectionId, String documentId,
-      Map<String, dynamic> data) async {
+  Future<bool> deleteDocument(String collectionId, String documentId) async {
     try {
       await _database.deleteDocument(
         databaseId: databaseId,

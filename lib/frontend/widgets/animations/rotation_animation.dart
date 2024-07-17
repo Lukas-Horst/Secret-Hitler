@@ -35,6 +35,16 @@ class RotationAnimationState extends State<RotationAnimation> with SingleTickerP
     }
   }
 
+  // Repeats the animation until it will be stopped manually
+  void endlessAnimation() {
+    _controller.repeat();
+  }
+
+  // Stops the endless animation
+  void stopAnimation() {
+    _controller.stop();
+  }
+
   @override
   void initState() {
     _controller = AnimationControllers.getController(widget.duration, this);

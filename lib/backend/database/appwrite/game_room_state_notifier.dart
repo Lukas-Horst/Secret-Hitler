@@ -48,7 +48,7 @@ class GameRoomStateNotifier extends StateNotifier<GameRoomState> {
   }
 
   // Method to set the game room back to null and unsubscribe the game room
-  void resetGameRoom() async {
+  void resetGameRoom() {
     if (state.gameRoomDocument != null) {
       state = GameRoomState(gameRoomDocument: null);
       _unsubscribeGameRoom();
@@ -56,7 +56,7 @@ class GameRoomStateNotifier extends StateNotifier<GameRoomState> {
   }
 
   // Method to unsubscribe the game room if is active
-  void _unsubscribeGameRoom() {
+  void _unsubscribeGameRoom() async {
     if (_isSubscribed) {
       _subscription.close();
       _isSubscribed = false;
