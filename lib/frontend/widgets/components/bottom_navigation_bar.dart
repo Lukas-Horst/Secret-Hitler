@@ -10,9 +10,11 @@ class CustomBottomNavigationBar extends StatelessWidget {
   final List<Widget> children;
   final MainAxisAlignment mainAxisAlignment;
   final CrossAxisAlignment crossAxisAlignment;
+  final BorderRadius? borderRadius;
 
   const CustomBottomNavigationBar({super.key, required this.children,
-    required this.mainAxisAlignment, required this.crossAxisAlignment});
+    required this.mainAxisAlignment, required this.crossAxisAlignment,
+    this.borderRadius});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +22,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
       height: ScreenSize.screenHeight * 0.075,
       decoration: BoxDecoration(
         color: AppDesign.getTertiaryColor(),
-        borderRadius: const BorderRadius.only(
+        borderRadius: borderRadius ?? const BorderRadius.only(
           topRight: Radius.circular(15),
           topLeft: Radius.circular(15),
         ),

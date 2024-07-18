@@ -6,9 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/backend/database/appwrite/collections/game_room_collection_functions.dart';
-import 'package:secret_hitler/backend/riverpod/provider.dart';
+import 'package:secret_hitler/frontend/pages/home/homepage/game/waiting_room/join_game/qr_code_scanner_page.dart';
 import 'package:secret_hitler/frontend/pages/home/homepage/game/waiting_room/join_game/search_game_room_page.dart';
-import 'package:secret_hitler/frontend/pages/home/homepage/game/waiting_room/waiting_room_page.dart';
 import 'package:secret_hitler/frontend/widgets/components/bottom_navigation_bar.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons/navigation_back_button.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons/primary_elevated_button.dart';
@@ -128,7 +127,12 @@ class _JoinGameState extends ConsumerState<JoinGame> {
                           ScreenSize.screenWidth * 0.04,
                       color: Colors.white,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const QrCodeScanner()),
+                      );
+                    },
                   ),
                   IconButton(
                     icon: Icon(

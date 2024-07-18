@@ -41,7 +41,8 @@ dependencies:
   flutter_riverpod: ^2.5.1
   flutter_native_splash: ^2.4.0
   flutter_spinkit: ^5.2.1
-  qr_flutter: ^4.1.0
+  mobile_scanner: ^5.1.1
+  qr_scanner_overlay: ^0.0.2
 
 dev_dependencies:
   flutter_test:
