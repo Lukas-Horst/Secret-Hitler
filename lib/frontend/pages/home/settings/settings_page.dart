@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/backend/database/appwrite/collections/user_collection_functions.dart';
+import 'package:secret_hitler/backend/helper/useful_functions.dart';
 import 'package:secret_hitler/backend/riverpod/provider.dart';
 import 'package:secret_hitler/frontend/pages/home/settings/design_page.dart';
 import 'package:secret_hitler/frontend/pages/home/settings/language_page.dart';
@@ -46,19 +47,13 @@ class _SettingsState extends ConsumerState<Settings> {
                 PrimaryElevatedButton(
                   text: AppLanguage.getLanguageData()['Language'],
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Language(refresh: () {refresh();},)),
-                    );
+                    newPage(context, Language(refresh: () {refresh();},));
                   },
                 ),
                 PrimaryElevatedButton(
                   text: AppLanguage.getLanguageData()['Design'],
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const Design()),
-                    );
+                    newPage(context, const Design());
                   },
                 ),
                 PrimaryElevatedButton(

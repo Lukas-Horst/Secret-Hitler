@@ -141,6 +141,7 @@ mixin LocaleData {
     'Search game session': 'Search game session',
 
     'Waiting room': 'Waiting room',
+    'Waiting room QR-Code': 'Waiting room QR-Code',
     'Players': 'Players',
 
     // Board overview page
@@ -289,6 +290,7 @@ mixin LocaleData {
     'Search game session': 'Spielsitzung suchen',
 
     'Waiting room': 'Warteraum',
+    'Waiting room QR-Code': 'Warteraum QR-Code',
     'Players': 'Spieler',
 
     // Board overview page

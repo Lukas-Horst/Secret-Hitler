@@ -10,7 +10,9 @@ import 'package:secret_hitler/backend/database/appwrite/collections/game_room_co
 import 'package:secret_hitler/backend/database/appwrite/database_api.dart';
 import 'package:secret_hitler/backend/database/appwrite/game_room_state_notifier.dart';
 import 'package:secret_hitler/backend/helper/math_functions.dart';
+import 'package:secret_hitler/backend/helper/useful_functions.dart';
 import 'package:secret_hitler/backend/riverpod/provider.dart';
+import 'package:secret_hitler/frontend/pages/home/homepage/game/joining/waiting_room/qr_code_join_page.dart';
 import 'package:secret_hitler/frontend/widgets/components/bottom_navigation_bar.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons/navigation_back_button.dart';
 import 'package:secret_hitler/frontend/widgets/components/text/adjustable_standard_text.dart';
@@ -147,12 +149,14 @@ class _WaitingRoomState extends ConsumerState<WaitingRoom> {
               }),
               IconButton(
                 icon: Icon(
-                  Icons.person_add,
+                  Icons.qr_code,
                   size: ScreenSize.screenHeight * 0.04 +
                       ScreenSize.screenWidth * 0.04,
                   color: Colors.white,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  newPage(context, QrCodeJoin(waitingRoomId: widget.gameRoomDocument.$id));
+                },
               ),
             ],
           ),

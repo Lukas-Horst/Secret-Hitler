@@ -6,6 +6,7 @@ import 'package:secret_hitler/backend/authentication/user_state_notifier.dart';
 import 'package:secret_hitler/backend/database/appwrite/database_api.dart';
 import 'package:secret_hitler/backend/database/appwrite/game_room_state_notifier.dart';
 import 'package:secret_hitler/backend/helper/timer.dart';
+import 'package:secret_hitler/backend/riverpod/qr_code/qr_code_notifier.dart';
 
 // The provider for the auth api
 final authApiProvider = Provider<AuthApi>((ref) {
@@ -34,4 +35,9 @@ final gameRoomStateProvider = StateNotifierProvider<GameRoomStateNotifier, GameR
   final authApi = ref.watch(authApiProvider);
   final databaseApi = ref.watch(databaseApiProvider);
   return GameRoomStateNotifier(databaseApi, authApi.getClient());
+});
+
+// The provider for the qr code notifier
+final qrCodeProvider = StateNotifierProvider<QrCodeNotifier, QrCodeState>((ref) {
+  return QrCodeNotifier();
 });

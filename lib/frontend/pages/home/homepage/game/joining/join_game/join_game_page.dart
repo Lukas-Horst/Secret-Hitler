@@ -6,8 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/backend/database/appwrite/collections/game_room_collection_functions.dart';
-import 'package:secret_hitler/frontend/pages/home/homepage/game/waiting_room/join_game/qr_code_scanner_page.dart';
-import 'package:secret_hitler/frontend/pages/home/homepage/game/waiting_room/join_game/search_game_room_page.dart';
+import 'package:secret_hitler/backend/helper/useful_functions.dart';
+import 'package:secret_hitler/frontend/pages/home/homepage/game/joining/join_game/qr_code_scanner_page.dart';
+import 'package:secret_hitler/frontend/pages/home/homepage/game/joining/join_game/search_game_room_page.dart';
 import 'package:secret_hitler/frontend/widgets/components/bottom_navigation_bar.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons/navigation_back_button.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons/primary_elevated_button.dart';
@@ -25,12 +26,12 @@ class JoinGame extends ConsumerStatefulWidget {
 class _JoinGameState extends ConsumerState<JoinGame> {
 
   // Controllers
-  final roomIdTextController = TextEditingController();
-  final roomPasswordTextController = TextEditingController();
+  final _roomIdTextController = TextEditingController();
+  final _roomPasswordTextController = TextEditingController();
 
   // Focus nodes
-  final roomIdFocusNode = FocusNode();
-  final roomPasswordFocusNode = FocusNode();
+  final _roomIdFocusNode = FocusNode();
+  final _roomPasswordFocusNode = FocusNode();
 
   void _goBack(BuildContext context) {
     Navigator.pop(context);
@@ -65,13 +66,13 @@ class _JoinGameState extends ConsumerState<JoinGame> {
                       CustomTextFormField(
                         hintText: AppLanguage.getLanguageData()['Enter the room id'],
                         obscureText: false,
-                        textController: roomIdTextController,
+                        textController: _roomIdTextController,
                         readOnly: false,
                         autoFocus: false,
                         width: ScreenSize.screenWidth * 0.85,
                         height: ScreenSize.screenHeight * 0.065,
-                        currentFocusNode: roomIdFocusNode,
-                        nextFocusNode: roomPasswordFocusNode,
+                        currentFocusNode: _roomIdFocusNode,
+                        nextFocusNode: _roomPasswordFocusNode,
                       ),
 
                       SizedBox(height: ScreenSize.screenHeight * 0.02),
@@ -82,12 +83,12 @@ class _JoinGameState extends ConsumerState<JoinGame> {
                       CustomTextFormField(
                         hintText: AppLanguage.getLanguageData()['Enter the room password'],
                         obscureText: true,
-                        textController: roomPasswordTextController,
+                        textController: _roomPasswordTextController,
                         readOnly: false,
                         autoFocus: false,
                         width: ScreenSize.screenWidth * 0.85,
                         height: ScreenSize.screenHeight * 0.065,
-                        currentFocusNode: roomPasswordFocusNode,
+                        currentFocusNode: _roomPasswordFocusNode,
                       ),
 
                       SizedBox(height: ScreenSize.screenHeight * 0.06),
@@ -96,11 +97,12 @@ class _JoinGameState extends ConsumerState<JoinGame> {
                         onPressed: () async {
                           Document? gameRoomDocument = await getWaitingRoom(
                             ref,
-                            roomIdTextController.text.trim(),
+                            _roomIdTextController.text.trim(),
                             context,
                           );
                           if (gameRoomDocument != null) {
-                            joinWaitingRoom(ref, gameRoomDocument, context, false);
+                            joinWaitingRoom(ref, gameRoomDocument, context,
+                              0, _roomPasswordTextController.text.trim(),);
                           }
                         },
                       ),
@@ -128,10 +130,7 @@ class _JoinGameState extends ConsumerState<JoinGame> {
                       color: Colors.white,
                     ),
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const QrCodeScanner()),
-                      );
+                      newPage(context, const QrCodeScannerPage());
                     },
                   ),
                   IconButton(
@@ -142,10 +141,7 @@ class _JoinGameState extends ConsumerState<JoinGame> {
                       color: Colors.white,
                     ),
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const SearchGameRoom()),
-                      );
+                      newPage(context, const SearchGameRoom());
                     },
                   ),
                 ],

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/app_design/app_design.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
+import 'package:secret_hitler/backend/helper/useful_functions.dart';
 import 'package:secret_hitler/backend/riverpod/provider.dart';
 import 'package:secret_hitler/backend/authentication/user_state_notifier.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
@@ -113,10 +114,7 @@ class _UserDataState extends ConsumerState<UserData> {
                               decoration: TextDecoration.underline,
                             ),
                             onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => const ChangePassword()),
-                              );
+                              newPage(context, const ChangePassword());
                             },
                           ),
                         ],
@@ -146,10 +144,7 @@ class _UserDataState extends ConsumerState<UserData> {
                 decoration: TextDecoration.underline,
               ),
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const DeleteAccount()),
-                );
+                newPage(context, const DeleteAccount());
               },
             ),
           ],

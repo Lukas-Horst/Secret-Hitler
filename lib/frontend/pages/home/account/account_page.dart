@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
 import 'package:secret_hitler/backend/database/appwrite/collections/user_collection_functions.dart';
+import 'package:secret_hitler/backend/helper/useful_functions.dart';
 import 'package:secret_hitler/backend/riverpod/provider.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/frontend/pages/home/account/user_data_page.dart';
@@ -34,10 +35,7 @@ class Account extends ConsumerWidget {
                 PrimaryElevatedButton(
                   text: AppLanguage.getLanguageData()['User data'],
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const UserData()),
-                    );
+                    newPage(context, const UserData());
                   },
                 ),
                 PrimaryElevatedButton(

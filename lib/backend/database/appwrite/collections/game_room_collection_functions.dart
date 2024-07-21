@@ -6,8 +6,9 @@ import 'package:appwrite/models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/constants/appwrite_constants.dart';
+import 'package:secret_hitler/backend/helper/useful_functions.dart';
 import 'package:secret_hitler/backend/riverpod/provider.dart';
-import 'package:secret_hitler/frontend/pages/home/homepage/game/waiting_room/waiting_room_page.dart';
+import 'package:secret_hitler/frontend/pages/home/homepage/game/joining/waiting_room/waiting_room_page.dart';
 import 'package:secret_hitler/frontend/widgets/loading_spin.dart';
 
 // Function to create a waiting room in the database
@@ -35,12 +36,7 @@ Future<void> createWaitingRoom(WidgetRef ref, String password,
   );
   LoadingSpin.closeLoadingSpin(context);
   if (gameRoomDocument == null) {return;}
-  Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => WaitingRoom(
-      gameRoomDocument: gameRoomDocument,
-    ),),
-  );
+  newPage(context, WaitingRoom(gameRoomDocument: gameRoomDocument,));
 }
 
 // Function which checks whats the next unused number to name a new room
@@ -83,19 +79,12 @@ Future<Document?> getWaitingRoom(WidgetRef ref, String roomId,
 
 // Function to join the waiting room and add the user to the player list
 Future<void> joinWaitingRoom(WidgetRef ref, Document gameRoomDocument,
-    BuildContext context, bool popRoom) async {
+    BuildContext context, int popPages, String? password) async {
   LoadingSpin.openLoadingSpin(context);
   await _updateUserList(ref, gameRoomDocument, true);
   LoadingSpin.closeLoadingSpin(context);
-  if (popRoom) {
-    Navigator.pop(context);
-  }
-  Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => WaitingRoom(
-      gameRoomDocument: gameRoomDocument,
-    ),),
-  );
+  closePage(context, popPages);
+  newPage(context, WaitingRoom(gameRoomDocument: gameRoomDocument,));
 }
 
 // Function to leave a waiting room and update the host or close the waiting room
