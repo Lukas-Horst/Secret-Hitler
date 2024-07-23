@@ -54,6 +54,8 @@ mixin LocaleData {
     'Confirmation email sent': 'Confirmation email sent.',
     'Confirmation email could not be sent': 'Confirmation email could not be sent.',
     'Email already sent': 'Email already sent.',
+    'Passwords do not match': 'Passwords do not match',
+    'Invalid email format': 'Invalid email format',
 
     // Rules Pages
     'RulePage1Section1': 'The year is 1932. The place is pre-WWII Germany. In Secret Hitler, players are German politicians attempting to hold a fragile Liberal government together and stem the rising tide of Fascism. Watch out though-there are secret Fascists among you, and one player is Secret Hitler.',
@@ -143,6 +145,7 @@ mixin LocaleData {
     'Waiting room': 'Waiting room',
     'Waiting room QR-Code': 'Waiting room QR-Code',
     'Players': 'Players',
+    'Wrong password': 'Wrong password',
 
     // Board overview page
     'Draw 3 cards': 'Draw 3 cards',
@@ -203,6 +206,8 @@ mixin LocaleData {
     'Confirmation email sent': 'Bestätigungsmail gesendet.',
     'Confirmation email could not be sent': 'Bestätigungsmail konnte nicht gesendet werden.',
     'Email already sent': 'E-Mail wurde schon gesendet.',
+    'Passwords do not match': 'Passwörter stimmen nicht überein',
+    'Invalid email format': 'Ungültiges E-mail Format',
 
     // Rules Pages
     'RulePage1Section1': 'Wir schreiben das Jahr 1932 und befinden uns in Deutschland vor dem Zweiten Weltkrieg. In Secret Hitler sind die Spieler deutsche Politiker, die versuchen, eine fragile liberale Regierung zusammenzuhalten und die wachsende Welle des Faschismus einzudämmen. Aber Vorsicht, es gibt heimliche Faschisten unter ihnen, und ein Spieler ist Hitler.',
@@ -292,6 +297,7 @@ mixin LocaleData {
     'Waiting room': 'Warteraum',
     'Waiting room QR-Code': 'Warteraum QR-Code',
     'Players': 'Spieler',
+    'Wrong password': 'Falsches Passwort',
 
     // Board overview page
     'Draw 3 cards': 'Ziehe 3 Karten',

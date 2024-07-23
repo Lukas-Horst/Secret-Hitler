@@ -19,18 +19,19 @@ class Register extends ConsumerWidget {
   Register({super.key, required this.switchPages});
 
   // Controllers
-  final emailTextController = TextEditingController();
-
-  final passwordTextController = TextEditingController();
-
-  final confirmPasswordTextController = TextEditingController();
+  final _emailTextController = TextEditingController();
+  final _passwordTextController = TextEditingController();
+  final _confirmPasswordTextController = TextEditingController();
 
   // Focus nodes
-  final emailFocusNode = FocusNode();
+  final _emailFocusNode = FocusNode();
+  final _passwordFocusNode = FocusNode();
+  final _confirmPasswordFocusNode = FocusNode();
 
-  final passwordFocusNode = FocusNode();
-
-  final confirmPasswordFocusNode = FocusNode();
+  // Text field keys
+  final GlobalKey<CustomTextFormFieldState> _emailTextFieldKey = GlobalKey<CustomTextFormFieldState>();
+  final GlobalKey<CustomTextFormFieldState> _passwordTextFieldKey = GlobalKey<CustomTextFormFieldState>();
+  final GlobalKey<CustomTextFormFieldState> _confirmPasswordTextFieldKey = GlobalKey<CustomTextFormFieldState>();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -62,15 +63,16 @@ class Register extends ConsumerWidget {
                         text: AppLanguage.getLanguageData()['E-Mail'],
                       ),
                       CustomTextFormField(
+                        key: _emailTextFieldKey,
                         hintText: AppLanguage.getLanguageData()['Enter your e-mail'],
                         obscureText: false,
-                        textController: emailTextController,
+                        textController: _emailTextController,
                         readOnly: false,
                         autoFocus: false,
                         width: ScreenSize.screenWidth * 0.85,
                         height: ScreenSize.screenHeight * 0.065,
-                        currentFocusNode: emailFocusNode,
-                        nextFocusNode: passwordFocusNode,
+                        currentFocusNode: _emailFocusNode,
+                        nextFocusNode: _passwordFocusNode,
                       ),
                       SizedBox(height: ScreenSize.screenHeight * 0.02),
 
@@ -79,15 +81,16 @@ class Register extends ConsumerWidget {
                         text: AppLanguage.getLanguageData()['Password'],
                       ),
                       CustomTextFormField(
+                        key: _passwordTextFieldKey,
                         hintText: AppLanguage.getLanguageData()['Enter your password'],
                         obscureText: true,
-                        textController: passwordTextController,
+                        textController: _passwordTextController,
                         readOnly: false,
                         autoFocus: false,
                         width: ScreenSize.screenWidth * 0.85,
                         height: ScreenSize.screenHeight * 0.065,
-                        currentFocusNode: passwordFocusNode,
-                        nextFocusNode: confirmPasswordFocusNode,
+                        currentFocusNode: _passwordFocusNode,
+                        nextFocusNode: _confirmPasswordFocusNode,
                       ),
                       SizedBox(height: ScreenSize.screenHeight * 0.02),
 
@@ -96,14 +99,15 @@ class Register extends ConsumerWidget {
                         text: AppLanguage.getLanguageData()['Confirm password'],
                       ),
                       CustomTextFormField(
+                        key: _confirmPasswordTextFieldKey,
                         hintText: AppLanguage.getLanguageData()['Confirm your password'],
                         obscureText: true,
-                        textController: confirmPasswordTextController,
+                        textController: _confirmPasswordTextController,
                         readOnly: false,
                         autoFocus: false,
                         width: ScreenSize.screenWidth * 0.85,
                         height: ScreenSize.screenHeight * 0.065,
-                        currentFocusNode: confirmPasswordFocusNode,
+                        currentFocusNode: _confirmPasswordFocusNode,
                       ),
                       SizedBox(height: ScreenSize.screenHeight * 0.06),
 
@@ -111,24 +115,37 @@ class Register extends ConsumerWidget {
                       PrimaryElevatedButton(
                         text: AppLanguage.getLanguageData()['Register'],
                         onPressed: () async {
-                          try {
-                            final response = await authApi.signIn(
-                              emailTextController.text.trim(),
-                              passwordTextController.text.trim(),
-                              context,
-                            );
-                            // If the sign in was successful the user will be logged in
-                            if (response) {
-                              await authApi.emailPasswordLogin(
-                                emailTextController.text.trim(),
-                                passwordTextController.text.trim(),
+                          if (_passwordTextController.text.trim() !=
+                              _confirmPasswordTextController.text.trim()) {
+                            _confirmPasswordTextFieldKey.currentState?.showError(
+                                AppLanguage.getLanguageData()['Passwords do not match']);
+                            _passwordTextFieldKey.currentState?.showError('');
+                          } else {
+                            _confirmPasswordTextFieldKey.currentState?.resetsErrors();
+                            _passwordTextFieldKey.currentState?.resetsErrors();
+                            _emailTextFieldKey.currentState?.resetsErrors();
+                            try {
+                              final response = await authApi.signIn(
+                                _emailTextController.text.trim(),
+                                _passwordTextController.text.trim(),
                                 context,
+                                _emailTextFieldKey,
+                                _passwordTextFieldKey,
+                                _confirmPasswordTextFieldKey,
                               );
-                              await userStateNotifier.checkUserStatus();
-                              await createUser(ref);
+                              // If the sign in was successful the user will be logged in
+                              if (response) {
+                                await authApi.emailPasswordLogin(
+                                  _emailTextController.text.trim(),
+                                  _passwordTextController.text.trim(),
+                                  context,
+                                );
+                                await userStateNotifier.checkUserStatus();
+                                await createUser(ref);
+                              }
+                            } catch(e) {
+                              print(e);
                             }
-                          } catch(e) {
-                            print(e);
                           }
                         },
                       ),

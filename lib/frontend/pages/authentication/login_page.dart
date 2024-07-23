@@ -28,13 +28,15 @@ class Login extends ConsumerWidget {
 
   // Controllers
   final emailTextController = TextEditingController();
-
   final passwordTextController = TextEditingController();
 
   // Focus nodes
   final emailFocusNode = FocusNode();
-
   final passwordFocusNode = FocusNode();
+
+  // Text field keys
+  final GlobalKey<CustomTextFormFieldState> emailTextFieldKey = GlobalKey<CustomTextFormFieldState>();
+  final GlobalKey<CustomTextFormFieldState> passwordTextFieldKey = GlobalKey<CustomTextFormFieldState>();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -67,6 +69,7 @@ class Login extends ConsumerWidget {
                         text: AppLanguage.getLanguageData()['E-Mail'],
                       ),
                       CustomTextFormField(
+                        key: emailTextFieldKey,
                         hintText: AppLanguage.getLanguageData()['Enter your e-mail'],
                         obscureText: false,
                         textController: emailTextController,
@@ -87,6 +90,7 @@ class Login extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           CustomTextFormField(
+                            key: passwordTextFieldKey,
                             hintText: AppLanguage.getLanguageData()['Enter your password'],
                             obscureText: true,
                             textController: passwordTextController,

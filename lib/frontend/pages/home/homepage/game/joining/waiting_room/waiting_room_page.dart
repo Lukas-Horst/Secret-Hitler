@@ -129,7 +129,8 @@ class _WaitingRoomState extends ConsumerState<WaitingRoom> {
                 text: '${AppLanguage.getLanguageData()['Number of players']}:',
               ),
               ExplainingText(
-                text: '${widget.gameRoomDocument.data['playerAmount']}',
+                text: '${widget.gameRoomDocument.data['users'].length}/'
+                    '${widget.gameRoomDocument.data['playerAmount']}',
               ),
               SizedBox(height: ScreenSize.screenHeight * 0.06),
               ExplainingText(

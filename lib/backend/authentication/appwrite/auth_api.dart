@@ -4,7 +4,9 @@ import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/enums.dart';
 import 'package:appwrite/models.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:secret_hitler/backend/app_language/app_language.dart';
 import 'package:secret_hitler/backend/constants/appwrite_constants.dart';
+import 'package:secret_hitler/frontend/widgets/components/text_form_field.dart';
 import 'package:secret_hitler/frontend/widgets/loading_spin.dart';
 
 // Class for all authentication method to AppWrite
@@ -26,8 +28,10 @@ class AuthApi {
   }
 
   // Method to sign in with an email and a password
-  Future<bool> signIn(String email, String password,
-      BuildContext context) async {
+  Future<bool> signIn(String email, String password, BuildContext context,
+      GlobalKey<CustomTextFormFieldState> emailTextFieldKey,
+      GlobalKey<CustomTextFormFieldState> passwordTextFieldKey,
+      GlobalKey<CustomTextFormFieldState> confirmPasswordTextFieldKey) async {
     LoadingSpin.openLoadingSpin(context);
     try {
       await _account.create(
@@ -36,7 +40,11 @@ class AuthApi {
         password: password,
       );
       return true;
-    } catch (e) {
+    } on AppwriteException catch(e) {
+      print(e.message);
+      LoadingSpin.closeLoadingSpin(context);
+      return false;
+    } catch(e) {
       print(e);
       LoadingSpin.closeLoadingSpin(context);
       return false;
