@@ -56,6 +56,10 @@ mixin LocaleData {
     'Email already sent': 'Email already sent.',
     'Passwords do not match': 'Passwords do not match',
     'Invalid email format': 'Invalid email format',
+    'Less than 8 characters': 'Less than 8 characters',
+    'More than 256 characters': 'More than 256 characters',
+    'Field is empty': 'Field is empty',
+    'Invalid credentials': 'Invalid credentials',
 
     // Rules Pages
     'RulePage1Section1': 'The year is 1932. The place is pre-WWII Germany. In Secret Hitler, players are German politicians attempting to hold a fragile Liberal government together and stem the rising tide of Fascism. Watch out though-there are secret Fascists among you, and one player is Secret Hitler.',
@@ -208,6 +212,10 @@ mixin LocaleData {
     'Email already sent': 'E-Mail wurde schon gesendet.',
     'Passwords do not match': 'Passwörter stimmen nicht überein',
     'Invalid email format': 'Ungültiges E-mail Format',
+    'Less than 8 characters': 'Weniger als 8 Zeichen',
+    'More than 256 characters': 'More than 256 characters',
+    'Field is empty': 'Feld ist leer',
+    'Invalid credentials': 'Ungültige Daten',
 
     // Rules Pages
     'RulePage1Section1': 'Wir schreiben das Jahr 1932 und befinden uns in Deutschland vor dem Zweiten Weltkrieg. In Secret Hitler sind die Spieler deutsche Politiker, die versuchen, eine fragile liberale Regierung zusammenzuhalten und die wachsende Welle des Faschismus einzudämmen. Aber Vorsicht, es gibt heimliche Faschisten unter ihnen, und ein Spieler ist Hitler.',

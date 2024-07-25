@@ -94,11 +94,13 @@ class CustomTextFormFieldState extends State<CustomTextFormField> {
   }
 
   // Setting the error status to null and covers the error message
-  void resetsErrors() {
+  bool resetsErrors() {
     if (_errorStatus != null) {
       _errorStatus = null;
       _validate();
+      return true;
     }
+    return false;
   }
 
   void _validate() {

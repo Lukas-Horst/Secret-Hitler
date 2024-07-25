@@ -27,16 +27,16 @@ class Login extends ConsumerWidget {
   Login({super.key, required this.switchPages});
 
   // Controllers
-  final emailTextController = TextEditingController();
-  final passwordTextController = TextEditingController();
+  final _emailTextController = TextEditingController();
+  final _passwordTextController = TextEditingController();
 
   // Focus nodes
-  final emailFocusNode = FocusNode();
-  final passwordFocusNode = FocusNode();
+  final _emailFocusNode = FocusNode();
+  final _passwordFocusNode = FocusNode();
 
   // Text field keys
-  final GlobalKey<CustomTextFormFieldState> emailTextFieldKey = GlobalKey<CustomTextFormFieldState>();
-  final GlobalKey<CustomTextFormFieldState> passwordTextFieldKey = GlobalKey<CustomTextFormFieldState>();
+  final GlobalKey<CustomTextFormFieldState> _emailTextFieldKey = GlobalKey<CustomTextFormFieldState>();
+  final GlobalKey<CustomTextFormFieldState> _passwordTextFieldKey = GlobalKey<CustomTextFormFieldState>();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -69,16 +69,16 @@ class Login extends ConsumerWidget {
                         text: AppLanguage.getLanguageData()['E-Mail'],
                       ),
                       CustomTextFormField(
-                        key: emailTextFieldKey,
+                        key: _emailTextFieldKey,
                         hintText: AppLanguage.getLanguageData()['Enter your e-mail'],
                         obscureText: false,
-                        textController: emailTextController,
+                        textController: _emailTextController,
                         readOnly: false,
                         autoFocus: false,
                         width: ScreenSize.screenWidth * 0.85,
                         height: ScreenSize.screenHeight * 0.065,
-                        currentFocusNode: emailFocusNode,
-                        nextFocusNode: passwordFocusNode,
+                        currentFocusNode: _emailFocusNode,
+                        nextFocusNode: _passwordFocusNode,
                       ),
                       SizedBox(height: ScreenSize.screenHeight * 0.02),
 
@@ -90,15 +90,15 @@ class Login extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           CustomTextFormField(
-                            key: passwordTextFieldKey,
+                            key: _passwordTextFieldKey,
                             hintText: AppLanguage.getLanguageData()['Enter your password'],
                             obscureText: true,
-                            textController: passwordTextController,
+                            textController: _passwordTextController,
                             readOnly: false,
                             autoFocus: false,
                             width: ScreenSize.screenWidth * 0.85,
                             height: ScreenSize.screenHeight * 0.065,
-                            currentFocusNode: passwordFocusNode,
+                            currentFocusNode: _passwordFocusNode,
                           ),
                           CustomTextButton(
                             text: AppLanguage.getLanguageData()['Forgot password?'],
@@ -124,10 +124,33 @@ class Login extends ConsumerWidget {
                           PrimaryElevatedButton(
                             text: AppLanguage.getLanguageData()['Login'],
                             onPressed: () async {
+                              String password = _passwordTextController.text.trim();
+                              String email = _emailTextController.text.trim();
+                              bool passwordResponse = _passwordTextFieldKey.currentState!.resetsErrors();
+                              bool emailResponse = _emailTextFieldKey.currentState!.resetsErrors();
+                              if (passwordResponse || emailResponse) {
+                                await Future.delayed(const Duration(milliseconds: 400));
+                              }
+                              bool emptyField = false;
+                              if (email.isEmpty) {
+                                _emailTextFieldKey.currentState?.showError(
+                                    AppLanguage.getLanguageData()['Field is empty']);
+                                emptyField = true;
+                              }
+                              if (password.isEmpty) {
+                                _passwordTextFieldKey.currentState?.showError(
+                                    AppLanguage.getLanguageData()['Field is empty']);
+                                emptyField = true;
+                              }
+                              if (emptyField) {
+                                return;
+                              }
                               await authApi.emailPasswordLogin(
-                                emailTextController.text.trim(),
-                                passwordTextController.text.trim(),
+                                email,
+                                password,
                                 context,
+                                _emailTextFieldKey,
+                                _passwordTextFieldKey,
                               );
                               await userStateNotifier.checkUserStatus();
                             },

@@ -115,19 +115,35 @@ class Register extends ConsumerWidget {
                       PrimaryElevatedButton(
                         text: AppLanguage.getLanguageData()['Register'],
                         onPressed: () async {
-                          if (_passwordTextController.text.trim() !=
-                              _confirmPasswordTextController.text.trim()) {
+                          String password = _passwordTextController.text.trim();
+                          String confirmedPassword = _confirmPasswordTextController.text.trim();
+                          String email = _emailTextController.text.trim();
+                          _confirmPasswordTextFieldKey.currentState?.resetsErrors();
+                          bool passwordResponse = _passwordTextFieldKey.currentState!.resetsErrors();
+                          bool emailResponse = _emailTextFieldKey.currentState!.resetsErrors();
+                          if (passwordResponse || emailResponse) {
+                            await Future.delayed(const Duration(milliseconds: 400));
+                          }
+                          if (email.isEmpty) {
+                            _emailTextFieldKey.currentState?.showError(
+                                AppLanguage.getLanguageData()['Field is empty']);
+                          } else if (password.length < 8) {
+                            _passwordTextFieldKey.currentState?.showError(
+                                AppLanguage.getLanguageData()['Less than 8 characters']);
+                            _confirmPasswordTextFieldKey.currentState?.showError('');
+                          } else if (password.length > 256) {
+                            _passwordTextFieldKey.currentState?.showError(
+                                AppLanguage.getLanguageData()['More than 256 characters']);
+                            _confirmPasswordTextFieldKey.currentState?.showError('');
+                          } else if (password != confirmedPassword) {
                             _confirmPasswordTextFieldKey.currentState?.showError(
                                 AppLanguage.getLanguageData()['Passwords do not match']);
                             _passwordTextFieldKey.currentState?.showError('');
                           } else {
-                            _confirmPasswordTextFieldKey.currentState?.resetsErrors();
-                            _passwordTextFieldKey.currentState?.resetsErrors();
-                            _emailTextFieldKey.currentState?.resetsErrors();
                             try {
                               final response = await authApi.signIn(
-                                _emailTextController.text.trim(),
-                                _passwordTextController.text.trim(),
+                                email,
+                                password,
                                 context,
                                 _emailTextFieldKey,
                                 _passwordTextFieldKey,
@@ -139,6 +155,8 @@ class Register extends ConsumerWidget {
                                   _emailTextController.text.trim(),
                                   _passwordTextController.text.trim(),
                                   context,
+                                  _emailTextFieldKey,
+                                  _passwordTextFieldKey,
                                 );
                                 await userStateNotifier.checkUserStatus();
                                 await createUser(ref);

@@ -42,6 +42,9 @@ class AuthApi {
       return true;
     } on AppwriteException catch(e) {
       print(e.message);
+      if (e.message!.contains('Invalid `email` param')) {
+        emailTextFieldKey.currentState?.showError(AppLanguage.getLanguageData()['Invalid email format']);
+      }
       LoadingSpin.closeLoadingSpin(context);
       return false;
     } catch(e) {
@@ -53,13 +56,34 @@ class AuthApi {
 
   // Method to login with the email and password
   Future<bool> emailPasswordLogin(String email, String password,
-      BuildContext context) async {
+      BuildContext context,
+      GlobalKey<CustomTextFormFieldState> emailTextFieldKey,
+      GlobalKey<CustomTextFormFieldState> passwordTextFieldKey,) async {
     LoadingSpin.openLoadingSpin(context);
     try {
       await _account.createEmailPasswordSession(
           email: email,
           password: password);
       return true;
+    } on AppwriteException catch(e) {
+      print(e.message);
+      print(e);
+      if (e.message!.contains('Invalid `email` param')) {
+        emailTextFieldKey.currentState?.showError(
+            AppLanguage.getLanguageData()['Invalid email format']);
+      }
+      if (e.message!.contains('Invalid `password`')) {
+        passwordTextFieldKey.currentState?.showError(
+            AppLanguage.getLanguageData()['Wrong password']);
+      }
+      if (e.message!.contains('Invalid credentials')) {
+        emailTextFieldKey.currentState?.showError(
+            AppLanguage.getLanguageData()['Invalid credentials']);
+        passwordTextFieldKey.currentState?.showError(
+            AppLanguage.getLanguageData()['Invalid credentials']);
+      }
+      LoadingSpin.closeLoadingSpin(context);
+      return false;
     } catch (e) {
       LoadingSpin.closeLoadingSpin(context);
       print(e);
