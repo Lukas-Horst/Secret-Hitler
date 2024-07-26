@@ -17,17 +17,18 @@ class GameRoomStateNotifier extends StateNotifier<GameRoomState> {
   late final Client _client;
   late RealtimeSubscription _subscription;
   bool _isSubscribed = false;
+  Document? _gameRoomDocument;
 
   GameRoomStateNotifier(this._databaseApi, this._client) :super(
       GameRoomState(gameRoomDocument: null));
 
   // Method to set the game room from the given id
   Future<void> setGameRoom(String gameRoomId) async {
-    Document? gameRoomDocument = await _databaseApi.getDocumentById(
+    _gameRoomDocument = await _databaseApi.getDocumentById(
       gameRoomCollectionId,
       gameRoomId,
     );
-    state = GameRoomState(gameRoomDocument: gameRoomDocument);
+    state = GameRoomState(gameRoomDocument: _gameRoomDocument);
     _unsubscribeGameRoom();
     _subscribeGameRoom(gameRoomId);
   }
@@ -41,8 +42,12 @@ class GameRoomStateNotifier extends StateNotifier<GameRoomState> {
         'databases.$appwriteDatabaseId.collections.$gameRoomCollectionId.'
             'documents.$gameRoomId',
       ]);
-      _subscription.stream.listen((event) {
-        state = GameRoomState(gameRoomDocument: Document.fromMap(event.payload));
+      _subscription.stream.listen((event) async {
+        _gameRoomDocument = await _databaseApi.getDocumentById(
+          gameRoomCollectionId,
+          gameRoomId,
+        );
+        state = GameRoomState(gameRoomDocument: _gameRoomDocument);
       });
     }
   }

@@ -35,9 +35,9 @@ class _WaitingRoomState extends ConsumerState<WaitingRoom> {
   bool _firstBuild = true;
 
   Future<void> _goBack(BuildContext context, WidgetRef ref,
-      GameRoomStateNotifier gameRoomStateNotifier) async {
+      GameRoomStateNotifier gameRoomStateNotifier, Document gameRoomDocument) async {
     gameRoomStateNotifier.resetGameRoom();
-    await leaveWaitingRoom(ref, widget.gameRoomDocument, context);
+    await leaveWaitingRoom(ref, gameRoomDocument, context);
   }
 
   // Method to create the list of the player names who are currently in the
@@ -106,16 +106,19 @@ class _WaitingRoomState extends ConsumerState<WaitingRoom> {
       _firstBuild = false;
       gameRoomStateNotifier.setGameRoom(widget.gameRoomDocument.$id);
     } else if (gameRoomState.gameRoomDocument != null) {
-      if (gameRoomState.gameRoomDocument!.data['users'].length
-          != _playerNames.length) {
-        _updatePlayerName(databaseApi);
+      if (gameRoomState.gameRoomDocument!.data['users'] != null) {
+        if (gameRoomState.gameRoomDocument!.data['users'].length
+            != _playerNames.length) {
+          _updatePlayerName(databaseApi);
+        }
       }
     }
     return PopScope(
       canPop: false,
       onPopInvoked: (didpop) async {
         if (!didpop) {
-          _goBack(context, ref, gameRoomStateNotifier);
+          _goBack(context, ref, gameRoomStateNotifier,
+              gameRoomState.gameRoomDocument!);
         }
       },
       child: SafeArea(
@@ -129,7 +132,7 @@ class _WaitingRoomState extends ConsumerState<WaitingRoom> {
                 text: '${AppLanguage.getLanguageData()['Number of players']}:',
               ),
               ExplainingText(
-                text: '${widget.gameRoomDocument.data['users'].length}/'
+                text: '${_playerNames.length}/'
                     '${widget.gameRoomDocument.data['playerAmount']}',
               ),
               SizedBox(height: ScreenSize.screenHeight * 0.06),
@@ -146,7 +149,8 @@ class _WaitingRoomState extends ConsumerState<WaitingRoom> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               NavigationBackButton(onPressed: () {
-                _goBack(context, ref, gameRoomStateNotifier);
+                _goBack(context, ref, gameRoomStateNotifier,
+                    gameRoomState.gameRoomDocument!);
               }),
               IconButton(
                 icon: Icon(

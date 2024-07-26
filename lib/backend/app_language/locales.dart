@@ -150,6 +150,7 @@ mixin LocaleData {
     'Waiting room QR-Code': 'Waiting room QR-Code',
     'Players': 'Players',
     'Wrong password': 'Wrong password',
+    'Wrong Id': 'Falsche Id',
 
     // Board overview page
     'Draw 3 cards': 'Draw 3 cards',
@@ -306,6 +307,7 @@ mixin LocaleData {
     'Waiting room QR-Code': 'Warteraum QR-Code',
     'Players': 'Spieler',
     'Wrong password': 'Falsches Passwort',
+    'Wrong Id': 'Falsche Id',
 
     // Board overview page
     'Draw 3 cards': 'Ziehe 3 Karten',

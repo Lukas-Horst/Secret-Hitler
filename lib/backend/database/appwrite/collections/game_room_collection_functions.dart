@@ -79,7 +79,7 @@ Future<Document?> getWaitingRoom(WidgetRef ref, String roomId,
 
 // Function to join the waiting room and add the user to the player list
 Future<void> joinWaitingRoom(WidgetRef ref, Document gameRoomDocument,
-    BuildContext context, int popPages, String? password) async {
+    BuildContext context, int popPages) async {
   LoadingSpin.openLoadingSpin(context);
   await _updateUserList(ref, gameRoomDocument, true);
   LoadingSpin.closeLoadingSpin(context);

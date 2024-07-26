@@ -33,7 +33,7 @@ class _QrCodeScannerPageState extends ConsumerState<QrCodeScannerPage> {
       null,
     );
     if (potencialWaitingRoom != null) {
-      joinWaitingRoom(ref, potencialWaitingRoom, context, 1, null);
+      joinWaitingRoom(ref, potencialWaitingRoom, context, 1);
       qrCodeStateNotifier.updateCodeInformation(null);
     }
   }

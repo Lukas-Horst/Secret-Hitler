@@ -33,6 +33,9 @@ class _JoinGameState extends ConsumerState<JoinGame> {
   final _roomIdFocusNode = FocusNode();
   final _roomPasswordFocusNode = FocusNode();
 
+  final GlobalKey<CustomTextFormFieldState> _roomIdTextFieldKey = GlobalKey<CustomTextFormFieldState>();
+  final GlobalKey<CustomTextFormFieldState> _roomPasswordTextFieldKey = GlobalKey<CustomTextFormFieldState>();
+
   void _goBack(BuildContext context) {
     Navigator.pop(context);
   }
@@ -64,6 +67,7 @@ class _JoinGameState extends ConsumerState<JoinGame> {
                         text: AppLanguage.getLanguageData()['Room id'],
                       ),
                       CustomTextFormField(
+                        key: _roomIdTextFieldKey,
                         hintText: AppLanguage.getLanguageData()['Enter the room id'],
                         obscureText: false,
                         textController: _roomIdTextController,
@@ -81,6 +85,7 @@ class _JoinGameState extends ConsumerState<JoinGame> {
                         text: AppLanguage.getLanguageData()['Room password'],
                       ),
                       CustomTextFormField(
+                        key: _roomPasswordTextFieldKey,
                         hintText: AppLanguage.getLanguageData()['Enter the room password'],
                         obscureText: true,
                         textController: _roomPasswordTextController,
@@ -100,9 +105,22 @@ class _JoinGameState extends ConsumerState<JoinGame> {
                             _roomIdTextController.text.trim(),
                             context,
                           );
+                          bool idResponse = _roomIdTextFieldKey.currentState!.resetsErrors();
+                          bool passwordResponse = _roomPasswordTextFieldKey.currentState!.resetsErrors();
+                          if (idResponse || passwordResponse) {
+                            await Future.delayed(const Duration(milliseconds: 400));
+                          }
+                          String password = _roomPasswordTextController.text.trim();
                           if (gameRoomDocument != null) {
-                            joinWaitingRoom(ref, gameRoomDocument, context,
-                              0, _roomPasswordTextController.text.trim(),);
+                            if (password == gameRoomDocument.data['password']) {
+                              joinWaitingRoom(ref, gameRoomDocument, context, 0,);
+                            } else {
+                              _roomPasswordTextFieldKey.currentState?.showError(
+                                AppLanguage.getLanguageData()['Wrong password'],);
+                            }
+                          } else {
+                            _roomIdTextFieldKey.currentState?.showError(
+                              AppLanguage.getLanguageData()['Wrong Id']);
                           }
                         },
                       ),
