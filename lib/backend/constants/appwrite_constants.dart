@@ -8,3 +8,4 @@ const String appwriteDatabaseId = '666ede7a0008b6ce0649';
 
 const String gameRoomCollectionId = '6679d6c1002eb3ec394c';
 const String userCollectionId = '6679d77d003a055ba81e';
+const String gameStateId = '66a535b90000c0eeb3d0';

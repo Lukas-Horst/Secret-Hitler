@@ -6,7 +6,7 @@ import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/backend/pages/game/game_room/players_and_election_backend.dart';
 import 'package:secret_hitler/frontend/widgets/animations/flip_animation.dart';
 import 'package:secret_hitler/frontend/widgets/components/game/players_and_election/player_widget.dart';
-import 'package:secret_hitler/frontend/widgets/components/transformedWidgets.dart';
+import 'package:secret_hitler/frontend/widgets/components/transformed_widgets/angle_widget.dart';
 
 class PlayersAndElection extends StatefulWidget {
 

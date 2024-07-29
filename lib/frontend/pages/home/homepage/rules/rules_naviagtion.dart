@@ -11,7 +11,7 @@ import 'package:secret_hitler/frontend/pages/home/homepage/rules/rules_page_4.da
 import 'package:secret_hitler/frontend/pages/home/homepage/rules/rules_page_5.dart';
 import 'package:secret_hitler/frontend/pages/home/homepage/rules/rules_page_6.dart';
 import 'package:secret_hitler/frontend/pages/home/homepage/rules/rules_page_7.dart';
-import 'package:secret_hitler/frontend/widgets/components/bottom_navigation_bar.dart';
+import 'package:secret_hitler/frontend/widgets/components/useful_widgets/bottom_navigation_bar.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons/navigation_back_button.dart';
 import 'package:secret_hitler/frontend/widgets/header/header.dart';
 

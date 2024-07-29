@@ -13,8 +13,11 @@ import 'package:secret_hitler/backend/helper/math_functions.dart';
 import 'package:secret_hitler/backend/helper/useful_functions.dart';
 import 'package:secret_hitler/backend/riverpod/provider.dart';
 import 'package:secret_hitler/frontend/pages/home/homepage/game/joining/waiting_room/qr_code_join_page.dart';
-import 'package:secret_hitler/frontend/widgets/components/bottom_navigation_bar.dart';
+import 'package:secret_hitler/frontend/widgets/components/useful_widgets/activate_widget.dart';
+import 'package:secret_hitler/frontend/widgets/components/useful_widgets/bottom_navigation_bar.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons/navigation_back_button.dart';
+import 'package:secret_hitler/frontend/widgets/components/buttons/primary_elevated_button.dart';
+import 'package:secret_hitler/frontend/widgets/components/snackbar.dart';
 import 'package:secret_hitler/frontend/widgets/components/text/adjustable_standard_text.dart';
 import 'package:secret_hitler/frontend/widgets/components/text/explaining_text.dart';
 import 'package:secret_hitler/frontend/widgets/header/header.dart';
@@ -33,6 +36,7 @@ class _WaitingRoomState extends ConsumerState<WaitingRoom> {
 
   late List _playerNames;
   bool _firstBuild = true;
+  GlobalKey<ActivateWidgetState> _navigationBarActivateKey = GlobalKey<ActivateWidgetState>();
 
   Future<void> _goBack(BuildContext context, WidgetRef ref,
       GameRoomStateNotifier gameRoomStateNotifier, Document gameRoomDocument) async {
@@ -46,12 +50,18 @@ class _WaitingRoomState extends ConsumerState<WaitingRoom> {
     List<Widget> nameRows = [];
     int maxIterations = ceilingDivision(_playerNames.length, 2);
     for (int i=0; i < maxIterations; i++) {
-      List<AdjustableStandardText> names = [];
+      List<Widget> names = [];
       // Always add the first name
-      names.add(AdjustableStandardText(
-        text: '• ${_playerNames[i*2]}',
-        color: Colors.white,
-        size: ScreenSize.screenHeight * 0.02 + ScreenSize.screenWidth * 0.02,
+      names.add(SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: SizedBox(
+          width: ScreenSize.screenWidth * 0.43,
+          child: AdjustableStandardText(
+            text: '• ${_playerNames[i*2]}',
+            color: Colors.white,
+            size: ScreenSize.screenHeight * 0.02 + ScreenSize.screenWidth * 0.02,
+          ),
+        ),
       ));
       // Checking if we can add a second name in the row if we have on left
       if (_playerNames.length % 2 == 0 || i != maxIterations - 1) {
@@ -127,7 +137,14 @@ class _WaitingRoomState extends ConsumerState<WaitingRoom> {
           body: Column(
             children: [
               Header(headerText: AppLanguage.getLanguageData()['Waiting room']),
-              SizedBox(height: ScreenSize.screenHeight * 0.04),
+              SizedBox(height: ScreenSize.screenHeight * 0.02),
+              ExplainingText(
+                text: '${AppLanguage.getLanguageData()['Room id']}:',
+              ),
+              ExplainingText(
+                text: widget.gameRoomDocument.$id,
+              ),
+              SizedBox(height: ScreenSize.screenHeight * 0.02),
               ExplainingText(
                 text: '${AppLanguage.getLanguageData()['Number of players']}:',
               ),
@@ -135,35 +152,58 @@ class _WaitingRoomState extends ConsumerState<WaitingRoom> {
                 text: '${_playerNames.length}/'
                     '${widget.gameRoomDocument.data['playerAmount']}',
               ),
-              SizedBox(height: ScreenSize.screenHeight * 0.06),
+              SizedBox(height: ScreenSize.screenHeight * 0.04),
               ExplainingText(
                 text: '${AppLanguage.getLanguageData()['Players']}:',
               ),
               SizedBox(
                 width: ScreenSize.screenWidth * 0.90,
-                child: _showPlayerNames(),),
-            ],
-          ),
-          bottomNavigationBar: CustomBottomNavigationBar(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              NavigationBackButton(onPressed: () {
-                _goBack(context, ref, gameRoomStateNotifier,
-                    gameRoomState.gameRoomDocument!);
-              }),
-              IconButton(
-                icon: Icon(
-                  Icons.qr_code,
-                  size: ScreenSize.screenHeight * 0.04 +
-                      ScreenSize.screenWidth * 0.04,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  newPage(context, QrCodeJoin(waitingRoomId: widget.gameRoomDocument.$id));
+                height: ScreenSize.screenHeight * 0.22,
+                child: _showPlayerNames(),
+              ),
+              SizedBox(height: ScreenSize.screenHeight * 0.06),
+              PrimaryElevatedButton(
+                text: AppLanguage.getLanguageData()['Start game'],
+                onPressed: () async {
+                  if (_playerNames.length <= widget.gameRoomDocument.data['playerAmount']
+                      && _playerNames.length > 4) {
+                    print(true);
+                  } else {
+                    CustomSnackbar.showSnackbar(
+                      context,
+                      AppLanguage.getLanguageData()['Too few players'],
+                      Colors.red,
+                      const Duration(seconds: 3),
+                      _navigationBarActivateKey,
+                    );
+                  }
                 },
               ),
             ],
+          ),
+          bottomNavigationBar: ActivateWidget(
+            key: _navigationBarActivateKey,
+            child: CustomBottomNavigationBar(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                NavigationBackButton(onPressed: () {
+                  _goBack(context, ref, gameRoomStateNotifier,
+                      gameRoomState.gameRoomDocument!);
+                }),
+                IconButton(
+                  icon: Icon(
+                    Icons.qr_code,
+                    size: ScreenSize.screenHeight * 0.04 +
+                        ScreenSize.screenWidth * 0.04,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    newPage(context, QrCodeJoin(waitingRoomId: widget.gameRoomDocument.$id));
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -9,11 +9,11 @@ import 'package:secret_hitler/backend/database/appwrite/collections/game_room_co
 import 'package:secret_hitler/backend/helper/useful_functions.dart';
 import 'package:secret_hitler/frontend/pages/home/homepage/game/joining/join_game/qr_code_scanner_page.dart';
 import 'package:secret_hitler/frontend/pages/home/homepage/game/joining/join_game/search_game_room_page.dart';
-import 'package:secret_hitler/frontend/widgets/components/bottom_navigation_bar.dart';
+import 'package:secret_hitler/frontend/widgets/components/useful_widgets/bottom_navigation_bar.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons/navigation_back_button.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons/primary_elevated_button.dart';
 import 'package:secret_hitler/frontend/widgets/components/text/text_field_head_text.dart';
-import 'package:secret_hitler/frontend/widgets/components/text_form_field.dart';
+import 'package:secret_hitler/frontend/widgets/components/useful_widgets/text_form_field.dart';
 import 'package:secret_hitler/frontend/widgets/header/header.dart';
 
 class JoinGame extends ConsumerStatefulWidget {

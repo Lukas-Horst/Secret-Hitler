@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:secret_hitler/backend/app_design/app_design.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons/custom_text_button.dart';
-import 'package:secret_hitler/frontend/widgets/components/transformedWidgets.dart';
+import 'package:secret_hitler/frontend/widgets/components/transformed_widgets/angle_widget.dart';
 
 // The whole area on the login or register page where we switch the pages
-class LoginRegisterSwitchButton extends StatefulWidget {
+class LoginRegisterSwitchButton extends StatelessWidget {
 
   final String questionText;
   final String buttonText;
@@ -16,11 +16,6 @@ class LoginRegisterSwitchButton extends StatefulWidget {
   const LoginRegisterSwitchButton({super.key, required this.questionText,
     required this.buttonText, required this.onTap});
 
-  @override
-  State<LoginRegisterSwitchButton> createState() => _LoginRegisterSwitchButtonState();
-}
-
-class _LoginRegisterSwitchButtonState extends State<LoginRegisterSwitchButton> {
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -37,7 +32,7 @@ class _LoginRegisterSwitchButtonState extends State<LoginRegisterSwitchButton> {
         Column(
           children: [
             Text(
-              widget.questionText,
+              questionText,
               style: TextStyle(
                 fontFamily: 'EskapadeFrakturW04BlackFamily',
                 fontSize: ScreenSize.screenHeight * 0.017 +
@@ -47,7 +42,7 @@ class _LoginRegisterSwitchButtonState extends State<LoginRegisterSwitchButton> {
             ),
             SizedBox(height: ScreenSize.screenHeight * 0.005),
             CustomTextButton(
-              text: widget.buttonText,
+              text: buttonText,
               textStyle: TextStyle(
                 fontFamily: 'EskapadeFrakturW04BlackFamily',
                 fontSize: ScreenSize.screenHeight * 0.017 +
@@ -55,7 +50,7 @@ class _LoginRegisterSwitchButtonState extends State<LoginRegisterSwitchButton> {
                 color: AppDesign.getContraryPrimaryColor(),
                 decoration: TextDecoration.underline,
               ),
-              onTap: () {widget.onTap();},
+              onTap: () {onTap();},
             ),
           ],
         ),

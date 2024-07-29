@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/database/appwrite/collections/game_room_collection_functions.dart';
 import 'package:secret_hitler/backend/riverpod/provider.dart';
-import 'package:secret_hitler/frontend/widgets/components/bottom_navigation_bar.dart';
+import 'package:secret_hitler/frontend/widgets/components/useful_widgets/bottom_navigation_bar.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons/navigation_back_button.dart';
 import 'package:secret_hitler/frontend/widgets/components/qr_code/qr_code_scanner.dart';
 

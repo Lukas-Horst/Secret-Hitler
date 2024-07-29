@@ -151,6 +151,8 @@ mixin LocaleData {
     'Players': 'Players',
     'Wrong password': 'Wrong password',
     'Wrong Id': 'Falsche Id',
+    'Start game': 'Start game',
+    'Too few players': 'Too few players',
 
     // Board overview page
     'Draw 3 cards': 'Draw 3 cards',
@@ -308,6 +310,8 @@ mixin LocaleData {
     'Players': 'Spieler',
     'Wrong password': 'Falsches Passwort',
     'Wrong Id': 'Falsche Id',
+    'Start game': 'Spiel starten',
+    'Too few players': 'Zu wenig Spieler',
 
     // Board overview page
     'Draw 3 cards': 'Ziehe 3 Karten',

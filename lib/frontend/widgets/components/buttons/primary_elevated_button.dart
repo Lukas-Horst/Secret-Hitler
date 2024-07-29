@@ -5,7 +5,7 @@ import 'package:secret_hitler/backend/app_design/app_design.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 
 // The standard elevated button design
-class PrimaryElevatedButton extends StatefulWidget {
+class PrimaryElevatedButton extends StatelessWidget {
 
   final String text;
   final Function() onPressed;
@@ -15,14 +15,9 @@ class PrimaryElevatedButton extends StatefulWidget {
     required this.onPressed, this.textSize});
 
   @override
-  State<PrimaryElevatedButton> createState() => _PrimaryElevatedButtonState();
-}
-
-class _PrimaryElevatedButtonState extends State<PrimaryElevatedButton> {
-  @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: widget.onPressed,
+      onPressed: onPressed,
       style: ElevatedButton.styleFrom(
           backgroundColor: AppDesign.getSecondaryColor(),
           foregroundColor: Colors.black,
@@ -39,10 +34,10 @@ class _PrimaryElevatedButtonState extends State<PrimaryElevatedButton> {
           )
       ),
       child: Text(
-        widget.text,
+        text,
         style: TextStyle(
           fontFamily: 'EskapadeFrakturW04BlackFamily',
-          fontSize: widget.textSize ?? ScreenSize.screenHeight * 0.025 +
+          fontSize: textSize ?? ScreenSize.screenHeight * 0.025 +
               ScreenSize.screenWidth * 0.025,
         ),
       ),

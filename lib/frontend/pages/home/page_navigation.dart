@@ -8,7 +8,7 @@ import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/frontend/pages/home/account/account_page.dart';
 import 'package:secret_hitler/frontend/pages/home/homepage/homepage.dart';
 import 'package:secret_hitler/frontend/pages/home/settings/settings_page.dart';
-import 'package:secret_hitler/frontend/widgets/components/bottom_navigation_bar.dart';
+import 'package:secret_hitler/frontend/widgets/components/useful_widgets/bottom_navigation_bar.dart';
 
 
 class PageNavigation extends ConsumerStatefulWidget {

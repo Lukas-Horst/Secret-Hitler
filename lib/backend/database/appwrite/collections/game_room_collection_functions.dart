@@ -36,6 +36,18 @@ Future<void> createWaitingRoom(WidgetRef ref, String password,
   );
   LoadingSpin.closeLoadingSpin(context);
   if (gameRoomDocument == null) {return;}
+  await databaseApi.createDocument(
+    gameStateId,
+    gameRoomDocument.$id,
+    {
+      'player_order': [],
+    },
+  );
+  await databaseApi.updateDocument(
+    gameRoomCollectionId,
+    gameRoomDocument.$id,
+    {'gameState': gameRoomDocument.$id},
+  );
   newPage(context, WaitingRoom(gameRoomDocument: gameRoomDocument,));
 }
 

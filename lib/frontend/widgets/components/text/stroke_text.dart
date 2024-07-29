@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 
 // Text with a stroke style
-class StrokeText extends StatefulWidget {
+class StrokeText extends StatelessWidget {
 
   final String text;
   final double fontSize;
@@ -18,11 +18,6 @@ class StrokeText extends StatefulWidget {
     required this.strokeColor, required this.underline});
 
   @override
-  State<StrokeText> createState() => _StrokeTextState();
-}
-
-class _StrokeTextState extends State<StrokeText> {
-  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(left: ScreenSize.screenWidth * 0.005),
@@ -30,27 +25,27 @@ class _StrokeTextState extends State<StrokeText> {
         children: [
           // Stroke text
           Text(
-            widget.text,
+            text,
             style: TextStyle(
               fontFamily: 'EskapadeFrakturW04BlackFamily',
-              fontSize: widget.fontSize,
+              fontSize: fontSize,
               foreground: Paint()
                 ..style = PaintingStyle.stroke
-                ..strokeWidth = widget.strokeWidth
-                ..color = widget.strokeColor,
+                ..strokeWidth = strokeWidth
+                ..color = strokeColor,
             ),
           ),
           // Main text
           Text(
-            widget.text,
+            text,
             style: TextStyle(
               fontFamily: 'EskapadeFrakturW04BlackFamily',
-              fontSize: widget.fontSize,
-              color: widget.textColor,
-              decoration: widget.underline
+              fontSize: fontSize,
+              color: textColor,
+              decoration: underline
                   ? TextDecoration.underline
                   : null,
-              decorationColor: widget.textColor,
+              decorationColor: textColor,
             ),
           ),
 

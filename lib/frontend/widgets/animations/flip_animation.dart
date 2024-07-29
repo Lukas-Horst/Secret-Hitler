@@ -4,7 +4,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:secret_hitler/frontend/widgets/animations/animation_controllers.dart';
-import 'package:secret_hitler/frontend/widgets/components/transformedWidgets.dart';
+import 'package:secret_hitler/frontend/widgets/components/transformed_widgets/mirrored_widget.dart';
 
 // Animation for a flip of 2 Widgets
 class FlipAnimation extends StatefulWidget {

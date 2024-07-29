@@ -1,7 +1,7 @@
 // author: Lukas Horst
 
 import 'package:flutter/material.dart';
-import 'package:secret_hitler/frontend/widgets/components/transformedWidgets.dart';
+import 'package:secret_hitler/frontend/widgets/components/transformed_widgets/angle_widget.dart';
 
 import 'animation_controllers.dart';
 

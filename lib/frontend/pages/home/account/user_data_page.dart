@@ -10,12 +10,12 @@ import 'package:secret_hitler/backend/authentication/user_state_notifier.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/frontend/pages/home/account/change_password_page.dart';
 import 'package:secret_hitler/frontend/pages/home/account/delete_account_page.dart';
-import 'package:secret_hitler/frontend/widgets/components/bottom_navigation_bar.dart';
+import 'package:secret_hitler/frontend/widgets/components/useful_widgets/bottom_navigation_bar.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons/custom_text_button.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons/navigation_back_button.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons/primary_elevated_button.dart';
 import 'package:secret_hitler/frontend/widgets/components/text/text_field_head_text.dart';
-import 'package:secret_hitler/frontend/widgets/components/text_form_field.dart';
+import 'package:secret_hitler/frontend/widgets/components/useful_widgets/text_form_field.dart';
 import 'package:secret_hitler/frontend/widgets/header/header.dart';
 
 class UserData extends ConsumerStatefulWidget {

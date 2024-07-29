@@ -72,6 +72,7 @@ class CustomTextFormFieldState extends State<CustomTextFormField> {
         ),
       );
     }
+    return null;
   }
 
   void _changeTextEditingStatus() {

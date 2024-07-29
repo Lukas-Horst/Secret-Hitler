@@ -6,7 +6,7 @@ import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/frontend/widgets/components/text/stroke_text.dart';
 
 // Used on rules page 5
-class TextWithImage extends StatefulWidget {
+class TextWithImage extends StatelessWidget {
 
   final String headline;
   final String imageName;
@@ -20,17 +20,12 @@ class TextWithImage extends StatefulWidget {
     required this.text, required this.textIndex, required this.headline});
 
   @override
-  State<TextWithImage> createState() => _TextWithImageState();
-}
-
-class _TextWithImageState extends State<TextWithImage> {
-  @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         StrokeText(
-          text: '${AppLanguage.getLanguageData()[widget.headline].toString().toUpperCase()}:',
+          text: '${AppLanguage.getLanguageData()[headline].toString().toUpperCase()}:',
           fontSize: ScreenSize.screenHeight * 0.015 + ScreenSize.screenWidth * 0.015,
           textColor: Colors.white,
           strokeWidth: 4,
@@ -42,14 +37,14 @@ class _TextWithImageState extends State<TextWithImage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Image.asset(
-              'assets/images/${widget.imageName}.png',
-              height: widget.imageHeight,
-              width: widget.imageWidth,
+              'assets/images/$imageName.png',
+              height: imageHeight,
+              width: imageWidth,
             ),
             SizedBox(width: ScreenSize.screenWidth * 0.03),
             Expanded(
               child: StrokeText(
-                text: widget.text.substring(0, widget.textIndex),
+                text: text.substring(0, textIndex),
                 fontSize: ScreenSize.screenHeight * 0.015 + ScreenSize.screenWidth * 0.015,
                 textColor: Colors.white,
                 strokeWidth: 4,
@@ -60,7 +55,7 @@ class _TextWithImageState extends State<TextWithImage> {
           ],
         ),
         StrokeText(
-          text: widget.text.substring(widget.textIndex),
+          text: text.substring(textIndex),
           fontSize: ScreenSize.screenHeight * 0.015 + ScreenSize.screenWidth * 0.015,
           textColor: Colors.white,
           strokeWidth: 4,

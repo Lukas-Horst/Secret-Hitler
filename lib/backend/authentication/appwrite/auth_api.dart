@@ -6,7 +6,7 @@ import 'package:appwrite/models.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
 import 'package:secret_hitler/backend/constants/appwrite_constants.dart';
-import 'package:secret_hitler/frontend/widgets/components/text_form_field.dart';
+import 'package:secret_hitler/frontend/widgets/components/useful_widgets/text_form_field.dart';
 import 'package:secret_hitler/frontend/widgets/loading_spin.dart';
 
 // Class for all authentication method to AppWrite

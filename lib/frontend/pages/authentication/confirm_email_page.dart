@@ -9,7 +9,7 @@ import 'package:secret_hitler/frontend/widgets/components/buttons/primary_elevat
 import 'package:secret_hitler/frontend/widgets/components/text/divider_with_text.dart';
 import 'package:secret_hitler/frontend/widgets/components/snackbar.dart';
 import 'package:secret_hitler/frontend/widgets/components/text/explaining_text.dart';
-import 'package:secret_hitler/frontend/widgets/components/text_form_field.dart';
+import 'package:secret_hitler/frontend/widgets/components/useful_widgets/text_form_field.dart';
 import 'package:secret_hitler/frontend/widgets/header/header.dart';
 import 'package:secret_hitler/frontend/widgets/loading_spin.dart';
 
@@ -69,26 +69,29 @@ class _ConfirmEmailState extends ConsumerState<ConfirmEmail> {
                     bool response = await authApi.sendVerificationMail(context);
                     if (response) {
                       _emailSent = true;
-                      showSnackbar(
+                      CustomSnackbar.showSnackbar(
                         context,
                         AppLanguage.getLanguageData()['Confirmation email sent'],
                         Colors.green,
                         const Duration(seconds: 3),
+                        null,
                       );
                     } else {
-                      showSnackbar(
+                      CustomSnackbar.showSnackbar(
                         context,
                         AppLanguage.getLanguageData()['Confirmation email could not be sent'],
                         Colors.red,
                         const Duration(seconds: 3),
+                        null,
                       );
                     }
                   } else {
-                    showSnackbar(
+                    CustomSnackbar.showSnackbar(
                       context,
                       AppLanguage.getLanguageData()['Email already sent'],
                       Colors.green,
                       const Duration(seconds: 3),
+                      null,
                     );
                   }
                 },

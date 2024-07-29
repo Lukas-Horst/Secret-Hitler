@@ -5,7 +5,7 @@ import 'package:secret_hitler/backend/app_design/app_design.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 
 // The button to log in with a third party provider
-class ThirdPartyButton extends StatefulWidget {
+class ThirdPartyButton extends StatelessWidget {
 
   final String imageName;
   final Function onPressed;
@@ -14,16 +14,11 @@ class ThirdPartyButton extends StatefulWidget {
     required this.onPressed});
 
   @override
-  State<ThirdPartyButton> createState() => _ThirdPartyButtonState();
-}
-
-class _ThirdPartyButtonState extends State<ThirdPartyButton> {
-  @override
   Widget build(BuildContext context) {
     return IconButton(
-      onPressed: () {widget.onPressed();},
+      onPressed: () {onPressed();},
       icon: Image.asset(
-        'assets/images/${widget.imageName}.png',
+        'assets/images/$imageName.png',
       ),
       style: IconButton.styleFrom(
           backgroundColor: AppDesign.getSecondaryColor(),

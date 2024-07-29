@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 
 // Text button without too much space around
-class CustomTextButton extends StatefulWidget {
+class CustomTextButton extends StatelessWidget {
 
   final String text;
   final TextStyle textStyle;
@@ -13,18 +13,13 @@ class CustomTextButton extends StatefulWidget {
     required this.textStyle, required this.onTap});
 
   @override
-  State<CustomTextButton> createState() => _CustomTextButtonState();
-}
-
-class _CustomTextButtonState extends State<CustomTextButton> {
-  @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: widget.onTap,
+      onTap: onTap,
       child: RichText(
         text: TextSpan(
-          text: widget.text,
-          style: widget.textStyle,
+          text: text,
+          style: textStyle,
         ),
       ),
     );

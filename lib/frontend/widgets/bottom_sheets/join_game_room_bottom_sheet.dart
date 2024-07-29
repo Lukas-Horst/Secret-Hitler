@@ -9,7 +9,7 @@ import 'package:secret_hitler/backend/database/appwrite/collections/game_room_co
 import 'package:secret_hitler/frontend/widgets/bottom_sheets/bottom_sheet.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons/primary_elevated_button.dart';
 import 'package:secret_hitler/frontend/widgets/components/text/text_field_head_text.dart';
-import 'package:secret_hitler/frontend/widgets/components/text_form_field.dart';
+import 'package:secret_hitler/frontend/widgets/components/useful_widgets/text_form_field.dart';
 
 CustomBottomSheet joinGameRoomBottomSheet(Document gameRoomDocument,
     BuildContext context, WidgetRef ref) {
