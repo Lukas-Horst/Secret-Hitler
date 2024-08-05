@@ -20,43 +20,50 @@ class CustomBottomSheet {
         isDismissible: _dismissible,
         context: context,
         builder: (context) {
-          return Padding(
-            padding: EdgeInsets.only(bottom: ScreenSize.bottomViewInsets),
-            child: Container(
-              height: _height,
-              width: ScreenSize.screenWidth,
-              decoration: const BoxDecoration(
-                  color: Color(0xFF6A6A6A),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(15),
-                    topRight: Radius.circular(15),
-                  )
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: ScreenSize.screenWidth,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        IconButton(
-                          icon: Icon(
-                            Icons.close,
-                            size: ScreenSize.screenHeight * 0.04 +
-                                ScreenSize.screenWidth * 0.04,
-                            color: Colors.white,
-                          ),
-                          onPressed: () {
-                            closeBottomSheet(context);
-                          },
-                        ),
-                      ],
-                    ),
+          return SizedBox(
+            height: _height,
+            // Wrapped with a scaffold to show a snackbar above the bottom sheet
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              body: Padding(
+                padding: EdgeInsets.only(bottom: ScreenSize.bottomViewInsets),
+                child: Container(
+                  height: _height,
+                  width: ScreenSize.screenWidth,
+                  decoration: const BoxDecoration(
+                      color: Color(0xFF6A6A6A),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(15),
+                        topRight: Radius.circular(15),
+                      ),
                   ),
-                  ..._children,
-                ],
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: ScreenSize.screenWidth,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            IconButton(
+                              icon: Icon(
+                                Icons.close,
+                                size: ScreenSize.screenHeight * 0.04 +
+                                    ScreenSize.screenWidth * 0.04,
+                                color: Colors.white,
+                              ),
+                              onPressed: () {
+                                closeBottomSheet(context);
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                      ..._children,
+                    ],
+                  ),
+                ),
               ),
             ),
           );

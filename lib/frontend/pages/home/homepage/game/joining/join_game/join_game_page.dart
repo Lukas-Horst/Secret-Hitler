@@ -9,6 +9,8 @@ import 'package:secret_hitler/backend/database/appwrite/collections/game_room_co
 import 'package:secret_hitler/backend/helper/useful_functions.dart';
 import 'package:secret_hitler/frontend/pages/home/homepage/game/joining/join_game/qr_code_scanner_page.dart';
 import 'package:secret_hitler/frontend/pages/home/homepage/game/joining/join_game/search_game_room_page.dart';
+import 'package:secret_hitler/frontend/widgets/components/snackbar.dart';
+import 'package:secret_hitler/frontend/widgets/components/useful_widgets/activate_widget.dart';
 import 'package:secret_hitler/frontend/widgets/components/useful_widgets/bottom_navigation_bar.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons/navigation_back_button.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons/primary_elevated_button.dart';
@@ -35,6 +37,7 @@ class _JoinGameState extends ConsumerState<JoinGame> {
 
   final GlobalKey<CustomTextFormFieldState> _roomIdTextFieldKey = GlobalKey<CustomTextFormFieldState>();
   final GlobalKey<CustomTextFormFieldState> _roomPasswordTextFieldKey = GlobalKey<CustomTextFormFieldState>();
+  final GlobalKey<ActivateWidgetState> _navigationBarActivateKey = GlobalKey<ActivateWidgetState>();
 
   void _goBack(BuildContext context) {
     Navigator.pop(context);
@@ -113,7 +116,13 @@ class _JoinGameState extends ConsumerState<JoinGame> {
                           String password = _roomPasswordTextController.text.trim();
                           if (gameRoomDocument != null) {
                             if (password == gameRoomDocument.data['password']) {
-                              joinWaitingRoom(ref, gameRoomDocument, context, 0,);
+                              await joinWaitingRoom(
+                                ref,
+                                gameRoomDocument,
+                                context,
+                                1,
+                                _navigationBarActivateKey,
+                              );
                             } else {
                               _roomPasswordTextFieldKey.currentState?.showError(
                                 AppLanguage.getLanguageData()['Wrong password'],);
@@ -131,40 +140,43 @@ class _JoinGameState extends ConsumerState<JoinGame> {
               )
             ],
           ),
-          bottomNavigationBar: CustomBottomNavigationBar(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              NavigationBackButton(onPressed: () {
-                _goBack(context);
-              }),
-              Row(
-                children: [
-                  IconButton(
-                    icon: Icon(
-                      Icons.qr_code_scanner,
-                      size: ScreenSize.screenHeight * 0.04 +
-                          ScreenSize.screenWidth * 0.04,
-                      color: Colors.white,
+          bottomNavigationBar: ActivateWidget(
+            key: _navigationBarActivateKey,
+            child: CustomBottomNavigationBar(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                NavigationBackButton(onPressed: () {
+                  _goBack(context);
+                }),
+                Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.qr_code_scanner,
+                        size: ScreenSize.screenHeight * 0.04 +
+                            ScreenSize.screenWidth * 0.04,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        newPage(context, const QrCodeScannerPage());
+                      },
                     ),
-                    onPressed: () {
-                      newPage(context, const QrCodeScannerPage());
-                    },
-                  ),
-                  IconButton(
-                    icon: Icon(
-                      Icons.search,
-                      size: ScreenSize.screenHeight * 0.04 +
-                          ScreenSize.screenWidth * 0.04,
-                      color: Colors.white,
+                    IconButton(
+                      icon: Icon(
+                        Icons.search,
+                        size: ScreenSize.screenHeight * 0.04 +
+                            ScreenSize.screenWidth * 0.04,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        newPage(context, const SearchGameRoom());
+                      },
                     ),
-                    onPressed: () {
-                      newPage(context, const SearchGameRoom());
-                    },
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

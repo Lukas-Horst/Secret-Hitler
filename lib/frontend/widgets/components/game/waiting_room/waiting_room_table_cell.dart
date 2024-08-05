@@ -15,7 +15,7 @@ class WaitingRoomTableCell extends ConsumerWidget {
   final String hostName;
 
   const WaitingRoomTableCell({super.key, required this.gameRoomDocument,
-    required this.hostName});
+    required this.hostName,});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

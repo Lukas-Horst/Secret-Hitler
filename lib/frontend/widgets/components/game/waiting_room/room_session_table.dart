@@ -12,7 +12,8 @@ import 'package:secret_hitler/frontend/widgets/components/game/waiting_room/wait
 import 'package:secret_hitler/frontend/widgets/components/text/adjustable_standard_text.dart';
 
 class RoomSessionTable extends ConsumerStatefulWidget {
-  const RoomSessionTable({super.key});
+
+  const RoomSessionTable({super.key,});
 
   @override
   ConsumerState<RoomSessionTable> createState() => _RoomSessionTableState();

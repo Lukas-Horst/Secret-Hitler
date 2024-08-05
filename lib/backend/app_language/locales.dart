@@ -145,6 +145,7 @@ mixin LocaleData {
     'Enter the room password': 'Enter the room password',
     'Join': 'Join',
     'Search game session': 'Search game session',
+    'There is currently an active game': 'There is currently an active game',
 
     'Waiting room': 'Waiting room',
     'Waiting room QR-Code': 'Waiting room QR-Code',
@@ -153,11 +154,15 @@ mixin LocaleData {
     'Wrong Id': 'Falsche Id',
     'Start game': 'Start game',
     'Too few players': 'Too few players',
+    'The waiting room is full': 'The waiting room is full',
 
     // Board overview page
     'Draw 3 cards': 'Draw 3 cards',
     'Discard a card': 'Discard a card',
     'Play a card': 'Play a card',
+
+    // Game room settings
+    'Leave': 'Leave',
   };
 
   static const Map<String, dynamic> DE = {
@@ -304,6 +309,7 @@ mixin LocaleData {
     'Enter the room password': 'Gebe das Raumpasswort ein',
     'Join': 'Beitreten',
     'Search game session': 'Spielsitzung suchen',
+    'There is currently an active game': 'Es gibt gerade ein aktives Spiel',
 
     'Waiting room': 'Warteraum',
     'Waiting room QR-Code': 'Warteraum QR-Code',
@@ -312,10 +318,14 @@ mixin LocaleData {
     'Wrong Id': 'Falsche Id',
     'Start game': 'Spiel starten',
     'Too few players': 'Zu wenig Spieler',
+    'The waiting room is full': 'Der Warteraum ist voll',
 
     // Board overview page
     'Draw 3 cards': 'Ziehe 3 Karten',
     'Discard a card': 'Lege eine Karte ab',
     'Play a card': 'Spiele eine Karte',
+
+    // Game room settings
+    'Leave': 'Verlassen',
   };
 }

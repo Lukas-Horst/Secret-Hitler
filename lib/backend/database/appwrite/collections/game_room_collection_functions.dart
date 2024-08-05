@@ -1,14 +1,18 @@
 // author: Lukas Horst
 
-// Function to create a new game room
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:secret_hitler/backend/app_language/app_language.dart';
 import 'package:secret_hitler/backend/constants/appwrite_constants.dart';
+import 'package:secret_hitler/backend/database/appwrite/collections/game_state_collection_functions.dart';
 import 'package:secret_hitler/backend/helper/useful_functions.dart';
 import 'package:secret_hitler/backend/riverpod/provider.dart';
+import 'package:secret_hitler/frontend/pages/home/homepage/game/game_room/game_room_navigation.dart';
 import 'package:secret_hitler/frontend/pages/home/homepage/game/joining/waiting_room/waiting_room_page.dart';
+import 'package:secret_hitler/frontend/widgets/components/snackbar.dart';
+import 'package:secret_hitler/frontend/widgets/components/useful_widgets/activate_widget.dart';
 import 'package:secret_hitler/frontend/widgets/loading_spin.dart';
 
 // Function to create a waiting room in the database
@@ -36,18 +40,7 @@ Future<void> createWaitingRoom(WidgetRef ref, String password,
   );
   LoadingSpin.closeLoadingSpin(context);
   if (gameRoomDocument == null) {return;}
-  await databaseApi.createDocument(
-    gameStateId,
-    gameRoomDocument.$id,
-    {
-      'player_order': [],
-    },
-  );
-  await databaseApi.updateDocument(
-    gameRoomCollectionId,
-    gameRoomDocument.$id,
-    {'gameState': gameRoomDocument.$id},
-  );
+  await createGameStateDocument(ref, gameRoomDocument);
   newPage(context, WaitingRoom(gameRoomDocument: gameRoomDocument,));
 }
 
@@ -91,12 +84,56 @@ Future<Document?> getWaitingRoom(WidgetRef ref, String roomId,
 
 // Function to join the waiting room and add the user to the player list
 Future<void> joinWaitingRoom(WidgetRef ref, Document gameRoomDocument,
-    BuildContext context, int popPages) async {
+    BuildContext context, int popPages,
+    GlobalKey<ActivateWidgetState>? navigationBarActivateKey) async {
   LoadingSpin.openLoadingSpin(context);
-  await _updateUserList(ref, gameRoomDocument, true);
+  final databaseApi = ref.watch(databaseApiProvider);
+  Document? gameStateDocument = await databaseApi.getDocumentById(
+    gameStateId,
+    gameRoomDocument.$id,
+  );
+  bool rejoinGame = false;
+  if (checkGameState(ref, gameStateDocument)) {
+    rejoinGame = checkRejoinGame(ref, gameStateDocument);
+    if (!rejoinGame) {
+      LoadingSpin.closeLoadingSpin(context);
+      CustomSnackbar.showSnackbar(
+        context,
+        AppLanguage.getLanguageData()['There is currently an active game'],
+        Colors.red,
+        const Duration(seconds: 3),
+        navigationBarActivateKey,
+      );
+      return;
+    }
+  } else {
+    // Checking if the waiting room is full
+    if (gameRoomDocument.data['users'].length >= gameRoomDocument.data['playerAmount']) {
+      if (!_checkRejoinGameRoom(ref, gameRoomDocument)) {
+        LoadingSpin.closeLoadingSpin(context);
+        CustomSnackbar.showSnackbar(
+          context,
+          AppLanguage.getLanguageData()['The waiting room is full'],
+          Colors.red,
+          const Duration(seconds: 3),
+          navigationBarActivateKey,
+        );
+        return;
+      }
+    }
+  }
+  final qrCodeStateNotifier = ref.watch(qrCodeProvider.notifier);
+  qrCodeStateNotifier.updateCodeInformation(null);
+  if (!rejoinGame) {
+    await _updateUserList(ref, gameRoomDocument, true);
+  }
   LoadingSpin.closeLoadingSpin(context);
   closePage(context, popPages);
-  newPage(context, WaitingRoom(gameRoomDocument: gameRoomDocument,));
+  if (rejoinGame) {
+    newPage(context, GameRoomNavigation(gameStateDocument: gameStateDocument!));
+  } else {
+    newPage(context, WaitingRoom(gameRoomDocument: gameRoomDocument,));
+  }
 }
 
 // Function to leave a waiting room and update the host or close the waiting room
@@ -105,8 +142,7 @@ Future<void> leaveWaitingRoom(WidgetRef ref, Document gameRoomDocument,
   LoadingSpin.openLoadingSpin(context);
   await _updateUserList(ref, gameRoomDocument, false);
   LoadingSpin.closeLoadingSpin(context);
-  Navigator.pop(context);
-  Navigator.pop(context);
+  closePage(context, 1);
 }
 
 // Function to add or delete a user from a waiting room
@@ -155,4 +191,16 @@ Future<void> _updateUserList(WidgetRef ref, Document gameRoomDocument,
     // If no user is in the waiting room, it will be closed
     await databaseApi.deleteDocument(gameRoomCollectionId, gameRoomDocument.$id);
   }
+}
+
+// Function to check if the player can rejoin if the waiting room is full
+bool _checkRejoinGameRoom(WidgetRef ref, Document gameRoomDocument) {
+  final userState = ref.watch(userStateProvider);
+  final String userId = userState.user!.$id;
+  for (dynamic user in gameRoomDocument.data['users']) {
+    if (user['\$id'] == userId) {
+      return true;
+    }
+  }
+  return false;
 }

@@ -7,6 +7,7 @@ import 'package:secret_hitler/backend/app_language/app_language.dart';
 import 'package:secret_hitler/backend/constants/appwrite_constants.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/backend/database/appwrite/collections/game_room_collection_functions.dart';
+import 'package:secret_hitler/backend/database/appwrite/collections/game_state_collection_functions.dart';
 import 'package:secret_hitler/backend/database/appwrite/database_api.dart';
 import 'package:secret_hitler/backend/database/appwrite/game_room_state_notifier.dart';
 import 'package:secret_hitler/backend/helper/math_functions.dart';
@@ -36,7 +37,7 @@ class _WaitingRoomState extends ConsumerState<WaitingRoom> {
 
   late List _playerNames;
   bool _firstBuild = true;
-  GlobalKey<ActivateWidgetState> _navigationBarActivateKey = GlobalKey<ActivateWidgetState>();
+  final GlobalKey<ActivateWidgetState> _navigationBarActivateKey = GlobalKey<ActivateWidgetState>();
 
   Future<void> _goBack(BuildContext context, WidgetRef ref,
       GameRoomStateNotifier gameRoomStateNotifier, Document gameRoomDocument) async {
@@ -128,7 +129,7 @@ class _WaitingRoomState extends ConsumerState<WaitingRoom> {
       onPopInvoked: (didpop) async {
         if (!didpop) {
           _goBack(context, ref, gameRoomStateNotifier,
-              gameRoomState.gameRoomDocument!);
+            gameRoomState.gameRoomDocument!,);
         }
       },
       child: SafeArea(
@@ -167,7 +168,8 @@ class _WaitingRoomState extends ConsumerState<WaitingRoom> {
                 onPressed: () async {
                   if (_playerNames.length <= widget.gameRoomDocument.data['playerAmount']
                       && _playerNames.length > 4) {
-                    print(true);
+                    startGame(ref, gameRoomState.gameRoomDocument!,
+                      context, gameRoomStateNotifier,);
                   } else {
                     CustomSnackbar.showSnackbar(
                       context,
@@ -189,7 +191,7 @@ class _WaitingRoomState extends ConsumerState<WaitingRoom> {
               children: [
                 NavigationBackButton(onPressed: () {
                   _goBack(context, ref, gameRoomStateNotifier,
-                      gameRoomState.gameRoomDocument!);
+                    gameRoomState.gameRoomDocument!,);
                 }),
                 IconButton(
                   icon: Icon(

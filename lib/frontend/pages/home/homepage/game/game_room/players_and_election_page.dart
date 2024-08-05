@@ -48,7 +48,7 @@ class PlayersAndElectionState extends State<PlayersAndElection> with AutomaticKe
           left: playerWidgetPositions[leftPosition],
           child: PlayerWidget(
             key: backend.playerWidgetsOpacityKeys[i],
-            playerName: 'TestTestTestTestTestTest',
+            playerName: backend.playerNames[i],
             height: ScreenSize.screenHeight * 0.075,
             width: ScreenSize.screenWidth * 0.45,
           ),

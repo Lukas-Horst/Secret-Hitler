@@ -2,9 +2,11 @@
 
 import 'dart:async';
 
+import 'package:appwrite/models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
+import 'package:secret_hitler/backend/helper/convertAppwriteData.dart';
 import 'package:secret_hitler/backend/pages/game/game_room/board_overview_backend.dart';
 import 'package:secret_hitler/backend/pages/game/game_room/players_and_election_backend.dart';
 import 'package:secret_hitler/backend/riverpod/provider.dart';
@@ -16,11 +18,9 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class GameRoomNavigation extends ConsumerStatefulWidget {
 
-  final int playerAmount;
-  final List<String> playerNames;
+  final Document gameStateDocument;
 
-  const GameRoomNavigation({super.key, required this.playerAmount,
-    required this.playerNames});
+  const GameRoomNavigation({super.key, required this.gameStateDocument,});
 
   @override
   ConsumerState<GameRoomNavigation> createState() => _GameRoomNavigationState();
@@ -34,10 +34,6 @@ class _GameRoomNavigationState extends ConsumerState<GameRoomNavigation> {
   late PlayersAndElectionBackend playersAndElectionBackend;
   final _pageViewController = PageController();
 
-  void _goBack(BuildContext context) {
-    Navigator.pop(context);
-  }
-
   void _changePage(int pageNumber) {
     _pageViewController.animateToPage(
       pageNumber,
@@ -48,16 +44,21 @@ class _GameRoomNavigationState extends ConsumerState<GameRoomNavigation> {
 
   @override
   void initState() {
+    final List<String> playerNames = convertDynamicToStringList(
+        widget.gameStateDocument.data['playerNames']);
     boardOverviewFrontendKey = GlobalKey<BoardOverviewState>();
-    boardOverviewBackend = BoardOverviewBackend(boardOverviewFrontendKey,
-        widget.playerAmount, _changePage);
+    boardOverviewBackend = BoardOverviewBackend(
+      boardOverviewFrontendKey,
+      widget.gameStateDocument.data['playerOrder'].length,
+      _changePage,
+    );
     playersAndElectionFrontendKey = GlobalKey<PlayersAndElectionState>();
     playersAndElectionBackend = PlayersAndElectionBackend(
-        playersAndElectionFrontendKey, boardOverviewBackend, widget.playerNames);
+      playersAndElectionFrontendKey,
+      boardOverviewBackend,
+      playerNames,
+    );
     boardOverviewBackend.setPlayersAndElectionBackend(playersAndElectionBackend);
-    Timer(const Duration(milliseconds: 500), () {
-      _changePage(3);
-    });
     super.initState();
   }
 
@@ -67,11 +68,7 @@ class _GameRoomNavigationState extends ConsumerState<GameRoomNavigation> {
     gameRoomStateNotifier.resetGameRoom();
     return PopScope(
       canPop: false,
-      onPopInvoked: (didpop) async {
-        if (!didpop) {
-          _goBack(context);
-        }
-      },
+      onPopInvoked: (didpop) async {},
       child: SafeArea(
         child: Scaffold(
           backgroundColor: const Color(0xFF474747),

@@ -12,7 +12,7 @@ import 'package:secret_hitler/frontend/widgets/components/text/text_field_head_t
 import 'package:secret_hitler/frontend/widgets/components/useful_widgets/text_form_field.dart';
 
 CustomBottomSheet joinGameRoomBottomSheet(Document gameRoomDocument,
-    BuildContext context, WidgetRef ref) {
+    BuildContext context, WidgetRef ref,) {
 
   final roomPasswordTextController = TextEditingController();
   final roomPasswordFocusNode = FocusNode();
@@ -20,43 +20,43 @@ CustomBottomSheet joinGameRoomBottomSheet(Document gameRoomDocument,
 
   List<Widget> children = [
     SizedBox(height: ScreenSize.screenHeight * 0.01),
-    SingleChildScrollView(
-      child: Column(
-        children: [
-          TextFieldHeadText(
-            text: '${AppLanguage.getLanguageData()['Players']}: '
-                '${gameRoomDocument.data['users'].length}/${gameRoomDocument.data['playerAmount']}',
-          ),
-          SizedBox(height: ScreenSize.screenHeight * 0.04),
-          TextFieldHeadText(
-            text: AppLanguage.getLanguageData()['Room password'],
-          ),
-          CustomTextFormField(
-            key: joinTextFieldKey,
-            hintText: AppLanguage.getLanguageData()['Enter the room password'],
-            obscureText: true,
-            textController: roomPasswordTextController,
-            readOnly: false,
-            autoFocus: false,
-            width: ScreenSize.screenWidth * 0.85,
-            height: ScreenSize.screenHeight * 0.065,
-            currentFocusNode: roomPasswordFocusNode,
-          ),
-          SizedBox(height: ScreenSize.screenHeight * 0.06),
-          PrimaryElevatedButton(
-            text: AppLanguage.getLanguageData()['Join'],
-            onPressed: () {
-              if (roomPasswordTextController.text.trim() == gameRoomDocument.data['password']) {
-                joinTextFieldKey.currentState?.resetsErrors();
-                joinWaitingRoom(ref, gameRoomDocument, context, 2,);
-              } else {
-                joinTextFieldKey.currentState?.showError(
-                  AppLanguage.getLanguageData()['Wrong password']);
-              }
-            },
-          ),
-        ],
-      ),
+    TextFieldHeadText(
+      text: '${AppLanguage.getLanguageData()['Players']}: '
+          '${gameRoomDocument.data['users'].length}/${gameRoomDocument.data['playerAmount']}',
+    ),
+    SizedBox(height: ScreenSize.screenHeight * 0.04),
+    TextFieldHeadText(
+      text: AppLanguage.getLanguageData()['Room password'],
+    ),
+    CustomTextFormField(
+      key: joinTextFieldKey,
+      hintText: AppLanguage.getLanguageData()['Enter the room password'],
+      obscureText: true,
+      textController: roomPasswordTextController,
+      readOnly: false,
+      autoFocus: false,
+      width: ScreenSize.screenWidth * 0.85,
+      height: ScreenSize.screenHeight * 0.065,
+      currentFocusNode: roomPasswordFocusNode,
+    ),
+    SizedBox(height: ScreenSize.screenHeight * 0.06),
+    PrimaryElevatedButton(
+      text: AppLanguage.getLanguageData()['Join'],
+      onPressed: () async {
+        if (roomPasswordTextController.text.trim() == gameRoomDocument.data['password']) {
+          joinTextFieldKey.currentState?.resetsErrors();
+          await joinWaitingRoom(
+            ref,
+            gameRoomDocument,
+            context,
+            3,
+            null,
+          );
+        } else {
+          joinTextFieldKey.currentState?.showError(
+            AppLanguage.getLanguageData()['Wrong password']);
+        }
+      },
     )
   ];
   return CustomBottomSheet(children, false, ScreenSize.screenHeight * 0.5);

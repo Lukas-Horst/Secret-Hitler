@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
+import 'package:secret_hitler/frontend/widgets/components/useful_widgets/activate_widget.dart';
 import 'package:secret_hitler/frontend/widgets/components/useful_widgets/bottom_navigation_bar.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons/navigation_back_button.dart';
 import 'package:secret_hitler/frontend/widgets/components/game/waiting_room/room_session_table.dart';
@@ -17,6 +18,8 @@ class SearchGameRoom extends ConsumerStatefulWidget {
 }
 
 class _SearchGameRoomState extends ConsumerState<SearchGameRoom> {
+
+  final GlobalKey<ActivateWidgetState> _navigationBarActivateKey = GlobalKey<ActivateWidgetState>();
 
   void _goBack(BuildContext context) {
     Navigator.pop(context);
@@ -58,15 +61,6 @@ class _SearchGameRoomState extends ConsumerState<SearchGameRoom> {
               NavigationBackButton(onPressed: () {
                 _goBack(context);
               }),
-              IconButton(
-                icon: Icon(
-                  Icons.filter_alt,
-                  size: ScreenSize.screenHeight * 0.04 +
-                      ScreenSize.screenWidth * 0.04,
-                  color: Colors.white,
-                ),
-                onPressed: () {},
-              ),
             ],
           ),
         ),
