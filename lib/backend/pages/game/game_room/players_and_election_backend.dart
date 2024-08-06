@@ -18,12 +18,18 @@ class PlayersAndElectionBackend{
   late BoardOverviewBackend boardOverviewBackend;
   late int playerAmount;
   late List<String> playerNames;
+  late List<String> playerOrder;
+  late List<String> playerRoles;
+  late int position;  // The position of the player in the lists
+  late String id;
   PlayersAndElectionBackend(this.playersAndElectionFrontendKey,
-      this.boardOverviewBackend, this.playerNames) {
+      this.boardOverviewBackend, this.playerNames, this.playerOrder, this.id,
+      this.playerRoles) {
     playerAmount = boardOverviewBackend.playerAmount;
     for (int i=0; i < playerAmount; i++) {
       playerWidgetsOpacityKeys.add(GlobalKey<PlayerWidgetState>());
     }
+    position = playerOrder.indexOf(id);
   }
 
 }

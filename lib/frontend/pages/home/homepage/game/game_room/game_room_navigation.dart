@@ -46,10 +46,16 @@ class _GameRoomNavigationState extends ConsumerState<GameRoomNavigation> {
   void initState() {
     final List<String> playerNames = convertDynamicToStringList(
         widget.gameStateDocument.data['playerNames']);
+    final List<String> playerOrder = convertDynamicToStringList(
+        widget.gameStateDocument.data['playerOrder']);
+    final List<String> playerRoles = convertDynamicToStringList(
+        widget.gameStateDocument.data['playerRoles']);
+    final userState = ref.read(userStateProvider);
+    final String id = userState.user!.$id;
     boardOverviewFrontendKey = GlobalKey<BoardOverviewState>();
     boardOverviewBackend = BoardOverviewBackend(
       boardOverviewFrontendKey,
-      widget.gameStateDocument.data['playerOrder'].length,
+      playerOrder.length,
       _changePage,
     );
     playersAndElectionFrontendKey = GlobalKey<PlayersAndElectionState>();
@@ -57,6 +63,9 @@ class _GameRoomNavigationState extends ConsumerState<GameRoomNavigation> {
       playersAndElectionFrontendKey,
       boardOverviewBackend,
       playerNames,
+      playerOrder,
+      id,
+      playerRoles
     );
     boardOverviewBackend.setPlayersAndElectionBackend(playersAndElectionBackend);
     super.initState();
@@ -80,7 +89,9 @@ class _GameRoomNavigationState extends ConsumerState<GameRoomNavigation> {
                   controller: _pageViewController,
                   children: [
                     const GameRoomSettings(),
-                    const Roles(),
+                    Roles(
+                      backend: playersAndElectionBackend,
+                    ),
                     BoardOverview(
                       key: boardOverviewFrontendKey,
                       backend: boardOverviewBackend,

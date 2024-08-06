@@ -19,7 +19,7 @@ class HeaderImage {
       if (headerColor == const Color(0xff479492)) {
         headerImages = ['Liberal_1', 'Liberal_2', 'Liberal_3', 'Liberal_4'];
       } else {
-        headerImages = ['Fascist_1', 'Fascist_2', 'Hitler'];
+        headerImages = ['Fascist_1', 'Fascist_2', 'Fascist_3', 'Hitler'];
       }
 
       // Getting a random image

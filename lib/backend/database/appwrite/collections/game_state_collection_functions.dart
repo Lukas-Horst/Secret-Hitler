@@ -20,6 +20,7 @@ Future<void> createGameStateDocument(WidgetRef ref, Document gameRoomDocument) a
     {
       'playerOrder': [],
       'playerNames': [],
+      'playerRoles': [],
     },
   );
   await databaseApi.updateDocument(
@@ -37,6 +38,17 @@ Future<void> startGame(WidgetRef ref, Document gameRoomDocument,
   Map<String, String> users = {};
   List<String> playerOrder = [];
   List<String> playerNames = [];
+  List<String> playerRoles = ['Hitler'];
+  final int playerAmount = gameRoomDocument.data['users'].length;
+  final int fascistAmount = _getFascistAmount(playerAmount);
+  // Adding the roles
+  for (int i=0; i < fascistAmount; i++) {
+    playerRoles.add('Fascist');
+  }
+  for (int i=0; i < playerAmount - (fascistAmount + 1); i++) {
+    playerRoles.add('Liberal');
+  }
+  playerRoles.shuffle();
   // Shuffling the players
   for (final user in gameRoomDocument.data['users']) {
     users[user['\$id']] = user['userName'];
@@ -53,6 +65,7 @@ Future<void> startGame(WidgetRef ref, Document gameRoomDocument,
       'isActive': true,
       'playerNames': playerNames,
       'playerOrder': playerOrder,
+      'playerRoles': playerRoles,
     },
   );
   Document? gameStateDocument = await databaseApi.getDocumentById(
@@ -64,6 +77,17 @@ Future<void> startGame(WidgetRef ref, Document gameRoomDocument,
   gameRoomStateNotifier.resetGameRoom();
   closePage(context, 1);
   newPage(context, GameRoomNavigation(gameStateDocument: gameStateDocument));
+}
+
+// Returns the amount of fascist based on the player amount
+int _getFascistAmount(int playerAmount) {
+  if (playerAmount < 7) {
+    return 1;
+  } else if (playerAmount < 9) {
+    return 2;
+  } else {
+    return 3;
+  }
 }
 
 // Function to check if the user can rejoin the game
