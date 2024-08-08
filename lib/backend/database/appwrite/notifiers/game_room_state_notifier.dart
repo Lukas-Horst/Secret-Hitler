@@ -20,7 +20,8 @@ class GameRoomStateNotifier extends StateNotifier<GameRoomState> {
   Document? _gameRoomDocument;
 
   GameRoomStateNotifier(this._databaseApi, this._client) :super(
-      GameRoomState(gameRoomDocument: null));
+      GameRoomState(gameRoomDocument: null)
+  );
 
   // Method to set the game room from the given id
   Future<void> setGameRoom(String gameRoomId) async {

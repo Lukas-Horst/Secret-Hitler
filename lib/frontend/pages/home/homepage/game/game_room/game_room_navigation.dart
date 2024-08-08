@@ -68,6 +68,8 @@ class _GameRoomNavigationState extends ConsumerState<GameRoomNavigation> {
       playerRoles
     );
     boardOverviewBackend.setPlayersAndElectionBackend(playersAndElectionBackend);
+    final gameStatNotifier = ref.read(gameStateProvider.notifier);
+    gameStatNotifier.subscribeGameState(widget.gameStateDocument.$id);
     super.initState();
   }
 

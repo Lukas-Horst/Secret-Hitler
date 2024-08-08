@@ -1,6 +1,7 @@
 // author: Lukas Horst
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/app_design/app_design.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
@@ -10,6 +11,9 @@ import 'package:secret_hitler/frontend/pages/authentication/switches/login_confi
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Loading the .env file for the appwrite id's
+  await dotenv.load(fileName: '.env');
 
   // Initialize Hive
   await HiveDatabase.init();

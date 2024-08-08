@@ -11,3 +11,15 @@ List<String> convertDynamicToStringList(List<dynamic> dynamicList) {
   }
   return stringList;
 }
+
+// Function to convert a dynamic list from appwrite into a int list if possible
+List<int> convertDynamicToIntList(List<dynamic> dynamicList) {
+  List<int> intList = [];
+  for (dynamic dynamicValue in dynamicList) {
+    try {
+      int intValue = dynamicValue as int;
+      intList.add(intValue);
+    } catch(e) {}
+  }
+  return intList;
+}

@@ -1,11 +1,13 @@
 // author: Lukas Horst
 
-const String appwriteProjectId = '666dfd010020a306551d';
-const String appwriteUrl = 'https://cloud.appwrite.io/v1';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+final String appwriteProjectId = dotenv.env['APPWRITE_ID']!;
+final String appwriteUrl = dotenv.env['APPWRITE_URL']!;
 
 // Database constants
-const String appwriteDatabaseId = '666ede7a0008b6ce0649';
+final String appwriteDatabaseId = dotenv.env['APPWRITE_DATABASE_ID']!;
 
-const String gameRoomCollectionId = '6679d6c1002eb3ec394c';
-const String userCollectionId = '6679d77d003a055ba81e';
-const String gameStateId = '66a535b90000c0eeb3d0';
+final String gameRoomCollectionId = dotenv.env['DATABASE_GAME_ROOM_COLLECTION_ID']!;
+final String userCollectionId = dotenv.env['DATABASE_USER_COLLECTION_ID']!;
+final String gameStateCollectionId = dotenv.env['DATABASE_GAME_STATE_COLLECTION_ID']!;

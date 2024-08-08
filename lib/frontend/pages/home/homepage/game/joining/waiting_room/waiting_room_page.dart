@@ -9,7 +9,7 @@ import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/backend/database/appwrite/collections/game_room_collection_functions.dart';
 import 'package:secret_hitler/backend/database/appwrite/collections/game_state_collection_functions.dart';
 import 'package:secret_hitler/backend/database/appwrite/database_api.dart';
-import 'package:secret_hitler/backend/database/appwrite/game_room_state_notifier.dart';
+import 'package:secret_hitler/backend/database/appwrite/notifiers/game_room_state_notifier.dart';
 import 'package:secret_hitler/backend/helper/math_functions.dart';
 import 'package:secret_hitler/backend/helper/useful_functions.dart';
 import 'package:secret_hitler/backend/riverpod/provider.dart';

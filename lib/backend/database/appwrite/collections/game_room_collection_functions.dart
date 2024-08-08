@@ -89,7 +89,7 @@ Future<void> joinWaitingRoom(WidgetRef ref, Document gameRoomDocument,
   LoadingSpin.openLoadingSpin(context);
   final databaseApi = ref.watch(databaseApiProvider);
   Document? gameStateDocument = await databaseApi.getDocumentById(
-    gameStateId,
+    gameStateCollectionId,
     gameRoomDocument.$id,
   );
   bool rejoinGame = false;

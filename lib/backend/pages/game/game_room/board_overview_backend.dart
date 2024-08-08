@@ -15,6 +15,7 @@ import 'package:secret_hitler/frontend/widgets/components/game/board_overview/bo
 import 'package:secret_hitler/frontend/widgets/components/game/board_overview/piles/discard_pile.dart';
 import 'package:secret_hitler/frontend/widgets/components/game/board_overview/piles/draw_pile.dart';
 
+// Backend class for the board overview page
 class BoardOverviewBackend{
   final List<GlobalKey<FlipAnimationState>> liberalCardFlipKeys = [
     GlobalKey<FlipAnimationState>(),

@@ -156,6 +156,11 @@ mixin LocaleData {
     'Too few players': 'Too few players',
     'The waiting room is full': 'The waiting room is full',
 
+    // Roles Page
+    'Your role': 'Your Role',
+    'Your team': 'Your team',
+    'You don\'t know any other team member': 'You don\'t know any other team member',
+
     // Board overview page
     'Draw 3 cards': 'Draw 3 cards',
     'Discard a card': 'Discard a card',
@@ -319,6 +324,11 @@ mixin LocaleData {
     'Start game': 'Spiel starten',
     'Too few players': 'Zu wenig Spieler',
     'The waiting room is full': 'Der Warteraum ist voll',
+
+    // Roles Page
+    'Your role': 'Deine Rolle',
+    'Your team': 'Dein team',
+    'You don\'t know any other team member': 'Du kennst keinen anderen aus deinem Team',
 
     // Board overview page
     'Draw 3 cards': 'Ziehe 3 Karten',

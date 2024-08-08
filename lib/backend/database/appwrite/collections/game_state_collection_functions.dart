@@ -4,7 +4,7 @@ import 'package:appwrite/models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/constants/appwrite_constants.dart';
-import 'package:secret_hitler/backend/database/appwrite/game_room_state_notifier.dart';
+import 'package:secret_hitler/backend/database/appwrite/notifiers/game_room_state_notifier.dart';
 import 'package:secret_hitler/backend/helper/convertAppwriteData.dart';
 import 'package:secret_hitler/backend/helper/useful_functions.dart';
 import 'package:secret_hitler/backend/riverpod/provider.dart';
@@ -15,12 +15,13 @@ import 'package:secret_hitler/frontend/widgets/loading_spin.dart';
 Future<void> createGameStateDocument(WidgetRef ref, Document gameRoomDocument) async {
   final databaseApi = ref.watch(databaseApiProvider);
   await databaseApi.createDocument(
-    gameStateId,
+    gameStateCollectionId,
     gameRoomDocument.$id,
     {
       'playerOrder': [],
       'playerNames': [],
       'playerRoles': [],
+      'killedPlayers': [],
     },
   );
   await databaseApi.updateDocument(
@@ -59,7 +60,7 @@ Future<void> startGame(WidgetRef ref, Document gameRoomDocument,
     playerNames.add(users[userId]!);
   }
   await databaseApi.updateDocument(
-    gameStateId,
+    gameStateCollectionId,
     gameRoomDocument.$id,
     {
       'isActive': true,
@@ -69,7 +70,7 @@ Future<void> startGame(WidgetRef ref, Document gameRoomDocument,
     },
   );
   Document? gameStateDocument = await databaseApi.getDocumentById(
-    gameStateId,
+    gameStateCollectionId,
     gameRoomDocument.$id,
   );
   LoadingSpin.closeLoadingSpin(context);
