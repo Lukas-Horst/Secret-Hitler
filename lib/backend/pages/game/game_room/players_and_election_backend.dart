@@ -11,7 +11,7 @@ import 'package:secret_hitler/frontend/widgets/components/game/players_and_elect
 // Backend class for the players and election page but also for the roles page
 class PlayersAndElectionBackend{
 
-  List<GlobalKey<PlayerWidgetState>> playerWidgetsOpacityKeys = [];
+  List<GlobalKey<PlayerWidgetState>> playerWidgetsKeys = [];
   List<GlobalKey<FlipAnimationState>> ballotCardFlipKeys = [
     GlobalKey<FlipAnimationState>(),  // No Card
     GlobalKey<FlipAnimationState>(),  // Yes Card
@@ -26,7 +26,7 @@ class PlayersAndElectionBackend{
   late List<String> ownRole;  // The own role
   late List<String> hitler;  // The player name (Index 0) and the id (Index 1) of hitler
   late List<String> teamMembers;  // The names of all team members
-  late int position;  // The position of the player in the lists
+  late int ownPlayerIndex;
   late String id;
 
   PlayersAndElectionBackend(this.playersAndElectionFrontendKey,
@@ -34,9 +34,9 @@ class PlayersAndElectionBackend{
       this.playerRoles) {
     playerAmount = boardOverviewBackend.playerAmount;
     for (int i=0; i < playerAmount; i++) {
-      playerWidgetsOpacityKeys.add(GlobalKey<PlayerWidgetState>());
+      playerWidgetsKeys.add(GlobalKey<PlayerWidgetState>());
     }
-    position = playerOrder.indexOf(id);
+    ownPlayerIndex = playerOrder.indexOf(id);
     _setOwnRole();
     _setTeamMembers();
   }
@@ -44,7 +44,7 @@ class PlayersAndElectionBackend{
   // Set a list with the membership (Index 0) and the secret role (Index 1)
   void _setOwnRole() {
     List<String> ownRole = [];
-    String secretRole = playerRoles[position];
+    String secretRole = playerRoles[ownPlayerIndex];
     Random random = Random();
     if (secretRole == 'Hitler') {
       ownRole.add('Fascist');
@@ -66,7 +66,7 @@ class PlayersAndElectionBackend{
     List<String> teamMembers = [];
     List<String> hitler = [];
     for (int i=0; i < playerRoles.length; i++) {
-      if (i != position && playerRoles[i] == ownRole[0]
+      if (i != ownPlayerIndex && playerRoles[i] == ownRole[0]
           && playerRoles[i] != 'Hitler') {
         teamMembers.add(playerNames[i]);
       } else if (playerRoles[i] == 'Hitler') {

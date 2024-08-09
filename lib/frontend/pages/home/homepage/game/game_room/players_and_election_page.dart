@@ -1,11 +1,10 @@
 // author: Lukas Horst
 
 import 'package:flutter/material.dart';
-import 'package:secret_hitler/backend/constants/players_and_election_constants.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/backend/pages/game/game_room/players_and_election_backend.dart';
 import 'package:secret_hitler/frontend/widgets/animations/flip_animation.dart';
-import 'package:secret_hitler/frontend/widgets/components/game/players_and_election/player_widget.dart';
+import 'package:secret_hitler/frontend/widgets/components/game/players_and_election/player_widget_stack.dart';
 import 'package:secret_hitler/frontend/widgets/components/transformed_widgets/angle_widget.dart';
 
 class PlayersAndElection extends StatefulWidget {
@@ -21,45 +20,6 @@ class PlayersAndElection extends StatefulWidget {
 class PlayersAndElectionState extends State<PlayersAndElection> with AutomaticKeepAliveClientMixin {
 
   late PlayersAndElectionBackend backend;
-
-  // Method to build the player widgets
-  List<Widget> _getPlayerWidgets() {
-    List<Widget> playerWidgets = [];
-    int topPosition = 0;
-    bool evenPlayerAmount = backend.playerAmount % 2 == 0;
-    for (int i=0; i < backend.playerAmount; i++) {
-      late int leftPosition;
-      // Middle position
-      if (i == 0 && !evenPlayerAmount) {
-        leftPosition = 2;
-      // Left position
-      } else if (i % 2 == 0) {
-        leftPosition = 0;
-      // Right Position
-      } else {
-        leftPosition = 1;
-        if (!evenPlayerAmount) {
-          topPosition++;
-        }
-      }
-      playerWidgets.add(
-        Positioned(
-          top: playerWidgetTopPositions[topPosition],
-          left: playerWidgetPositions[leftPosition],
-          child: PlayerWidget(
-            key: backend.playerWidgetsOpacityKeys[i],
-            playerName: backend.playerNames[i],
-            height: ScreenSize.screenHeight * 0.075,
-            width: ScreenSize.screenWidth * 0.45,
-          ),
-        ),
-      );
-      if (i % 2 == 1 && evenPlayerAmount) {
-        topPosition++;
-      }
-    }
-    return playerWidgets;
-  }
 
   @override
   void initState() {
@@ -78,9 +38,7 @@ class PlayersAndElectionState extends State<PlayersAndElection> with AutomaticKe
           width: ScreenSize.screenWidth * 0.96,
           child: Stack(
             children: [
-              Stack(
-                children: _getPlayerWidgets(),
-              ),
+              PlayerWidgetStack(backend: backend),
               Positioned(
                 top: ScreenSize.screenHeight * 0.73,
                 left: ScreenSize.screenWidth * 0.1,

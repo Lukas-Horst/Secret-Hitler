@@ -1,27 +1,31 @@
 // author: Lukas Horst
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/app_design/app_design.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
+import 'package:secret_hitler/backend/riverpod/provider.dart';
 import 'package:secret_hitler/frontend/widgets/animations/flip_animation.dart';
 import 'package:secret_hitler/frontend/widgets/animations/opacity_animation.dart';
 import 'package:secret_hitler/frontend/widgets/animations/size_animation.dart';
 
 // A widget to display each player name and their actions
-class PlayerWidget extends StatefulWidget {
+class PlayerWidget extends ConsumerStatefulWidget {
 
   final String playerName;
   final double height;
   final double width;
+  final int index;
+  final int ownPlayerIndex;
 
   const PlayerWidget({super.key, required this.playerName, required this.height,
-    required this.width});
+    required this.width, required this.index, required this.ownPlayerIndex});
 
   @override
-  State<PlayerWidget> createState() => PlayerWidgetState();
+  ConsumerState<PlayerWidget> createState() => PlayerWidgetState();
 }
 
-class PlayerWidgetState extends State<PlayerWidget> {
+class PlayerWidgetState extends ConsumerState<PlayerWidget> {
 
   final List<GlobalKey<OpacityAnimationState>> _opacityKeys = [
     GlobalKey<OpacityAnimationState>(), // Visibility of the whole widget
@@ -53,6 +57,11 @@ class PlayerWidgetState extends State<PlayerWidget> {
   late bool _isFormerPresident;
   late bool _isChancellor;
   late bool _isPresident;
+  bool _wasFormerPresident = false;
+  bool _wasFormerChancellor = false;
+  bool _wasPresident = false;
+  bool _wasChancellor = false;
+  bool _voting = false;
 
   List<OpacityAnimation> _getImages() {
     List<OpacityAnimation> imagesList = [];
@@ -73,7 +82,9 @@ class PlayerWidgetState extends State<PlayerWidget> {
                 ? EdgeInsets.only(right: widget.width * 0.03)
                 : const EdgeInsets.all(0),
             child: IconButton(
-              onPressed: () {},
+              onPressed: () {
+                print(widget.index);
+              },
               icon: i == 3
                   ? Icon(
                 Icons.how_to_vote,
@@ -99,7 +110,7 @@ class PlayerWidgetState extends State<PlayerWidget> {
   }
 
   // Method to make the divider visible or invisible
-  Future<void> dividerVisibility() async {
+  Future<void> _dividerVisibility() async {
     if (_dividerVisible) {
       _opacityKeys[0].currentState?.animate();
       await Future.delayed(const Duration(milliseconds: 850));
@@ -116,8 +127,8 @@ class PlayerWidgetState extends State<PlayerWidget> {
     }
   }
 
-  // Method to change the image of the next image
-  Future<void> changeActionImage(int executivePower) async {
+  // Method to change the image of the next action
+  Future<void> _changeActionImage(int executivePower) async {
     _activeExecutivePower = executivePower;
     if (!_dividerVisible) {
       _opacityKeys[_activeExecutivePower].currentState?.animate();
@@ -165,50 +176,89 @@ class PlayerWidgetState extends State<PlayerWidget> {
   }
 
   // Method to make the (former) chancellor or president card visible
-  Future<void> setGovernmentCard(String role) async {
+  Future<void> _setGovernmentCard() async {
     // Former chancellor card
-    if (role == 'formerChancellor') {
+    if (_isFormerChancellor) {
       _opacityKeys[5].currentState?.animate();
-      _isFormerChancellor = true;
+      _wasFormerChancellor = true;
+    }
     // Former president card
-    } else if (role == 'formerPresident') {
+    if (_isFormerPresident) {
       _opacityKeys[6].currentState?.animate();
-      _isFormerPresident = true;
+      _wasFormerPresident = true;
+    }
     // Chancellor card
-    } else if (role == 'chancellor') {
+    if (_isChancellor) {
       _opacityKeys[7].currentState?.animate();
-      _isChancellor = true;
+      _wasChancellor = true;
+    }
     // President card
-    } else if (role == 'president') {
+    if (_isPresident) {
       _opacityKeys[8].currentState?.animate();
-      _isPresident = true;
+      _wasPresident = true;
     }
     await Future.delayed(const Duration(milliseconds: 500));
   }
 
   // Method to hide the current (former) chancellor or president card if is it visible
-  Future<void> hideGovernmentCard() async {
-    if (_isFormerChancellor) {
+  Future<void> _hideGovernmentCard() async {
+    if (_wasFormerChancellor) {
       _opacityKeys[5].currentState?.animate();
-      _isFormerChancellor = false;
+      _wasFormerChancellor = false;
     }
-    if (_isFormerPresident) {
+    if (_wasFormerPresident) {
       _opacityKeys[6].currentState?.animate();
-      _isFormerPresident = false;
+      _wasFormerPresident = false;
     }
-    if (_isChancellor) {
+    if (_wasChancellor) {
       _opacityKeys[7].currentState?.animate();
-      _isChancellor = false;
+      _wasChancellor = false;
     }
-    if (_isPresident) {
+    if (_wasPresident) {
       _opacityKeys[8].currentState?.animate();
-      _isPresident = false;
+      _wasPresident = false;
     }
     await Future.delayed(const Duration(milliseconds: 500));
   }
 
+  // Method to check if we have any changes of the government
+  void _checkForGovernmentChanges() async {
+    if (_isPresident != _wasPresident || _isChancellor != _wasChancellor
+        || _isFormerPresident != _wasFormerPresident ||
+        _isFormerChancellor != _wasFormerChancellor) {
+      await _hideGovernmentCard();
+      await _setGovernmentCard();
+    }
+  }
+
+  // Method to check if the president has any action to take
+  void _checkForPresidentActions(int playState, int currentPresident) async {
+    await Future.delayed(const Duration(milliseconds: 1000));
+    // Deciding the chancellor if the player is the current president
+    if (currentPresident == widget.ownPlayerIndex) {
+      if (playState == 0 && !_isPresident && !_voting) {
+        _voting = true;
+        _changeActionImage(4);
+        await _dividerVisibility();
+      } else if (playState != 0 && _voting) {
+        _voting = false;
+        await _dividerVisibility();
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final gameStateNotifier = ref.watch(gameStateProvider);
+    _isPresident = gameStateNotifier.currentPresident == widget.index;
+    _isChancellor = gameStateNotifier.currentChancellor == widget.index;
+    _isFormerPresident = gameStateNotifier.formerPresident == widget.index;
+    _isFormerChancellor = gameStateNotifier.formerChancellor == widget.index;
+    _checkForGovernmentChanges();
+    _checkForPresidentActions(
+      gameStateNotifier.playState,
+      gameStateNotifier.currentPresident,
+    );
     return SizedBox(
       height: widget.height + ScreenSize.screenHeight * 0.0225,
       child: Stack(
