@@ -15,14 +15,15 @@ class GameState {
   int playState;
   List<int> killedPlayers;
   bool regularPresident;
+  List<int> chancellorVoting;
   int? currentChancellor;
   int? formerChancellor;
   int? formerPresident;
 
   GameState({required this.currentPresident, required this.nextPresident,
     required this.killedPlayers, required this.playState,
-    required this.regularPresident, this.currentChancellor,
-    this.formerChancellor, this.formerPresident});
+    required this.regularPresident, required this.chancellorVoting,
+    this.currentChancellor, this.formerChancellor, this.formerPresident});
 }
 
 class GameStateNotifier extends StateNotifier<GameState> {
@@ -32,24 +33,26 @@ class GameStateNotifier extends StateNotifier<GameState> {
   late final Client _client;
   late RealtimeSubscription _subscription;
   bool _isSubscribed = false;
-  Document? _gameStateDocument;
-
+  Document? gameStateDocument;
+  bool _init = true;
 
   GameStateNotifier(this._databaseApi, this._client) :super(
     GameState(currentPresident: 0, nextPresident: 1, killedPlayers: [],
-        playState: 0, regularPresident: true)
+        playState: 0, regularPresident: true, chancellorVoting: [0, 0, 0, 0, 0])
   );
 
   // Updated all values of the game state
   void _updateGameStateNotifier() {
     List<int> killedPlayers = convertDynamicToIntList(
-        _gameStateDocument!.data['killedPlayers']);
-    int currentPresident = _gameStateDocument!.data['currentPresident'];
-    int? currentChancellor = _gameStateDocument!.data['currentChancellor'];
-    int playState = _gameStateDocument!.data['playState'];
-    bool regularPresident = _gameStateDocument!.data['regularPresident'];
-    int? formerChancellor = _gameStateDocument!.data['formerChancellor'];
-    int? formerPresident = _gameStateDocument!.data['formerPresident'];
+      gameStateDocument!.data['killedPlayers'],);
+    int currentPresident = gameStateDocument!.data['currentPresident'];
+    int? currentChancellor = gameStateDocument!.data['currentChancellor'];
+    int playState = gameStateDocument!.data['playState'];
+    bool regularPresident = gameStateDocument!.data['regularPresident'];
+    int? formerChancellor = gameStateDocument!.data['formerChancellor'];
+    int? formerPresident = gameStateDocument!.data['formerPresident'];
+    List<int> chancellorVoting = convertDynamicToIntList(
+      gameStateDocument!.data['chancellorVoting'],);
     if (regularPresident) {
       nextPresident = getNextPresident(nextPresident, killedPlayers);
     }
@@ -62,10 +65,19 @@ class GameStateNotifier extends StateNotifier<GameState> {
       currentChancellor: currentChancellor,
       formerChancellor: formerChancellor,
       formerPresident: formerPresident,
+      chancellorVoting: chancellorVoting,
     );
   }
 
-  void subscribeGameState(String gameStateId) {
+  void subscribeGameState(String gameStateId) async {
+    if (_init) {
+      _init = false;
+      gameStateDocument = await _databaseApi.getDocumentById(
+        gameStateCollectionId,
+        gameStateId,
+      );
+      _updateGameStateNotifier();
+    }
     if (!_isSubscribed) {
       _isSubscribed = true;
       Realtime realtime = Realtime(_client);
@@ -74,7 +86,7 @@ class GameStateNotifier extends StateNotifier<GameState> {
             'documents.$gameStateId',
       ]);
       _subscription.stream.listen((event) async {
-        _gameStateDocument = await _databaseApi.getDocumentById(
+        gameStateDocument = await _databaseApi.getDocumentById(
           gameStateCollectionId,
           gameStateId,
         );
@@ -85,6 +97,7 @@ class GameStateNotifier extends StateNotifier<GameState> {
 
   // Method to unsubscribe the game state if is active
   void unsubscribeGameRoom() async {
+    _init = true;
     if (_isSubscribed) {
       _subscription.close();
       _isSubscribed = false;

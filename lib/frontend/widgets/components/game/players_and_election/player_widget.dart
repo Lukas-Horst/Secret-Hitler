@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/app_design/app_design.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
+import 'package:secret_hitler/backend/pages/game/game_room/game_state_functions.dart';
 import 'package:secret_hitler/backend/riverpod/provider.dart';
 import 'package:secret_hitler/frontend/widgets/animations/flip_animation.dart';
 import 'package:secret_hitler/frontend/widgets/animations/opacity_animation.dart';
@@ -52,7 +53,7 @@ class PlayerWidgetState extends ConsumerState<PlayerWidget> {
 
   bool _dividerVisible = false;
   late int _activeExecutivePower;
-  late bool _cardVoting;
+  late bool _chancellorVoting;
   late bool _isFormerChancellor;
   late bool _isFormerPresident;
   late bool _isChancellor;
@@ -62,6 +63,9 @@ class PlayerWidgetState extends ConsumerState<PlayerWidget> {
   bool _wasPresident = false;
   bool _wasChancellor = false;
   bool _voting = false;
+  bool _isDead = false;
+  bool _voted = false;
+  bool _votingCardFlipped = false;
 
   List<OpacityAnimation> _getImages() {
     List<OpacityAnimation> imagesList = [];
@@ -83,7 +87,12 @@ class PlayerWidgetState extends ConsumerState<PlayerWidget> {
                 : const EdgeInsets.all(0),
             child: IconButton(
               onPressed: () {
-                print(widget.index);
+                final gameStateNotifier = ref.read(gameStateProvider);
+                int playState = gameStateNotifier.playState;
+                // Changing from playState=0 to playState=1
+                if (playState == 0) {
+                  chancellorVotingState(ref, widget.index);
+                }
               },
               icon: i == 3
                   ? Icon(
@@ -136,42 +145,54 @@ class PlayerWidgetState extends ConsumerState<PlayerWidget> {
   }
 
   // Method to make the yes or no card visible
-  Future<void> setVotingCard(bool voting) async {
-    // Yes card
-    if (voting) {
-      _opacityKeys[9].currentState?.animate();
-    // No card
-    } else {
-      _opacityKeys[10].currentState?.animate();
+  Future<void> _setVotingCard(bool voting) async {
+    if (!_voted) {
+      _voted = true;
+      // Yes card
+      if (voting) {
+        _opacityKeys[9].currentState?.animate();
+        // No card
+      } else {
+        _opacityKeys[10].currentState?.animate();
+      }
+      _chancellorVoting = voting;
     }
-    _cardVoting = voting;
     await Future.delayed(const Duration(milliseconds: 500));
   }
 
-  // Method to flip the voting card
-  Future<void> flipVotingCard() async {
-    // Yes card
-    if (_cardVoting) {
-      _flipAnimationKeys[0].currentState?.animate();
-    // No card
-    } else {
-      _flipAnimationKeys[1].currentState?.animate();
+  // Method to flip the voting card for 20 seconds and then hide it
+  Future<void> _flipVotingCard() async {
+    if (!_votingCardFlipped) {
+      _votingCardFlipped = true;
+      // Yes card
+      if (_chancellorVoting) {
+        _flipAnimationKeys[0].currentState?.animate();
+        // No card
+      } else {
+        _flipAnimationKeys[1].currentState?.animate();
+      }
+      await Future.delayed(const Duration(seconds: 10));
+      await resetChancellorVoting(ref);
+      await _hideVotingCard();
     }
-    await Future.delayed(const Duration(milliseconds: 500));
   }
 
   // Method to hide the current voting card
-  Future<void> hideVotingCard() async {
-    if (_cardVoting) {
-      _opacityKeys[7].currentState?.animate();
-      await Future.delayed(const Duration(milliseconds: 500));
-      _flipAnimationKeys[0].currentState?.animate();
-      await Future.delayed(const Duration(milliseconds: 500));
-    } else {
-      _opacityKeys[8].currentState?.animate();
-      await Future.delayed(const Duration(milliseconds: 500));
-      _flipAnimationKeys[1].currentState?.animate();
-      await Future.delayed(const Duration(milliseconds: 500));
+  Future<void> _hideVotingCard() async {
+    if (_voted) {
+      _voted = false;
+      if (_chancellorVoting) {
+        _flipAnimationKeys[0].currentState?.animate();
+        await Future.delayed(const Duration(milliseconds: 500));
+        _opacityKeys[9].currentState?.animate();
+        await Future.delayed(const Duration(milliseconds: 500));
+      } else {
+        _flipAnimationKeys[1].currentState?.animate();
+        await Future.delayed(const Duration(milliseconds: 500));
+        _opacityKeys[10].currentState?.animate();
+        await Future.delayed(const Duration(milliseconds: 500));
+      }
+      _votingCardFlipped = false;
     }
   }
 
@@ -236,29 +257,49 @@ class PlayerWidgetState extends ConsumerState<PlayerWidget> {
     await Future.delayed(const Duration(milliseconds: 1000));
     // Deciding the chancellor if the player is the current president
     if (currentPresident == widget.ownPlayerIndex) {
-      if (playState == 0 && !_isPresident && !_voting) {
+      if (playState == 0 && !_isPresident && !_voting && !_isFormerPresident
+          && !_isFormerChancellor && !_isDead) {
         _voting = true;
         _changeActionImage(4);
         await _dividerVisibility();
-      } else if (playState != 0 && _voting) {
+      } else if (playState != 0 && _voting && !_isFormerPresident
+          && !_isFormerChancellor && !_isDead) {
         _voting = false;
         await _dividerVisibility();
       }
+    }
+    // Voting phase for the chancellor
+    if (playState == 1) {
+
+    }
+  }
+
+  // Method to check the chancellor voting of all players
+  Future<void> _checkChancellorVoting(List<int> chancellorVoting,
+      int playState) async {
+    await Future.delayed(const Duration(milliseconds: 1000));
+    if (chancellorVoting[widget.index] != 0) {
+      await _setVotingCard(chancellorVoting[widget.index] == 2);
+    }
+    if (isVotingFinished(chancellorVoting) && !_votingCardFlipped && _voted) {
+      await _flipVotingCard();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final gameStateNotifier = ref.watch(gameStateProvider);
-    _isPresident = gameStateNotifier.currentPresident == widget.index;
-    _isChancellor = gameStateNotifier.currentChancellor == widget.index;
-    _isFormerPresident = gameStateNotifier.formerPresident == widget.index;
-    _isFormerChancellor = gameStateNotifier.formerChancellor == widget.index;
+    final gameState = ref.watch(gameStateProvider);
+    _isPresident = gameState.currentPresident == widget.index;
+    _isChancellor = gameState.currentChancellor == widget.index;
+    _isFormerPresident = gameState.formerPresident == widget.index;
+    _isFormerChancellor = gameState.formerChancellor == widget.index;
+    _isDead = gameState.killedPlayers.contains(widget.index);
     _checkForGovernmentChanges();
     _checkForPresidentActions(
-      gameStateNotifier.playState,
-      gameStateNotifier.currentPresident,
+      gameState.playState,
+      gameState.currentPresident,
     );
+    _checkChancellorVoting(gameState.chancellorVoting, gameState.playState);
     return SizedBox(
       height: widget.height + ScreenSize.screenHeight * 0.0225,
       child: Stack(

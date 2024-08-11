@@ -62,3 +62,12 @@ The play state is an integer variable whereby all actions between the players ar
 |     6      |   The President investigates a player's identity card.    |
 |     7      |          The President pick the next President.           |
 |     8      |               The President kills a player.               |
+
+#### chancellorVoting
+A list of integers which shows the voting of a player.
+
+| int |    Status     |
+|:---:|:-------------:|
+|  0  | Not yet voted |
+|  1  |      No       |
+|  2  |      Yes      |

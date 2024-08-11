@@ -22,6 +22,7 @@ Future<void> createGameStateDocument(WidgetRef ref, Document gameRoomDocument) a
       'playerNames': [],
       'playerRoles': [],
       'killedPlayers': [],
+      'chancellorVoting': [],
     },
   );
   await databaseApi.updateDocument(
@@ -40,6 +41,7 @@ Future<void> startGame(WidgetRef ref, Document gameRoomDocument,
   List<String> playerOrder = [];
   List<String> playerNames = [];
   List<String> playerRoles = ['Hitler'];
+  List<int> chancellorVoting = [];
   final int playerAmount = gameRoomDocument.data['users'].length;
   final int fascistAmount = _getFascistAmount(playerAmount);
   // Adding the roles
@@ -58,6 +60,7 @@ Future<void> startGame(WidgetRef ref, Document gameRoomDocument,
   playerOrder.shuffle();
   for (String userId in playerOrder) {
     playerNames.add(users[userId]!);
+    chancellorVoting.add(0);
   }
   await databaseApi.updateDocument(
     gameStateCollectionId,
@@ -67,6 +70,7 @@ Future<void> startGame(WidgetRef ref, Document gameRoomDocument,
       'playerNames': playerNames,
       'playerOrder': playerOrder,
       'playerRoles': playerRoles,
+      'chancellorVoting': chancellorVoting,
     },
   );
   Document? gameStateDocument = await databaseApi.getDocumentById(
