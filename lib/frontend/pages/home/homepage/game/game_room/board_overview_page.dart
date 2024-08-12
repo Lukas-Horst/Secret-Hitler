@@ -4,9 +4,11 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/constants/board_overview_constants.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/backend/pages/game/game_room/board_overview_backend.dart';
+import 'package:secret_hitler/backend/riverpod/provider.dart';
 import 'package:secret_hitler/frontend/widgets/animations/flip_animation.dart';
 import 'package:secret_hitler/frontend/widgets/animations/moving_animation.dart';
 import 'package:secret_hitler/frontend/widgets/animations/transition_animation.dart';
@@ -18,17 +20,17 @@ import 'package:secret_hitler/frontend/widgets/components/game/board_overview/pi
 import 'package:secret_hitler/frontend/widgets/components/game/board_overview/piles/pile_functions.dart' as pile_functions;
 import 'package:secret_hitler/frontend/widgets/components/text/explaining_text.dart';
 
-class BoardOverview extends StatefulWidget {
+class BoardOverview extends ConsumerStatefulWidget {
 
   final BoardOverviewBackend backend;
 
   const BoardOverview({super.key, required this.backend,});
 
   @override
-  State<BoardOverview> createState() => BoardOverviewState();
+  ConsumerState<BoardOverview> createState() => BoardOverviewState();
 }
 
-class BoardOverviewState extends State<BoardOverview> with AutomaticKeepAliveClientMixin {
+class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeepAliveClientMixin {
 
   late BoardOverviewBackend backend;
   bool _explainingTextActive = true;
@@ -59,7 +61,7 @@ class BoardOverviewState extends State<BoardOverview> with AutomaticKeepAliveCli
       secondWidget = backSide;
     }
     return GestureDetector(
-      onTap: () async {await backend.cardClick(cardIndex);},
+      onTap: () async {await backend.cardClick(cardIndex, ref);},
       child: FlipAnimation(
         key: backend.cardFlipKey[cardIndex],
         duration: const Duration(milliseconds: 600),
@@ -106,7 +108,7 @@ class BoardOverviewState extends State<BoardOverview> with AutomaticKeepAliveCli
       _refillDrawPile(backend.discardPileCardAmount);
       await _emptyDiscardPile(backend.discardPileCardAmount);
       await backend.drawPileKey.currentState?.shuffle();
-      backend.shuffleCards();
+      await backend.shuffleCards(ref);
     }
     for (int i=2; i > -1; i--) {
       backend.drawPileCardAmount--;
@@ -269,9 +271,6 @@ class BoardOverviewState extends State<BoardOverview> with AutomaticKeepAliveCli
 
   // Method to play a card from the bottom center or from the draw pile
   Future<void> playCard(int cardIndex, bool normalPlay) async {
-    if (!normalPlay) {
-      cardIndex = 2;
-    }
     String boardColor = backend.cardColors[cardIndex] ? 'LiberalBoard' : 'FascistBoard';
     if (normalPlay) {
       await _updateAnimation('BottomCenter', boardColor, cardIndex, 1500);
@@ -394,6 +393,15 @@ class BoardOverviewState extends State<BoardOverview> with AutomaticKeepAliveCli
   @override
   void initState() {
     backend = widget.backend;
+    final gameState = ref.read(gameStateProvider);
+    backend.drawPileCardAmount = gameState.drawPileCardAmount;
+    backend.fascistBoardCardAmount = gameState.fascistBoardCardAmount;
+    backend.liberalBoardCardAmount = gameState.liberalBoardCardAmount;
+    backend.discardPileCardAmount = 14 - backend.drawPileCardAmount
+        - backend.fascistBoardCardAmount - backend.liberalBoardCardAmount;
+    backend.fascistBoardFlippedCards = backend.fascistBoardCardAmount;
+    backend.liberalBoardFlippedCards = backend.liberalBoardCardAmount;
+    backend.shuffleCards(ref);
     initialize();
     super.initState();
   }

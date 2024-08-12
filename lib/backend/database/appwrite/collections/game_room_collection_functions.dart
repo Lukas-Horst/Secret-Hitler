@@ -152,7 +152,7 @@ Future<void> _updateUserList(WidgetRef ref, Document gameRoomDocument,
   final userState = ref.watch(userStateProvider);
   User currentUser = userState.user!;
   final users = gameRoomDocument.data['users'];
-  bool isHost = gameRoomDocument.data['host'] == currentUser.$id;
+  bool isHost = isCurrentUserHost(ref, gameRoomDocument);
   // Checking if the user is currently in the user list of the waiting room
   bool userInWaitingRoom = false;
   int count = -1;
@@ -203,4 +203,11 @@ bool _checkRejoinGameRoom(WidgetRef ref, Document gameRoomDocument) {
     }
   }
   return false;
+}
+
+// Function to check if the current user is the host
+bool isCurrentUserHost(WidgetRef ref, Document gameRoomDocument) {
+  final userState = ref.watch(userStateProvider);
+  User currentUser = userState.user!;
+  return gameRoomDocument.data['host'] == currentUser.$id;
 }

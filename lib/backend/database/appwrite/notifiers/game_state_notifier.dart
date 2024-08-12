@@ -16,14 +16,23 @@ class GameState {
   List<int> killedPlayers;
   bool regularPresident;
   List<int> chancellorVoting;
+  int electionTracker;
+  int fascistBoardCardAmount;
+  int liberalBoardCardAmount;
+  int drawPileCardAmount;
+  List<bool> cardColors;
   int? currentChancellor;
   int? formerChancellor;
   int? formerPresident;
+  int? discardedPresidentialCard;
 
   GameState({required this.currentPresident, required this.nextPresident,
     required this.killedPlayers, required this.playState,
     required this.regularPresident, required this.chancellorVoting,
-    this.currentChancellor, this.formerChancellor, this.formerPresident});
+    required this.electionTracker, required this.fascistBoardCardAmount,
+    required this.liberalBoardCardAmount, required this.drawPileCardAmount,
+    required this.cardColors, this.currentChancellor, this.formerChancellor,
+    this.formerPresident, this.discardedPresidentialCard});
 }
 
 class GameStateNotifier extends StateNotifier<GameState> {
@@ -37,36 +46,63 @@ class GameStateNotifier extends StateNotifier<GameState> {
   bool _init = true;
 
   GameStateNotifier(this._databaseApi, this._client) :super(
-    GameState(currentPresident: 0, nextPresident: 1, killedPlayers: [],
-        playState: 0, regularPresident: true, chancellorVoting: [0, 0, 0, 0, 0])
+    GameState(
+      currentPresident: 0,
+      nextPresident: 1,
+      killedPlayers: [],
+      playState: 0,
+      regularPresident: true,
+      chancellorVoting: [0, 0, 0, 0, 0],
+      electionTracker: 0,
+      fascistBoardCardAmount: 0,
+      liberalBoardCardAmount: 0,
+      drawPileCardAmount: 14,
+      cardColors: [],
+    )
   );
 
   // Updated all values of the game state
   void _updateGameStateNotifier() {
-    List<int> killedPlayers = convertDynamicToIntList(
-      gameStateDocument!.data['killedPlayers'],);
-    int currentPresident = gameStateDocument!.data['currentPresident'];
-    int? currentChancellor = gameStateDocument!.data['currentChancellor'];
-    int playState = gameStateDocument!.data['playState'];
-    bool regularPresident = gameStateDocument!.data['regularPresident'];
-    int? formerChancellor = gameStateDocument!.data['formerChancellor'];
-    int? formerPresident = gameStateDocument!.data['formerPresident'];
-    List<int> chancellorVoting = convertDynamicToIntList(
-      gameStateDocument!.data['chancellorVoting'],);
-    if (regularPresident) {
-      nextPresident = getNextPresident(nextPresident, killedPlayers);
-    }
-    state = GameState(
-      currentPresident: currentPresident,
-      nextPresident: nextPresident,
-      killedPlayers: killedPlayers,
-      playState: playState,
-      regularPresident: regularPresident,
-      currentChancellor: currentChancellor,
-      formerChancellor: formerChancellor,
-      formerPresident: formerPresident,
-      chancellorVoting: chancellorVoting,
-    );
+    try {
+      List<int> killedPlayers = convertDynamicToIntList(
+        gameStateDocument!.data['killedPlayers'],);
+      int currentPresident = gameStateDocument!.data['currentPresident'];
+      int? currentChancellor = gameStateDocument!.data['currentChancellor'];
+      int playState = gameStateDocument!.data['playState'];
+      bool regularPresident = gameStateDocument!.data['regularPresident'];
+      int? formerChancellor = gameStateDocument!.data['formerChancellor'];
+      int? formerPresident = gameStateDocument!.data['formerPresident'];
+      List<int> chancellorVoting = convertDynamicToIntList(
+        gameStateDocument!.data['chancellorVoting'],);
+      int electionTracker = gameStateDocument!.data['electionTracker'];
+      int fascistBoardCardAmount = gameStateDocument!.data['fascistBoardCardAmount'];
+      int liberalBoardCardAmount = gameStateDocument!.data['liberalBoardCardAmount'];
+      int drawPileCardAmount = gameStateDocument!.data['drawPileCardAmount'];
+      List<bool> cardColors = convertDynamicToBoolList(
+        gameStateDocument!.data['cardColors'],
+      );
+      int? discardedPresidentialCard = gameStateDocument!.data['discardedPresidentialCard'];
+      if (regularPresident) {
+        nextPresident = getNextPresident(nextPresident, killedPlayers);
+      }
+      state = GameState(
+        currentPresident: currentPresident,
+        nextPresident: nextPresident,
+        killedPlayers: killedPlayers,
+        playState: playState,
+        regularPresident: regularPresident,
+        currentChancellor: currentChancellor,
+        formerChancellor: formerChancellor,
+        formerPresident: formerPresident,
+        chancellorVoting: chancellorVoting,
+        electionTracker: electionTracker,
+        fascistBoardCardAmount: fascistBoardCardAmount,
+        liberalBoardCardAmount: liberalBoardCardAmount,
+        drawPileCardAmount: drawPileCardAmount,
+        cardColors: cardColors,
+        discardedPresidentialCard: discardedPresidentialCard,
+      );
+    } catch(e) {print(e);}
   }
 
   void subscribeGameState(String gameStateId) async {

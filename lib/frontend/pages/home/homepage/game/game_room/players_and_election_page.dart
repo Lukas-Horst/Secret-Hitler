@@ -38,7 +38,12 @@ class PlayersAndElectionState extends ConsumerState<PlayersAndElection> with Aut
     final gameState = ref.watch(gameStateProvider);
     int playState = gameState.playState;
     List<int> chancellorVoting = gameState.chancellorVoting;
-    backend.flipBallotCards(playState, chancellorVoting);
+    if (playState != 1 && _voting != 0) {
+      _voting = 0;
+    }
+    if (_voting == 0 && playState < 4) {
+      backend.flipBallotCards(playState, chancellorVoting);
+    }
     // If the voting didn't worked successfully cause two players voted at the
     // same time we repeat the voting
     if (_voting != 0 && chancellorVoting[backend.ownPlayerIndex] == 0

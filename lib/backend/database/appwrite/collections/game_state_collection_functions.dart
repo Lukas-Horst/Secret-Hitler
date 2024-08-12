@@ -23,6 +23,7 @@ Future<void> createGameStateDocument(WidgetRef ref, Document gameRoomDocument) a
       'playerRoles': [],
       'killedPlayers': [],
       'chancellorVoting': [],
+      'cardColors': [],
     },
   );
   await databaseApi.updateDocument(

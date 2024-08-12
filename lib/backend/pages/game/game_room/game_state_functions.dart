@@ -43,8 +43,12 @@ Future<void> voteForChancellor(WidgetRef ref, int voting,
   chancellorVoting[ownPlayerIndex] = voting;
   final bool votingFinished = isVotingFinished(chancellorVoting);
   int newState = 1;
+  int newElectionTracker = gameState.electionTracker;
   if (votingFinished) {
-    newState = _countVoting(chancellorVoting);
+    newState = _countVoting(chancellorVoting, gameState.electionTracker);
+    if (newState != 3) {
+      newElectionTracker++;
+    }
   }
   await databaseApi.updateDocument(
     gameStateCollectionId,
@@ -52,6 +56,7 @@ Future<void> voteForChancellor(WidgetRef ref, int voting,
     {
       'playState': newState,
       'chancellorVoting': chancellorVoting,
+      'electionTracker': newElectionTracker,
     },
   );
 }
@@ -67,15 +72,18 @@ bool isVotingFinished(List<int> chancellorVoting) {
 }
 
 // Function which counts the voting and returns the next play state
-int _countVoting(List<int> chancellorVoting) {
+int _countVoting(List<int> chancellorVoting, int electionTracker) {
   int neededVotes = floorDivision(chancellorVoting.length, 2) + 1;
   for (int voting in chancellorVoting) {
     if (voting == 2) {
       neededVotes--;
     }
     if (neededVotes == 0) {
-      return 2;
+      return 3;
     }
+  }
+  if (electionTracker == 2) {
+    return 2;
   }
   return 0;
 }
@@ -94,6 +102,19 @@ Future<void> resetChancellorVoting(WidgetRef ref) async {
     gameStateNotifier.gameStateDocument!.$id,
     {
       'chancellorVoting': chancellorVoting,
+    },
+  );
+}
+
+// Method to update the card color list
+Future<void> updateCardColors(WidgetRef ref, List<bool> cardColors) async {
+  final databaseApi = ref.read(databaseApiProvider);
+  final gameStateNotifier = ref.read(gameStateProvider.notifier);
+  await databaseApi.updateDocument(
+    gameStateCollectionId,
+    gameStateNotifier.gameStateDocument!.$id,
+    {
+      'cardColors': cardColors,
     },
   );
 }

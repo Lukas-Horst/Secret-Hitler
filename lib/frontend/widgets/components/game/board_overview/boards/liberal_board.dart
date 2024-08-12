@@ -1,13 +1,14 @@
 // author: Lukas Horst
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/constants/board_overview_constants.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/frontend/widgets/animations/flip_animation.dart';
 import 'package:secret_hitler/frontend/widgets/animations/moving_animation.dart';
 import 'package:secret_hitler/frontend/widgets/components/game/board_overview/boards/board_functions.dart';
 
-class LiberalBoard extends StatefulWidget {
+class LiberalBoard extends ConsumerStatefulWidget {
 
   final int cards;
   final int flippedCards;
@@ -17,10 +18,10 @@ class LiberalBoard extends StatefulWidget {
     required this.flippedCards});
 
   @override
-  State<LiberalBoard> createState() => LiberalBoardState();
+  ConsumerState<LiberalBoard> createState() => LiberalBoardState();
 }
 
-class LiberalBoardState extends State<LiberalBoard> {
+class LiberalBoardState extends ConsumerState<LiberalBoard> {
 
   List<double> cardPositions = liberalBoardLeftPositions;
   final double _electionTrackerTopPosition = ScreenSize.screenHeight * 0.1477;

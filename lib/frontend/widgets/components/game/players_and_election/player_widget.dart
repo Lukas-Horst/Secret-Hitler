@@ -268,10 +268,6 @@ class PlayerWidgetState extends ConsumerState<PlayerWidget> {
         await _dividerVisibility();
       }
     }
-    // Voting phase for the chancellor
-    if (playState == 1) {
-
-    }
   }
 
   // Method to check the chancellor voting of all players

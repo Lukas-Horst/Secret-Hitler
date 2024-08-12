@@ -23,3 +23,15 @@ List<int> convertDynamicToIntList(List<dynamic> dynamicList) {
   }
   return intList;
 }
+
+// Function to convert a dynamic list from appwrite into a bool list if possible
+List<bool> convertDynamicToBoolList(List<dynamic> dynamicList) {
+  List<bool> boolList = [];
+  for (dynamic dynamicValue in dynamicList) {
+    try {
+      bool boolValue = dynamicValue as bool;
+      boolList.add(boolValue);
+    } catch(e) {}
+  }
+  return boolList;
+}
