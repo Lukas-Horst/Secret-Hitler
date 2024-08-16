@@ -1,7 +1,10 @@
 // author: Lukas Horst
 
+import 'dart:math';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/constants/appwrite_constants.dart';
+import 'package:secret_hitler/backend/database/appwrite/notifiers/game_state_notifier.dart';
 import 'package:secret_hitler/backend/helper/math_functions.dart';
 import 'package:secret_hitler/backend/riverpod/provider.dart';
 
@@ -106,15 +109,150 @@ Future<void> resetChancellorVoting(WidgetRef ref) async {
   );
 }
 
-// Method to update the card color list
-Future<void> updateCardColors(WidgetRef ref, List<bool> cardColors) async {
+// Function when the president discard his card
+Future<void> discardCard(WidgetRef ref, int cardIndex) async {
   final databaseApi = ref.read(databaseApiProvider);
   final gameStateNotifier = ref.read(gameStateProvider.notifier);
   await databaseApi.updateDocument(
     gameStateCollectionId,
     gameStateNotifier.gameStateDocument!.$id,
     {
-      'cardColors': cardColors,
+      'playState': 4,
+      'discardedPresidentialCard': cardIndex,
     },
   );
+}
+
+// Function to play a card
+Future<void> playCard(WidgetRef ref, int cardIndex, bool normalPlay) async {
+  final databaseApi = ref.read(databaseApiProvider);
+  final gameStateNotifier = ref.read(gameStateProvider.notifier);
+  final gameState = ref.read(gameStateProvider);
+  bool cardColor = gameState.cardColors[cardIndex];
+  int newGameState = _getNewGameState(cardColor, gameState);
+  int newLiberalBoardCardAmount = gameState.liberalBoardCardAmount;
+  int newFascistBoardCardAmount = gameState.fascistBoardCardAmount;
+  if (cardColor) {
+    newLiberalBoardCardAmount++;
+  } else {
+    newFascistBoardCardAmount++;
+  }
+  int newDrawPileCardAmount = normalPlay
+      ? gameState.drawPileCardAmount - 3
+      : gameState.drawPileCardAmount - 1;
+  List<bool> newCardColors = List.from(gameState.cardColors);
+  // If the draw pile has fewer than 3 card, it will be reshuffled with the card
+  // from the discards pile
+  if (newDrawPileCardAmount < 3) {
+    newDrawPileCardAmount = 14 - newFascistBoardCardAmount - newLiberalBoardCardAmount;
+    newCardColors = _shuffleCards(
+      newFascistBoardCardAmount,
+      newLiberalBoardCardAmount,
+      newDrawPileCardAmount,
+    );
+  // Else the one or 3 cards will be removed from the draw pile
+  } else {
+    for (int i=0; i < 3; i++) {
+      if (normalPlay) {
+        newCardColors.removeAt(0);
+      } else if (i == 2) {
+        newCardColors.removeAt(2);
+      }
+    }
+  }
+  // Liberal card played
+  if (cardColor) {
+    await databaseApi.updateDocument(
+      gameStateCollectionId,
+      gameStateNotifier.gameStateDocument!.$id,
+      {
+        'playState': newGameState,
+        'liberalBoardCardAmount': newLiberalBoardCardAmount,
+        'cardColors': newCardColors,
+        'drawPileCardAmount': newDrawPileCardAmount,
+        'discardedPresidentialCard': null,
+      },
+    );
+  // Fascist card played
+  } else {
+    await databaseApi.updateDocument(
+      gameStateCollectionId,
+      gameStateNotifier.gameStateDocument!.$id,
+      {
+        'playState': newGameState,
+        'fascistBoardCardAmount': newFascistBoardCardAmount,
+        'cardColors': newCardColors,
+        'drawPileCardAmount': newDrawPileCardAmount,
+        'discardedPresidentialCard': null,
+      },
+    );
+  }
+}
+
+// Function to get the new game state based on the played card
+int _getNewGameState(bool cardColor, GameState gameState) {
+  int playerAmount = gameState.chancellorVoting.length;
+  int fascistBoardCardAmount = gameState.fascistBoardCardAmount;
+  // If a fascist card was played we need to check if their are any presidential action
+  if (!cardColor) {
+    // 5 to 6 players
+    if (playerAmount < 7) {
+      // The President examines the top 3 cards by 3 fascist cards
+      if (fascistBoardCardAmount++ == 3) {
+        return 5;
+      }
+    // 7 to 10 players
+    } else {
+      // The President investigates a player's identity card
+      if ((fascistBoardCardAmount++ == 1 && playerAmount > 8)
+          || fascistBoardCardAmount++ == 2) {
+        return 6;
+      // The President pick the next President
+      } else if (fascistBoardCardAmount++ == 3) {
+        return 7;
+      }
+    }
+    // The President kills a player
+    if (fascistBoardCardAmount++ == 4 || fascistBoardCardAmount++ == 5) {
+      return 8;
+    }
+  }
+  // The liberal team won
+  if (gameState.liberalBoardCardAmount++ == 5) {
+    return 9;
+  // The fascist team won
+  } else if (fascistBoardCardAmount++ == 7) {
+    return 10;
+  }
+  return 0;
+}
+
+// Method to shuffle the cards on the draw pile
+List<bool> _shuffleCards(int fascistBoardCardAmount, int liberalBoardCardAmount,
+    int drawPileCardAmount) {
+  int fascistCardAmount = 8 - fascistBoardCardAmount;
+  int liberalCardAmount = 6 - liberalBoardCardAmount;
+  List<bool> cardColors = [];
+  for (int i=0; i < drawPileCardAmount; i++) {
+    // If no fascist card is left
+    if (fascistCardAmount == 0) {
+      cardColors.add(true);
+      continue;
+      // If no liberal card is left
+    } else if (liberalCardAmount == 0) {
+      cardColors.add(false);
+      continue;
+    }
+    int cardColor = Random().nextInt(2);
+    // Liberal card
+    if (cardColor == 1) {
+      cardColors.add(true);
+      liberalCardAmount--;
+      // Fascist card
+    } else {
+      cardColors.add(false);
+      fascistCardAmount--;
+    }
+  }
+  return cardColors;
 }

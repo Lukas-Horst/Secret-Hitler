@@ -44,7 +44,7 @@ class DrawPileState extends State<DrawPile> {
   @override
   void initState() {
     // Adding the rotationKeys
-    for (int i=0; i < 14; i++) {
+    for (int i=0; i < 15; i++) {
       _drawPileRotationKeys.add(GlobalKey<RotationAnimationState>());
     }
     buildPile(pileElements, widget.cards, false, _drawPileRotationKeys);

@@ -1,11 +1,11 @@
 // author: Lukas Horst
 
 import 'dart:async';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
+import 'package:secret_hitler/backend/database/appwrite/notifiers/game_state_notifier.dart';
 import 'package:secret_hitler/backend/pages/game/game_room/game_state_functions.dart';
 import 'package:secret_hitler/backend/pages/game/game_room/players_and_election_backend.dart';
 import 'package:secret_hitler/backend/riverpod/provider.dart';
@@ -47,42 +47,36 @@ class BoardOverviewBackend{
     GlobalKey<MovingAnimationState>(),  // Left card
     GlobalKey<MovingAnimationState>(),  // Middle card
     GlobalKey<MovingAnimationState>(),  // Right card
-    GlobalKey<MovingAnimationState>(),  // Top card
   ];
 
   final List<GlobalKey<FlipAnimationState>> cardFlipKey = [
     GlobalKey<FlipAnimationState>(),  // Left card
     GlobalKey<FlipAnimationState>(),  // Middle card
     GlobalKey<FlipAnimationState>(),  // Right card
-    GlobalKey<FlipAnimationState>(),  // Top card
   ];
 
   final List<bool> cardVisibility = [
     false,  // Left card
     false,  // Middle card
     false,  // Right card
-    false,  // Top card
   ];
 
   final List<List<double>> cardTopPosition = [
     [0.0, 0.0],  // Left card
     [0.0, 0.0],  // Middle card
     [0.0, 0.0],  // Right card
-    [0.0, 0.0],  // Top card
   ];
 
   final List<List<double>> cardLeftPosition = [
     [0.0, 0.0],  // Left card
     [0.0, 0.0],  // Middle card
     [0.0, 0.0],  // Right card
-    [0.0, 0.0],  // Top card
   ];
 
   final List<List<double>> rotationValues = [
     [0.0, -10],  // Left card
     [0.0, -10],  // Middle card
     [0.0, -10],  // Right card
-    [0.0, 0.0],  // Top card
   ];
 
   final List<Duration> durationValues = [
@@ -92,7 +86,7 @@ class BoardOverviewBackend{
     const Duration(milliseconds: 1000),  // Top card
   ];
 
-  final List<bool> cardColors = [];
+  List<bool> cardColors = [];
 
   int drawPileCardAmount = 14;
   late int discardPileCardAmount;
@@ -100,12 +94,12 @@ class BoardOverviewBackend{
   late int fascistBoardFlippedCards;
   int liberalBoardCardAmount = 0;
   late int liberalBoardFlippedCards;
-  late int fascistCardAmount;
-  late int liberalCardAmount;
   String firstExplainingText = AppLanguage.getLanguageData()['Play a card'];
   String secondExplainingText = '';
+  int? discardedPresidentialCard;
+  late int playState;
 
-  int playCardState = 0;  // The current state of the played cards
+  int playCardState = -1;  // The current state of the played cards
   List<int> playedCardIndices = [];
   late GlobalKey<BoardOverviewState> boardOverviewFrontendKey;
   late int playerAmount;
@@ -119,35 +113,6 @@ class BoardOverviewBackend{
   // Setter method for the playerAndElectionBackend cause this can only set after the constructor
   void setPlayersAndElectionBackend(PlayersAndElectionBackend playersAndElectionBackend) {
     this.playersAndElectionBackend = playersAndElectionBackend;
-  }
-
-  // Method to shuffle the cards on the draw pile
-  Future<void> shuffleCards(WidgetRef ref) async {
-    fascistCardAmount = 8 - fascistBoardCardAmount;
-    liberalCardAmount = 6 - liberalBoardCardAmount;
-    cardColors.clear();
-    for (int i=0; i < drawPileCardAmount; i++) {
-      // If no fascist card is left
-      if (fascistCardAmount == 0) {
-        cardColors.add(true);
-        continue;
-      // If no liberal card is left
-      } else if (liberalCardAmount == 0) {
-        cardColors.add(false);
-        continue;
-      }
-      int cardColor = Random().nextInt(2);
-      // Liberal card
-      if (cardColor == 1) {
-        cardColors.add(true);
-        liberalCardAmount--;
-      // Fascist card
-      } else {
-        cardColors.add(false);
-        fascistCardAmount--;
-      }
-    }
-    await updateCardColors(ref, cardColors);
   }
 
   // Method for a click on the button based on the current play state
@@ -166,7 +131,6 @@ class BoardOverviewBackend{
           AppLanguage.getLanguageData()['Discard a card'],
         );
       });
-      playedCardIndices = [0, 1, 2];
       await boardOverviewFrontendKey.currentState?.drawCards();
       Timer(const Duration(milliseconds: 1000), () {
         textTransitionKey.currentState?.animate();
@@ -187,21 +151,19 @@ class BoardOverviewBackend{
       Timer(const Duration(milliseconds: 1000), () {
         textTransitionKey.currentState?.animate();
       });
-      await boardOverviewFrontendKey.currentState?.discoverCards();
-      playedCardIndices.remove(cardIndex);
-      playCardState++;
+      await discardCard(ref, cardIndex);
     // Play 1 card and discard the other one
     } else if (playCardState == 2) {
+      playedCardIndices = [0, 1, 2];
+      playedCardIndices.remove(discardedPresidentialCard);
+      playedCardIndices.remove(cardIndex);
       textTransitionKey.currentState?.animate();
       await boardOverviewFrontendKey.currentState?.coverCards();
-      playedCardIndices.remove(cardIndex);
       await boardOverviewFrontendKey.currentState?.discard(playedCardIndices[0]);
-      await boardOverviewFrontendKey.currentState?.playCard(cardIndex, true);
-      playCardState = 0;
+      await playCard(ref, cardIndex, true);
     // Playing the top card because the election tracker moved 3 times forward
     } else if (playCardState == 3) {
-      await boardOverviewFrontendKey.currentState?.playCard(2, false);
-      playCardState = 0;
+      await playCard(ref, 2, false);
     }
     cardClickBlocked = false;
   }
@@ -209,14 +171,105 @@ class BoardOverviewBackend{
   // Method to check if the player is currently on the move
   bool isOnTheMove(WidgetRef ref) {
     final gameState = ref.read(gameStateProvider);
+    return true;
+    // return false;
     // The president is on the move
-    if (gameState.playState == 3 || gameState.playState == 2) {
+    if (playState == 3 || playState == 2) {
       return gameState.currentPresident == playersAndElectionBackend.ownPlayerIndex;
     // The chancellor is on the move
-    } else if (gameState.playState == 4) {
+    } else if (playState == 4) {
       return gameState.currentChancellor == playersAndElectionBackend.ownPlayerIndex;
     } else {
       return false;
     }
+  }
+
+  // Method to synchronize all values with the server
+  void synchronizeValues(GameState gameState, bool init, WidgetRef ref) async {
+    bool cardPlayed = false;
+    bool shuffle = false;
+    // A fascist card was played
+    if (fascistBoardCardAmount != gameState.fascistBoardCardAmount && !init) {
+      await _playCardAnimation(false, gameState, init, ref);
+      cardPlayed = true;
+    }
+    // A liberal card was played
+    if (liberalBoardCardAmount != gameState.liberalBoardCardAmount && !init) {
+      await _playCardAnimation(true, gameState, init, ref);
+      cardPlayed = true;
+    }
+    // Checking if a shuffle is necessary
+    if (!init) {
+      if (playState == 4 || playState == 2) {
+        shuffle = drawPileCardAmount < gameState.drawPileCardAmount;
+      }
+    }
+    playState = gameState.playState;
+    discardedPresidentialCard = gameState.discardedPresidentialCard;
+    fascistBoardCardAmount = gameState.fascistBoardCardAmount;
+    liberalBoardCardAmount = gameState.liberalBoardCardAmount;
+    fascistBoardFlippedCards = fascistBoardCardAmount;
+    liberalBoardFlippedCards = liberalBoardCardAmount;
+    cardColors = gameState.cardColors;
+    drawPileCardAmount = gameState.drawPileCardAmount;
+    discardPileCardAmount = 14 - drawPileCardAmount
+        - fascistBoardCardAmount - liberalBoardCardAmount;
+    if (init && !isOnTheMove(ref)) {
+      drawPileCardAmount -= 3;
+    }
+    if (playState == 3 && (playCardState < 0 || playCardState != 1)) {
+      playCardState = 0;
+      } else if (playState == 4 && playCardState < 2) {
+      // Activate the discard animation for all players who wasn't on the move
+      if (playCardState != 1 && !init) {
+        await boardOverviewFrontendKey.currentState?.coverCards();
+        await boardOverviewFrontendKey.currentState?.discard(discardedPresidentialCard!);
+      }
+      if (!init) {
+        await boardOverviewFrontendKey.currentState?.discoverCards();
+      }
+      playCardState = 2;
+      if (init) {
+        discardPileCardAmount++;
+      }
+    } else if (playState == 2 && playCardState < 3) {
+      playCardState = 3;
+    }
+    if (fascistBoardCardAmount != 6 && liberalBoardCardAmount != 5 && cardPlayed) {
+      if (shuffle) {
+        await boardOverviewFrontendKey.currentState?.shuffleCards();
+      }
+      await boardOverviewFrontendKey.currentState?.updateDrawPile();
+    }
+  }
+
+  // Method to get one of the two played card which fits with the color
+  int _getPlayedCardIndex(GameState gameState, bool cardColor, bool normalPlay) {
+    if (!normalPlay) {return 2;}
+    for (int i=0; i < 3; i++) {
+      if (cardVisibility[i]) {
+        return i;
+      }
+    }
+    return 0;
+  }
+
+  // Method to start the animation for playing a card
+  Future<void> _playCardAnimation(bool cardColor, GameState gameState,
+      bool init, WidgetRef ref) async {
+    bool normalPlay = playCardState != 3;
+    int playedCardIndex = _getPlayedCardIndex(gameState, false, normalPlay);
+    if (!init && !isOnTheMove(ref) && normalPlay) {
+      playedCardIndices = [0, 1, 2];
+      playedCardIndices.remove(discardedPresidentialCard);
+      playedCardIndices.remove(playedCardIndex);
+      await boardOverviewFrontendKey.currentState?.coverCards();
+      await boardOverviewFrontendKey.currentState?.discard(playedCardIndices[0]);
+    }
+    await boardOverviewFrontendKey.currentState?.playCard(
+      playedCardIndex,
+      normalPlay,
+      cardColor,
+    );
   }
 }

@@ -71,11 +71,13 @@ The play state is an integer variable whereby all actions between the players ar
 |   1   |             Voting phase for the chancellor.              |
 |   2   | The president plays the first card from the drawing pile. |
 |   3   |      The President draw 3 cards and discard on card.      |
-|   4   |  The chancellor play on card and discard the other one.   |
+|   4   |  The chancellor play one card and discard the other one.  |
 |   5   |          The President examines the top 3 cards           |
 |   6   |   The President investigates a player's identity card.    |
 |   7   |          The President pick the next President.           |
 |   8   |               The President kills a player.               |
+|   9   |                   The liberal team won.                   |
+|  10   |                   The fascist team won.                   |
 
 ###### chancellorVoting:
 A list of integers which shows the voting of a player.

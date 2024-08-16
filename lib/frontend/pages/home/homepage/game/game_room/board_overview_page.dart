@@ -34,6 +34,7 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
 
   late BoardOverviewBackend backend;
   bool _explainingTextActive = true;
+  bool _init = true;
 
   // Method to get one off the playing cards
   Widget _getCard(bool isLiberal, bool isCovered, int cardIndex) {
@@ -89,9 +90,7 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
         secondWidth: cardWidth,
         rotatingDuration: const Duration(milliseconds: 500),
         child: _getCard(
-          cardIndex == 3
-              ? backend.cardColors[2]
-              : backend.cardColors[cardIndex],
+          backend.cardColors[cardIndex],
           true,
           cardIndex,
         ),
@@ -102,17 +101,20 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
   }
 
   // Method to put the given card amount to the draw pile inclusive the 3 cards with animation
-  Future<void> _updateDrawPile() async {
-    // Checking if enough cards are on the draw pile
-    if (backend.drawPileCardAmount < 3) {
-      _refillDrawPile(backend.discardPileCardAmount);
-      await _emptyDiscardPile(backend.discardPileCardAmount);
-      await backend.drawPileKey.currentState?.shuffle();
-      await backend.shuffleCards(ref);
-    }
+  Future<void> updateDrawPile() async {
+    // Adding the 3 playing cards
     for (int i=2; i > -1; i--) {
-      backend.drawPileCardAmount--;
-      await _updateAnimation('DrawPile', 'BottomCenter', i, 1000);
+      // If the player isn't on the move their isn't a drawing animation
+      if (_init && (!backend.isOnTheMove(ref) || backend.playState == 4)) {
+        if (backend.playState == 4) {
+          if (backend.discardedPresidentialCard! == i) {continue;}
+        }
+        await _updateAnimation('BottomCenter', 'BottomCenter', i, 1000);
+      // The player is the president and has a drawing animation
+      } else if (backend.isOnTheMove(ref)) {
+        backend.drawPileCardAmount--;
+        await _updateAnimation('DrawPile', 'BottomCenter', i, 1000);
+      }
       backend.cardVisibility[i] = true;
     }
     for (int i=0; i < 3; i++) {
@@ -126,7 +128,6 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
   // Method to empty the discard pile
   Future<void> _emptyDiscardPile(int pileCardAmount) async {
     for (int i=0; i < pileCardAmount; i++) {
-      backend.discardPileCardAmount--;
       setState(() {
         pile_functions.removeCard(backend.discardPileKey.currentState!.pileElements);
       });
@@ -137,7 +138,6 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
   // Method to refill the draw pile with all card off the discard pile
   Future<void> _refillDrawPile(int pileCardAmount) async {
     for (int i=0; i < pileCardAmount; i++) {
-      backend.drawPileCardAmount++;
       setState(() {
         pile_functions.addCard(
           backend.drawPileKey.currentState!.pileElements,
@@ -147,6 +147,14 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
       });
       await Future.delayed(const Duration(milliseconds: 200));
     }
+  }
+
+  // Method to shuffle all remaining cards
+  Future<void> shuffleCards() async {
+    int pileCardAmount = backend.discardPileKey.currentState!.pileElements.length - 1;
+    _refillDrawPile(pileCardAmount);
+    await _emptyDiscardPile(pileCardAmount);
+    await backend.drawPileKey.currentState?.shuffle();
   }
 
   // Drawing 3 card from the draw pile
@@ -182,11 +190,13 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
       backend.cardMovingKey[i].currentState?.animate();
     }
     await Future.delayed(const Duration(milliseconds: 600));
-    // Flip the cards
-    for (int i=0; i < 3; i++) {
-      backend.cardFlipKey[i].currentState?.animate();
+    if (backend.isOnTheMove(ref)) {
+      // Flip the cards
+      for (int i=0; i < 3; i++) {
+        backend.cardFlipKey[i].currentState?.animate();
+      }
+      await Future.delayed(const Duration(milliseconds: 600));
     }
-    await Future.delayed(const Duration(milliseconds: 600));
   }
 
   // Method to cover the playing cards
@@ -197,8 +207,10 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
     }
     await Future.delayed(const Duration(milliseconds: 600));
     // Flip the cards
-    for (int i=0; i < 3; i++) {
-      backend.cardFlipKey[i].currentState?.animate();
+    if (backend.isOnTheMove(ref)) {
+      for (int i=0; i < 3; i++) {
+        backend.cardFlipKey[i].currentState?.animate();
+      }
     }
     await Future.delayed(const Duration(milliseconds: 600));
   }
@@ -270,34 +282,32 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
   }
 
   // Method to play a card from the bottom center or from the draw pile
-  Future<void> playCard(int cardIndex, bool normalPlay) async {
-    String boardColor = backend.cardColors[cardIndex] ? 'LiberalBoard' : 'FascistBoard';
+  Future<void> playCard(int cardIndex, bool normalPlay, bool cardColor) async {
+    String boardColor = cardColor ? 'LiberalBoard' : 'FascistBoard';
     if (normalPlay) {
       await _updateAnimation('BottomCenter', boardColor, cardIndex, 1500);
     // If we only play the top card
     } else {
-      cardIndex++;
-      backend.drawPileCardAmount += 2;
-      await _updateAnimation('DrawPile', boardColor, cardIndex, 1500);
-      setState(() {
-        backend.cardVisibility[2] = false;
-      });
-      // Adding 2 normal cards back to the draw pile
-      for (int i=0; i < 2; i++) {
-        setState(() {
-          pile_functions.addCard(
-            backend.drawPileKey.currentState!.pileElements,
-            false,
-            backend.drawPileKey.currentState!.getNextRotationKey(),
-          );
-        });
-      }
-      // And make the animated card on the draw pile invisible
       for (int i=0; i < 3; i++) {
-        setState(() {
-          backend.cardVisibility[i] = false;
-        });
+        pile_functions.addCard(
+          backend.drawPileKey.currentState!.pileElements,
+          false,
+          backend.drawPileKey.currentState?.getNextRotationKey(),
+        );
       }
+      setState(() {});
+      // Make the other animated card on the draw pile invisible
+      for (int i=0; i < 2; i++) {
+        backend.cardVisibility[i] = false;
+      }
+      setState(() {});
+      backend.drawPileCardAmount += 2;
+      // Updating the top card animation
+      await _updateAnimation('DrawPile', boardColor, cardIndex, 1500);
+      // Removing the normal card on top
+      setState(() {
+        pile_functions.removeCard(backend.drawPileKey.currentState!.pileElements);
+      });
     }
     backend.cardMovingKey[cardIndex].currentState?.animate();
     backend.cardMovingKey[cardIndex].currentState?.size();
@@ -306,13 +316,8 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
     await Future.delayed(const Duration(milliseconds: 750));
     backend.cardFlipKey[cardIndex].currentState?.animate();
     await Future.delayed(const Duration(milliseconds: 600));
-    if (!normalPlay) {
-      cardIndex = 2;
-    }
     setState(() {
-      if (backend.cardColors[cardIndex]) {
-        backend.liberalBoardCardAmount++;
-        backend.liberalBoardFlippedCards++;
+      if (cardColor) {
         board_functions.addCard(
           backend.liberalBoardKey.currentState!.boardElements,
           backend.liberalBoardKey.currentState!.cardPositions,
@@ -320,8 +325,6 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
           true,
         );
       } else {
-        backend.fascistBoardCardAmount++;
-        backend.fascistBoardFlippedCards++;
         board_functions.addCard(
           backend.fascistBoardKey.currentState!.boardElements,
           backend.fascistBoardKey.currentState!.cardPositions,
@@ -329,24 +332,9 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
           true,
         );
       }
-      if (!normalPlay) {
-        cardIndex++;
-      }
       backend.cardVisibility[cardIndex] = false;
     });
     await Future.delayed(const Duration(milliseconds: 300));
-    if (normalPlay) {
-      // Removing the 3 drawn cards
-      for (int i=0; i < 3; i++) {
-        backend.cardColors.removeAt(0);
-      }
-    } else {
-      // The case if only the top one was played
-      backend.cardColors.removeAt(0);
-    }
-    if (backend.fascistBoardCardAmount != 6 && backend.liberalBoardCardAmount != 5) {
-      await _updateDrawPile();
-    }
   }
 
   // Method to return the explaining text if active
@@ -394,26 +382,27 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
   void initState() {
     backend = widget.backend;
     final gameState = ref.read(gameStateProvider);
-    backend.drawPileCardAmount = gameState.drawPileCardAmount;
-    backend.fascistBoardCardAmount = gameState.fascistBoardCardAmount;
-    backend.liberalBoardCardAmount = gameState.liberalBoardCardAmount;
-    backend.discardPileCardAmount = 14 - backend.drawPileCardAmount
-        - backend.fascistBoardCardAmount - backend.liberalBoardCardAmount;
-    backend.fascistBoardFlippedCards = backend.fascistBoardCardAmount;
-    backend.liberalBoardFlippedCards = backend.liberalBoardCardAmount;
-    backend.shuffleCards(ref);
+    backend.synchronizeValues(gameState, _init, ref);
     initialize();
     super.initState();
   }
 
   Future<void> initialize() async {
     await Future.delayed(const Duration(milliseconds: 50));
-    await _updateDrawPile();
+    await updateDrawPile();
+    if (_init && (!backend.isOnTheMove(ref) || backend.playState == 4)) {
+      await Future.delayed(const Duration(milliseconds: 500));
+      await discoverCards();
+    }
+    _init = false;
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    ref.listen(gameStateProvider, (previous, next) {
+      backend.synchronizeValues(next, _init, ref);
+    });
     return Column(
       children: [
         SizedBox(height: ScreenSize.screenHeight * 0.02),
@@ -466,8 +455,6 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
               _getPlayingCards(backend.cardVisibility[1], 1),
               // Right card
               _getPlayingCards(backend.cardVisibility[2], 2),
-              // Top card
-              _getPlayingCards(backend.cardVisibility[3], 3),
             ],
           ),
         ),
