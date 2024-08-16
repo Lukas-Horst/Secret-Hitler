@@ -105,7 +105,8 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
     // Adding the 3 playing cards
     for (int i=2; i > -1; i--) {
       // If the player isn't on the move their isn't a drawing animation
-      if (_init && (!backend.isOnTheMove(ref) || backend.playState == 4)) {
+      if ((backend.playState == 3 || _init) && !backend.isOnTheMove(ref)) {
+        backend.drawPileCardAmount -= 3;
         if (backend.playState == 4) {
           if (backend.discardedPresidentialCard! == i) {continue;}
         }
@@ -389,8 +390,9 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
 
   Future<void> initialize() async {
     await Future.delayed(const Duration(milliseconds: 50));
-    await updateDrawPile();
-    if (_init && (!backend.isOnTheMove(ref) || backend.playState == 4)) {
+    if (_init && ((!backend.isOnTheMove(ref) && backend.playState == 3)
+        || backend.playState == 4)) {
+      await updateDrawPile();
       await Future.delayed(const Duration(milliseconds: 500));
       await discoverCards();
     }
@@ -426,6 +428,7 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
                   cards: backend.liberalBoardCardAmount,
                   flippedCards: backend.liberalBoardFlippedCards,
                   cardFlipKeys: backend.liberalCardFlipKeys,
+                  firstPosition: backend.electionTracker,
                 ),
               ),
               Positioned(

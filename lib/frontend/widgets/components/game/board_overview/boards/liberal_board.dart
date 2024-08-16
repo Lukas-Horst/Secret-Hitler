@@ -13,9 +13,10 @@ class LiberalBoard extends ConsumerStatefulWidget {
   final int cards;
   final int flippedCards;
   final List<GlobalKey<FlipAnimationState>> cardFlipKeys;
+  final int firstPosition;
 
   const LiberalBoard({super.key, required this.cards, required this.cardFlipKeys,
-    required this.flippedCards});
+    required this.flippedCards, required this.firstPosition});
 
   @override
   ConsumerState<LiberalBoard> createState() => LiberalBoardState();
@@ -31,7 +32,7 @@ class LiberalBoardState extends ConsumerState<LiberalBoard> {
     ScreenSize.screenWidth * 0.51,
     ScreenSize.screenWidth * 0.599
   ];
-  int _currentElectionTrackerPosition = 0;
+  late int _currentElectionTrackerPosition;
   final GlobalKey<MovingAnimationState> _electionTrackerKey = GlobalKey<MovingAnimationState>();
 
   List<Widget> boardElements = [
@@ -44,6 +45,7 @@ class LiberalBoardState extends ConsumerState<LiberalBoard> {
 
   // Method to update the animated election tracker based on the next position
   Future<void> _updateElectionTrackerAnimation(int nextPosition) async {
+    print('updatePosition: $nextPosition');
     setState(() {
       boardElements.removeAt(2);
     });
@@ -98,9 +100,7 @@ class LiberalBoardState extends ConsumerState<LiberalBoard> {
     if (_currentElectionTrackerPosition == 3) {
       return;
     }
-    if (_currentElectionTrackerPosition != 0) {
-      await _updateElectionTrackerAnimation(_currentElectionTrackerPosition + 1);
-    }
+    await _updateElectionTrackerAnimation(_currentElectionTrackerPosition + 1);
     await Future.delayed(const Duration(milliseconds: 100));
     _electionTrackerKey.currentState?.animate();
     _setStaticElectionTracker(_currentElectionTrackerPosition + 1);
@@ -123,8 +123,12 @@ class LiberalBoardState extends ConsumerState<LiberalBoard> {
 
   @override
   void initState() {
-    boardElements.add(_getStaticElectionTracker(0));
-    boardElements.add(_getAnimatedElectionTracker(1));
+    _currentElectionTrackerPosition = widget.firstPosition;
+    int nextPosition = _currentElectionTrackerPosition < 3
+        ? _currentElectionTrackerPosition + 1
+        : 0;
+    boardElements.add(_getStaticElectionTracker(_currentElectionTrackerPosition));
+    boardElements.add(_getAnimatedElectionTracker(nextPosition));
     buildBoard(
       true,
       boardElements,

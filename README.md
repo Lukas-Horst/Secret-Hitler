@@ -16,6 +16,10 @@ The state of the playing cards (the 3 top cards).
 |   2   | Play 1 card and discard the other one (if chancellor). |
 |   3   |          Playing the top card (if president).          |
 
+###### drawPileCardAmount
+Serves as a buffer between the frontend end the serverside backend.
+Compared to the serverside variable, it saves the amount of the non playable cards.
+For this purpose the value is subtracted by 3 after the playable cards are visible (this happens in the updateDrawPile function)
 
 ## Appwrite
 Appwrite is used for the server-side part of the app.

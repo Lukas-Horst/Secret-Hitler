@@ -51,6 +51,8 @@ Future<void> voteForChancellor(WidgetRef ref, int voting,
     newState = _countVoting(chancellorVoting, gameState.electionTracker);
     if (newState != 3) {
       newElectionTracker++;
+    } else {
+      newElectionTracker = 0;
     }
   }
   await databaseApi.updateDocument(
@@ -78,13 +80,16 @@ bool isVotingFinished(List<int> chancellorVoting) {
 int _countVoting(List<int> chancellorVoting, int electionTracker) {
   int neededVotes = floorDivision(chancellorVoting.length, 2) + 1;
   for (int voting in chancellorVoting) {
+    // Yes vote
     if (voting == 2) {
       neededVotes--;
     }
+    // The voting was successful
     if (neededVotes == 0) {
       return 3;
     }
   }
+  // The vote wasn't successful and it was the third time in a row
   if (electionTracker == 2) {
     return 2;
   }
@@ -171,6 +176,7 @@ Future<void> playCard(WidgetRef ref, int cardIndex, bool normalPlay) async {
         'cardColors': newCardColors,
         'drawPileCardAmount': newDrawPileCardAmount,
         'discardedPresidentialCard': null,
+        'electionTracker': 0,
       },
     );
   // Fascist card played
@@ -184,6 +190,7 @@ Future<void> playCard(WidgetRef ref, int cardIndex, bool normalPlay) async {
         'cardColors': newCardColors,
         'drawPileCardAmount': newDrawPileCardAmount,
         'discardedPresidentialCard': null,
+        'electionTracker': 0,
       },
     );
   }

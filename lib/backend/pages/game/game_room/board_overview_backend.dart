@@ -98,6 +98,7 @@ class BoardOverviewBackend{
   String secondExplainingText = '';
   int? discardedPresidentialCard;
   late int playState;
+  int electionTracker = 0;
 
   int playCardState = -1;  // The current state of the played cards
   List<int> playedCardIndices = [];
@@ -171,7 +172,7 @@ class BoardOverviewBackend{
   // Method to check if the player is currently on the move
   bool isOnTheMove(WidgetRef ref) {
     final gameState = ref.read(gameStateProvider);
-    return true;
+    return false;
     // return false;
     // The president is on the move
     if (playState == 3 || playState == 2) {
@@ -188,6 +189,18 @@ class BoardOverviewBackend{
   void synchronizeValues(GameState gameState, bool init, WidgetRef ref) async {
     bool cardPlayed = false;
     bool shuffle = false;
+
+    // The election tracker moved
+    if (electionTracker != gameState.electionTracker) {
+      // Resetting the election tracker
+      if (electionTracker > gameState.electionTracker && !init) {
+        await liberalBoardKey.currentState?.resetElectionTracker();
+      // Moving the election tracker forward
+      } else if (!init) {
+        await liberalBoardKey.currentState?.moveElectionTrackerForward();
+      }
+      electionTracker = gameState.electionTracker;
+    }
     // A fascist card was played
     if (fascistBoardCardAmount != gameState.fascistBoardCardAmount && !init) {
       await _playCardAnimation(false, gameState, init, ref);
@@ -214,12 +227,14 @@ class BoardOverviewBackend{
     drawPileCardAmount = gameState.drawPileCardAmount;
     discardPileCardAmount = 14 - drawPileCardAmount
         - fascistBoardCardAmount - liberalBoardCardAmount;
-    if (init && !isOnTheMove(ref)) {
-      drawPileCardAmount -= 3;
-    }
+    // Checking for a change of the play state and the play card state
     if (playState == 3 && (playCardState < 0 || playCardState != 1)) {
       playCardState = 0;
-      } else if (playState == 4 && playCardState < 2) {
+      if (!isOnTheMove(ref) && !init) {
+        await boardOverviewFrontendKey.currentState?.updateDrawPile();
+        await boardOverviewFrontendKey.currentState?.discoverCards();
+      }
+    } else if (playState == 4 && playCardState < 2) {
       // Activate the discard animation for all players who wasn't on the move
       if (playCardState != 1 && !init) {
         await boardOverviewFrontendKey.currentState?.coverCards();
@@ -239,7 +254,6 @@ class BoardOverviewBackend{
       if (shuffle) {
         await boardOverviewFrontendKey.currentState?.shuffleCards();
       }
-      await boardOverviewFrontendKey.currentState?.updateDrawPile();
     }
   }
 
