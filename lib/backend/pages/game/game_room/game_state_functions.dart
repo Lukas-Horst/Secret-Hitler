@@ -8,14 +8,17 @@ import 'package:secret_hitler/backend/database/appwrite/notifiers/game_state_not
 import 'package:secret_hitler/backend/helper/math_functions.dart';
 import 'package:secret_hitler/backend/riverpod/provider.dart';
 
-// Function to get the next player who is alive for the next regular president
-int getNextPresident(int currentNextPresident, List<int> killedPlayers) {
-  currentNextPresident++;
+// Function to get the next president under the player who are alive
+int _getNextPresident(int currentPresident, List<int> killedPlayers,
+    int playerAmount) {
+  currentPresident++;
+  currentPresident %= playerAmount;
   while (true) {
-    if (killedPlayers.contains(currentNextPresident)) {
-      currentNextPresident++;
+    if (killedPlayers.contains(currentPresident)) {
+      currentPresident++;
+      currentPresident %= playerAmount;
     } else {
-      return currentNextPresident;
+      return currentPresident;
     }
   }
 }
@@ -134,7 +137,6 @@ Future<void> playCard(WidgetRef ref, int cardIndex, bool normalPlay) async {
   final gameStateNotifier = ref.read(gameStateProvider.notifier);
   final gameState = ref.read(gameStateProvider);
   bool cardColor = gameState.cardColors[cardIndex];
-  int newGameState = _getNewGameState(cardColor, gameState);
   int newLiberalBoardCardAmount = gameState.liberalBoardCardAmount;
   int newFascistBoardCardAmount = gameState.fascistBoardCardAmount;
   if (cardColor) {
@@ -142,6 +144,11 @@ Future<void> playCard(WidgetRef ref, int cardIndex, bool normalPlay) async {
   } else {
     newFascistBoardCardAmount++;
   }
+  int newGameState = _getNewGameState(
+    cardColor,
+    gameState,
+    newFascistBoardCardAmount,
+  );
   int newDrawPileCardAmount = normalPlay
       ? gameState.drawPileCardAmount - 3
       : gameState.drawPileCardAmount - 1;
@@ -165,70 +172,68 @@ Future<void> playCard(WidgetRef ref, int cardIndex, bool normalPlay) async {
       }
     }
   }
-  // Liberal card played
-  if (cardColor) {
-    await databaseApi.updateDocument(
-      gameStateCollectionId,
-      gameStateNotifier.gameStateDocument!.$id,
-      {
-        'playState': newGameState,
-        'liberalBoardCardAmount': newLiberalBoardCardAmount,
-        'cardColors': newCardColors,
-        'drawPileCardAmount': newDrawPileCardAmount,
-        'discardedPresidentialCard': null,
-        'electionTracker': 0,
-      },
+  int newPresident = gameState.currentPresident;
+  int? newFormerPresident;
+  int? newFormerChancellor = gameState.currentChancellor;
+  if (newGameState == 0) {
+    newPresident = _getNextPresident(
+      gameState.currentPresident,
+      gameState.killedPlayers,
+      gameState.chancellorVoting.length,
     );
-  // Fascist card played
-  } else {
-    await databaseApi.updateDocument(
-      gameStateCollectionId,
-      gameStateNotifier.gameStateDocument!.$id,
-      {
-        'playState': newGameState,
-        'fascistBoardCardAmount': newFascistBoardCardAmount,
-        'cardColors': newCardColors,
-        'drawPileCardAmount': newDrawPileCardAmount,
-        'discardedPresidentialCard': null,
-        'electionTracker': 0,
-      },
-    );
+    newFormerPresident = gameState.currentPresident;
   }
+  await databaseApi.updateDocument(
+    gameStateCollectionId,
+    gameStateNotifier.gameStateDocument!.$id,
+    {
+      'playState': newGameState,
+      'liberalBoardCardAmount': newLiberalBoardCardAmount,
+      'fascistBoardCardAmount': newFascistBoardCardAmount,
+      'cardColors': newCardColors,
+      'drawPileCardAmount': newDrawPileCardAmount,
+      'playedCard': cardIndex,
+      'electionTracker': 0,
+      'currentPresident': newPresident,
+      'currentChancellor': null,
+      'formerPresident': newFormerPresident,
+      'formerChancellor': newFormerChancellor,
+    },
+  );
 }
 
 // Function to get the new game state based on the played card
-int _getNewGameState(bool cardColor, GameState gameState) {
+int _getNewGameState(bool cardColor, GameState gameState, int fascistBoardCardAmount) {
   int playerAmount = gameState.chancellorVoting.length;
-  int fascistBoardCardAmount = gameState.fascistBoardCardAmount;
   // If a fascist card was played we need to check if their are any presidential action
   if (!cardColor) {
     // 5 to 6 players
     if (playerAmount < 7) {
       // The President examines the top 3 cards by 3 fascist cards
-      if (fascistBoardCardAmount++ == 3) {
+      if (fascistBoardCardAmount == 3) {
         return 5;
       }
     // 7 to 10 players
     } else {
       // The President investigates a player's identity card
-      if ((fascistBoardCardAmount++ == 1 && playerAmount > 8)
-          || fascistBoardCardAmount++ == 2) {
+      if ((fascistBoardCardAmount == 1 && playerAmount > 8)
+          || fascistBoardCardAmount == 2) {
         return 6;
       // The President pick the next President
-      } else if (fascistBoardCardAmount++ == 3) {
+      } else if (fascistBoardCardAmount == 3) {
         return 7;
       }
     }
     // The President kills a player
-    if (fascistBoardCardAmount++ == 4 || fascistBoardCardAmount++ == 5) {
+    if (fascistBoardCardAmount== 4 || fascistBoardCardAmount== 5) {
       return 8;
     }
   }
   // The liberal team won
-  if (gameState.liberalBoardCardAmount++ == 5) {
+  if (gameState.liberalBoardCardAmount + 1 == 5) {
     return 9;
   // The fascist team won
-  } else if (fascistBoardCardAmount++ == 7) {
+  } else if (fascistBoardCardAmount == 7) {
     return 10;
   }
   return 0;

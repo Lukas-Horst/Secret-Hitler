@@ -11,7 +11,6 @@ import 'package:secret_hitler/backend/pages/game/game_room/game_state_functions.
 class GameState {
 
   int currentPresident;
-  int nextPresident;
   int playState;
   List<int> killedPlayers;
   bool regularPresident;
@@ -25,14 +24,15 @@ class GameState {
   int? formerChancellor;
   int? formerPresident;
   int? discardedPresidentialCard;
+  int? playedCard;
 
-  GameState({required this.currentPresident, required this.nextPresident,
-    required this.killedPlayers, required this.playState,
-    required this.regularPresident, required this.chancellorVoting,
-    required this.electionTracker, required this.fascistBoardCardAmount,
-    required this.liberalBoardCardAmount, required this.drawPileCardAmount,
-    required this.cardColors, this.currentChancellor, this.formerChancellor,
-    this.formerPresident, this.discardedPresidentialCard});
+  GameState({required this.currentPresident, required this.killedPlayers,
+    required this.playState, required this.regularPresident,
+    required this.chancellorVoting, required this.electionTracker,
+    required this.fascistBoardCardAmount, required this.liberalBoardCardAmount,
+    required this.drawPileCardAmount, required this.cardColors,
+    this.currentChancellor, this.formerChancellor, this.formerPresident,
+    this.discardedPresidentialCard, this.playedCard});
 }
 
 class GameStateNotifier extends StateNotifier<GameState> {
@@ -48,7 +48,6 @@ class GameStateNotifier extends StateNotifier<GameState> {
   GameStateNotifier(this._databaseApi, this._client) :super(
     GameState(
       currentPresident: 0,
-      nextPresident: 1,
       killedPlayers: [],
       playState: 0,
       regularPresident: true,
@@ -82,12 +81,9 @@ class GameStateNotifier extends StateNotifier<GameState> {
         gameStateDocument!.data['cardColors'],
       );
       int? discardedPresidentialCard = gameStateDocument!.data['discardedPresidentialCard'];
-      if (regularPresident) {
-        nextPresident = getNextPresident(nextPresident, killedPlayers);
-      }
+      int? playedCard = gameStateDocument!.data['playedCard'];
       state = GameState(
         currentPresident: currentPresident,
-        nextPresident: nextPresident,
         killedPlayers: killedPlayers,
         playState: playState,
         regularPresident: regularPresident,
@@ -101,6 +97,7 @@ class GameStateNotifier extends StateNotifier<GameState> {
         drawPileCardAmount: drawPileCardAmount,
         cardColors: cardColors,
         discardedPresidentialCard: discardedPresidentialCard,
+        playedCard: playedCard,
       );
     } catch(e) {print(e);}
   }

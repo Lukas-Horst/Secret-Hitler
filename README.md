@@ -2,6 +2,12 @@
 
 Flutter project for the game Secret Hitler
 
+# Contents
+
+1. [Backend](#backend)
+2. [Appwrite](#appwrite)
+3. 
+
 ## Backend
 
 ### BoardOverviewBackend
@@ -9,17 +15,21 @@ Flutter project for the game Secret Hitler
 ###### playCardState:
 The state of the playing cards (the 3 top cards).
 
-| State |                         Action                         |
-|:-----:|:------------------------------------------------------:|
-|   0   |   Drawing 3 cards from the draw pile (if president).   | 
-|   1   |             Discard 1 card (if president).             |
-|   2   | Play 1 card and discard the other one (if chancellor). |
-|   3   |          Playing the top card (if president).          |
+| State |                                                Action                                                 |
+|:-----:|:-----------------------------------------------------------------------------------------------------:|
+|  -2   | The chancellor played a card and isn't on the move anymore (important for the discoverCard() method). | 
+|  -1   |                                            Initial value.                                             | 
+|   0   |                          Drawing 3 cards from the draw pile (if president).                           | 
+|   1   |                                    Discard 1 card (if president).                                     |
+|   2   |                        Play 1 card and discard the other one (if chancellor).                         |
+|   3   |                                 Playing the top card (if president).                                  |
 
 ###### drawPileCardAmount
 Serves as a buffer between the frontend end the serverside backend.
 Compared to the serverside variable, it saves the amount of the non playable cards.
-For this purpose the value is subtracted by 3 after the playable cards are visible (this happens in the updateDrawPile function)
+For this purpose the value is decremented by 3 after the playable cards are visible (this happens in the updateDrawPile() method).
+The value is important in the playCard() method to update the animation correctly.
+If only the top card is played, the value will be incremented by 2, also for the correct animation.
 
 ## Appwrite
 Appwrite is used for the server-side part of the app.

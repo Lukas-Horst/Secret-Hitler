@@ -45,7 +45,6 @@ class LiberalBoardState extends ConsumerState<LiberalBoard> {
 
   // Method to update the animated election tracker based on the next position
   Future<void> _updateElectionTrackerAnimation(int nextPosition) async {
-    print('updatePosition: $nextPosition');
     setState(() {
       boardElements.removeAt(2);
     });

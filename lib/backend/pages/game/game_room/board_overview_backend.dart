@@ -97,6 +97,7 @@ class BoardOverviewBackend{
   String firstExplainingText = AppLanguage.getLanguageData()['Play a card'];
   String secondExplainingText = '';
   int? discardedPresidentialCard;
+  int? playedCard;
   late int playState;
   int electionTracker = 0;
 
@@ -147,21 +148,15 @@ class BoardOverviewBackend{
           AppLanguage.getLanguageData()['Play a card'],
         );
       });
-      await boardOverviewFrontendKey.currentState?.coverCards();
-      await boardOverviewFrontendKey.currentState?.discard(cardIndex);
       Timer(const Duration(milliseconds: 1000), () {
         textTransitionKey.currentState?.animate();
       });
       await discardCard(ref, cardIndex);
     // Play 1 card and discard the other one
     } else if (playCardState == 2) {
-      playedCardIndices = [0, 1, 2];
-      playedCardIndices.remove(discardedPresidentialCard);
-      playedCardIndices.remove(cardIndex);
       textTransitionKey.currentState?.animate();
-      await boardOverviewFrontendKey.currentState?.coverCards();
-      await boardOverviewFrontendKey.currentState?.discard(playedCardIndices[0]);
       await playCard(ref, cardIndex, true);
+      playCardState = -2;
     // Playing the top card because the election tracker moved 3 times forward
     } else if (playCardState == 3) {
       await playCard(ref, 2, false);
@@ -172,10 +167,10 @@ class BoardOverviewBackend{
   // Method to check if the player is currently on the move
   bool isOnTheMove(WidgetRef ref) {
     final gameState = ref.read(gameStateProvider);
-    return false;
+    // return false;
     // return false;
     // The president is on the move
-    if (playState == 3 || playState == 2) {
+    if (playState == 3 || playState == 2 || playState > 4) {
       return gameState.currentPresident == playersAndElectionBackend.ownPlayerIndex;
     // The chancellor is on the move
     } else if (playState == 4) {
@@ -189,35 +184,29 @@ class BoardOverviewBackend{
   void synchronizeValues(GameState gameState, bool init, WidgetRef ref) async {
     bool cardPlayed = false;
     bool shuffle = false;
-
     // The election tracker moved
     if (electionTracker != gameState.electionTracker) {
       // Resetting the election tracker
       if (electionTracker > gameState.electionTracker && !init) {
-        await liberalBoardKey.currentState?.resetElectionTracker();
+        liberalBoardKey.currentState?.resetElectionTracker();
       // Moving the election tracker forward
       } else if (!init) {
-        await liberalBoardKey.currentState?.moveElectionTrackerForward();
+        liberalBoardKey.currentState?.moveElectionTrackerForward();
       }
       electionTracker = gameState.electionTracker;
     }
     // A fascist card was played
     if (fascistBoardCardAmount != gameState.fascistBoardCardAmount && !init) {
-      await _playCardAnimation(false, gameState, init, ref);
+      playedCard = gameState.playedCard;
+      await _playCardAnimation(false, init, ref);
       cardPlayed = true;
     }
     // A liberal card was played
     if (liberalBoardCardAmount != gameState.liberalBoardCardAmount && !init) {
-      await _playCardAnimation(true, gameState, init, ref);
+      playedCard = gameState.playedCard;
+      await _playCardAnimation(true, init, ref);
       cardPlayed = true;
     }
-    // Checking if a shuffle is necessary
-    if (!init) {
-      if (playState == 4 || playState == 2) {
-        shuffle = drawPileCardAmount < gameState.drawPileCardAmount;
-      }
-    }
-    playState = gameState.playState;
     discardedPresidentialCard = gameState.discardedPresidentialCard;
     fascistBoardCardAmount = gameState.fascistBoardCardAmount;
     liberalBoardCardAmount = gameState.liberalBoardCardAmount;
@@ -227,20 +216,27 @@ class BoardOverviewBackend{
     drawPileCardAmount = gameState.drawPileCardAmount;
     discardPileCardAmount = 14 - drawPileCardAmount
         - fascistBoardCardAmount - liberalBoardCardAmount;
+    // Checking if a shuffle is necessary
+    if (!init) {
+      if (playState == 4 || playState == 2) {
+        shuffle = discardPileCardAmount == 0;
+      }
+    }
+    playState = gameState.playState;
     // Checking for a change of the play state and the play card state
     if (playState == 3 && (playCardState < 0 || playCardState != 1)) {
       playCardState = 0;
-      if (!isOnTheMove(ref) && !init) {
+      if (!init) {
         await boardOverviewFrontendKey.currentState?.updateDrawPile();
-        await boardOverviewFrontendKey.currentState?.discoverCards();
+        if (!isOnTheMove(ref)) {
+          await boardOverviewFrontendKey.currentState?.discoverCards();
+        }
       }
     } else if (playState == 4 && playCardState < 2) {
       // Activate the discard animation for all players who wasn't on the move
-      if (playCardState != 1 && !init) {
+      if (!init) {
         await boardOverviewFrontendKey.currentState?.coverCards();
         await boardOverviewFrontendKey.currentState?.discard(discardedPresidentialCard!);
-      }
-      if (!init) {
         await boardOverviewFrontendKey.currentState?.discoverCards();
       }
       playCardState = 2;
@@ -257,31 +253,21 @@ class BoardOverviewBackend{
     }
   }
 
-  // Method to get one of the two played card which fits with the color
-  int _getPlayedCardIndex(GameState gameState, bool cardColor, bool normalPlay) {
-    if (!normalPlay) {return 2;}
-    for (int i=0; i < 3; i++) {
-      if (cardVisibility[i]) {
-        return i;
-      }
-    }
-    return 0;
-  }
-
   // Method to start the animation for playing a card
-  Future<void> _playCardAnimation(bool cardColor, GameState gameState,
-      bool init, WidgetRef ref) async {
+  Future<void> _playCardAnimation(bool cardColor, bool init, WidgetRef ref) async {
     bool normalPlay = playCardState != 3;
-    int playedCardIndex = _getPlayedCardIndex(gameState, false, normalPlay);
-    if (!init && !isOnTheMove(ref) && normalPlay) {
+    if (!init && normalPlay) {
       playedCardIndices = [0, 1, 2];
       playedCardIndices.remove(discardedPresidentialCard);
-      playedCardIndices.remove(playedCardIndex);
+      playedCardIndices.remove(playedCard!);
       await boardOverviewFrontendKey.currentState?.coverCards();
+      if (playCardState == -2) {
+        playCardState = 2;
+      }
       await boardOverviewFrontendKey.currentState?.discard(playedCardIndices[0]);
     }
     await boardOverviewFrontendKey.currentState?.playCard(
-      playedCardIndex,
+      playedCard!,
       normalPlay,
       cardColor,
     );

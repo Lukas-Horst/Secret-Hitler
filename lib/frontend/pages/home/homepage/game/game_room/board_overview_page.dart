@@ -105,7 +105,7 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
     // Adding the 3 playing cards
     for (int i=2; i > -1; i--) {
       // If the player isn't on the move their isn't a drawing animation
-      if ((backend.playState == 3 || _init) && !backend.isOnTheMove(ref)) {
+      if (backend.playState == 4 || !backend.isOnTheMove(ref)) {
         backend.drawPileCardAmount -= 3;
         if (backend.playState == 4) {
           if (backend.discardedPresidentialCard! == i) {continue;}
@@ -208,7 +208,7 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
     }
     await Future.delayed(const Duration(milliseconds: 600));
     // Flip the cards
-    if (backend.isOnTheMove(ref)) {
+    if (backend.isOnTheMove(ref) || backend.playCardState == -2) {
       for (int i=0; i < 3; i++) {
         backend.cardFlipKey[i].currentState?.animate();
       }
@@ -390,9 +390,11 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
 
   Future<void> initialize() async {
     await Future.delayed(const Duration(milliseconds: 50));
-    if (_init && ((!backend.isOnTheMove(ref) && backend.playState == 3)
-        || backend.playState == 4)) {
+    if (backend.playState == 3 || backend.playState == 4) {
       await updateDrawPile();
+    }
+    if ((!backend.isOnTheMove(ref) && backend.playState == 3)
+        || backend.playState == 4) {
       await Future.delayed(const Duration(milliseconds: 500));
       await discoverCards();
     }
