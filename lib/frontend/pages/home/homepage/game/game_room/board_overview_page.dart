@@ -105,14 +105,15 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
     // Adding the 3 playing cards
     for (int i=2; i > -1; i--) {
       // If the player isn't on the move their isn't a drawing animation
-      if (backend.playState == 4 || !backend.isOnTheMove(ref)) {
+      if (backend.playState == 4 || (!backend.isOnTheMove(ref)
+          && backend.playState == 3)) {
         backend.drawPileCardAmount -= 3;
         if (backend.playState == 4) {
           if (backend.discardedPresidentialCard! == i) {continue;}
         }
         await _updateAnimation('BottomCenter', 'BottomCenter', i, 1000);
-      // The player is the president and has a drawing animation
-      } else if (backend.isOnTheMove(ref)) {
+      // The player is the president and has a drawing animation on playState 3 and 5
+      } else if (backend.isOnTheMove(ref) || backend.playState == 5) {
         backend.drawPileCardAmount--;
         await _updateAnimation('DrawPile', 'BottomCenter', i, 1000);
       }
@@ -158,6 +159,19 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
     await backend.drawPileKey.currentState?.shuffle();
   }
 
+  // Putting the 3 drawn cards back to the draw pile
+  Future<void> drawCardsBack() async {
+    for (int i=2; i > -1; i--) {
+      backend.drawPileCardAmount--;
+      // Avoiding that you can see the updating of the animation
+      if (i== 0) {
+        await Future.delayed(const Duration(milliseconds: 100));
+      }
+      _updateAnimation('BottomCenter', 'DrawPile', i, 1000);
+    }
+    drawCards();
+  }
+
   // Drawing 3 card from the draw pile
   Future<void> drawCards() async {
     for (int i=2; i > -1; i--) {
@@ -176,7 +190,17 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
 
   // Method to discover the playing cards
   Future<void> discoverCards() async {
-    List<String> cardPositions = ['Left', 'Right', ''];
+    int cardAmount = 0;
+    for (bool visible in backend.cardVisibility) {
+      if (visible) {cardAmount++;}
+    }
+    late List<String> cardPositions;
+    if (cardAmount == 2) {
+      cardPositions = ['Left', 'Right'];
+    } else {
+      // The cards goes from left to right (the top card is index 2)
+      cardPositions = ['Right', '', 'Left'];
+    }
     int count = 0;
     // Changing the move animation
     for (int i=0; i < 3; i++) {
@@ -191,7 +215,7 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
       backend.cardMovingKey[i].currentState?.animate();
     }
     await Future.delayed(const Duration(milliseconds: 600));
-    if (backend.isOnTheMove(ref)) {
+    if (backend.isOnTheMove(ref) || backend.playCardState == -2) {
       // Flip the cards
       for (int i=0; i < 3; i++) {
         backend.cardFlipKey[i].currentState?.animate();
@@ -390,7 +414,7 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
 
   Future<void> initialize() async {
     await Future.delayed(const Duration(milliseconds: 50));
-    if (backend.playState == 3 || backend.playState == 4) {
+    if (backend.playState > 2 && backend.playCardState < 6) {
       await updateDrawPile();
     }
     if ((!backend.isOnTheMove(ref) && backend.playState == 3)

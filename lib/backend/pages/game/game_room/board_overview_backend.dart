@@ -160,6 +160,15 @@ class BoardOverviewBackend{
     // Playing the top card because the election tracker moved 3 times forward
     } else if (playCardState == 3) {
       await playCard(ref, 2, false);
+    } else if (playCardState == 4) {
+      if (await presidentialActionFinished(ref, null, null, null)) {
+        playCardState = -2;
+        await boardOverviewFrontendKey.currentState?.drawCards();
+        await boardOverviewFrontendKey.currentState?.discoverCards();
+        await Future.delayed(const Duration(seconds: 3));
+        await boardOverviewFrontendKey.currentState?.coverCards();
+        await boardOverviewFrontendKey.currentState?.drawCardsBack();
+      }
     }
     cardClickBlocked = false;
   }
@@ -167,10 +176,8 @@ class BoardOverviewBackend{
   // Method to check if the player is currently on the move
   bool isOnTheMove(WidgetRef ref) {
     final gameState = ref.read(gameStateProvider);
-    // return false;
-    // return false;
     // The president is on the move
-    if (playState == 3 || playState == 2 || playState > 4) {
+    if (playState == 3 || playState == 2 || (playState > 4 && playState < 9)) {
       return gameState.currentPresident == playersAndElectionBackend.ownPlayerIndex;
     // The chancellor is on the move
     } else if (playState == 4) {
@@ -232,7 +239,7 @@ class BoardOverviewBackend{
           await boardOverviewFrontendKey.currentState?.discoverCards();
         }
       }
-    } else if (playState == 4 && playCardState < 2) {
+    } else if (playState == 4 && playCardState != 2) {
       // Activate the discard animation for all players who wasn't on the move
       if (!init) {
         await boardOverviewFrontendKey.currentState?.coverCards();
@@ -243,8 +250,13 @@ class BoardOverviewBackend{
       if (init) {
         discardPileCardAmount++;
       }
-    } else if (playState == 2 && playCardState < 3) {
+    } else if (playState == 2 && playCardState != 3) {
       playCardState = 3;
+    } else if (playState == 5 && playCardState != 4) {
+      if (isOnTheMove(ref) && !init) {
+        await boardOverviewFrontendKey.currentState?.updateDrawPile();
+      }
+      playCardState = 4;
     }
     if (fascistBoardCardAmount != 6 && liberalBoardCardAmount != 5 && cardPlayed) {
       if (shuffle) {

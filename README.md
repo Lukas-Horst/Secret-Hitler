@@ -23,6 +23,7 @@ The state of the playing cards (the 3 top cards).
 |   1   |                                    Discard 1 card (if president).                                     |
 |   2   |                        Play 1 card and discard the other one (if chancellor).                         |
 |   3   |                                 Playing the top card (if president).                                  |
+|   4   |                               Examines the top 3 cards  (if president).                               |
 
 ###### drawPileCardAmount
 Serves as a buffer between the frontend end the serverside backend.

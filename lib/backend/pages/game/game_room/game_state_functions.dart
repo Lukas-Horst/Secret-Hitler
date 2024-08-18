@@ -24,10 +24,10 @@ int _getNextPresident(int currentPresident, List<int> killedPlayers,
 }
 
 // Function to update the play state to the chancellor voting
-Future<void> chancellorVotingState(WidgetRef ref, int chancellorIndex) async {
+Future<bool> chancellorVotingState(WidgetRef ref, int chancellorIndex) async {
   final databaseApi = ref.read(databaseApiProvider);
   final gameStateNotifier = ref.read(gameStateProvider.notifier);
-  await databaseApi.updateDocument(
+  return await databaseApi.updateDocument(
     gameStateCollectionId,
     gameStateNotifier.gameStateDocument!.$id,
     {
@@ -39,7 +39,7 @@ Future<void> chancellorVotingState(WidgetRef ref, int chancellorIndex) async {
 
 // Function to update the voting from the player and if all voted change in
 // the next state
-Future<void> voteForChancellor(WidgetRef ref, int voting,
+Future<bool> voteForChancellor(WidgetRef ref, int voting,
     int ownPlayerIndex) async {
   final databaseApi = ref.read(databaseApiProvider);
   final gameStateNotifier = ref.read(gameStateProvider.notifier);
@@ -58,7 +58,7 @@ Future<void> voteForChancellor(WidgetRef ref, int voting,
       newElectionTracker = 0;
     }
   }
-  await databaseApi.updateDocument(
+  return await databaseApi.updateDocument(
     gameStateCollectionId,
     gameStateNotifier.gameStateDocument!.$id,
     {
@@ -100,7 +100,7 @@ int _countVoting(List<int> chancellorVoting, int electionTracker) {
 }
 
 // Function to set all chancellor voting back to 0
-Future<void> resetChancellorVoting(WidgetRef ref) async {
+Future<bool> resetChancellorVoting(WidgetRef ref) async {
   final databaseApi = ref.read(databaseApiProvider);
   final gameStateNotifier = ref.read(gameStateProvider.notifier);
   final gameState = ref.read(gameStateProvider);
@@ -108,7 +108,7 @@ Future<void> resetChancellorVoting(WidgetRef ref) async {
   for (int i=0; i < gameState.chancellorVoting.length; i++) {
     chancellorVoting.add(0);
   }
-  await databaseApi.updateDocument(
+  return await databaseApi.updateDocument(
     gameStateCollectionId,
     gameStateNotifier.gameStateDocument!.$id,
     {
@@ -118,10 +118,10 @@ Future<void> resetChancellorVoting(WidgetRef ref) async {
 }
 
 // Function when the president discard his card
-Future<void> discardCard(WidgetRef ref, int cardIndex) async {
+Future<bool> discardCard(WidgetRef ref, int cardIndex) async {
   final databaseApi = ref.read(databaseApiProvider);
   final gameStateNotifier = ref.read(gameStateProvider.notifier);
-  await databaseApi.updateDocument(
+  return await databaseApi.updateDocument(
     gameStateCollectionId,
     gameStateNotifier.gameStateDocument!.$id,
     {
@@ -132,7 +132,7 @@ Future<void> discardCard(WidgetRef ref, int cardIndex) async {
 }
 
 // Function to play a card
-Future<void> playCard(WidgetRef ref, int cardIndex, bool normalPlay) async {
+Future<bool> playCard(WidgetRef ref, int cardIndex, bool normalPlay) async {
   final databaseApi = ref.read(databaseApiProvider);
   final gameStateNotifier = ref.read(gameStateProvider.notifier);
   final gameState = ref.read(gameStateProvider);
@@ -177,13 +177,15 @@ Future<void> playCard(WidgetRef ref, int cardIndex, bool normalPlay) async {
   int? newFormerChancellor = gameState.currentChancellor;
   if (newGameState == 0) {
     newPresident = _getNextPresident(
-      gameState.currentPresident,
+      gameState.regularPresident
+          ? newPresident
+          : gameState.formerPresident!,
       gameState.killedPlayers,
       gameState.chancellorVoting.length,
     );
     newFormerPresident = gameState.currentPresident;
   }
-  await databaseApi.updateDocument(
+  return await databaseApi.updateDocument(
     gameStateCollectionId,
     gameStateNotifier.gameStateDocument!.$id,
     {
@@ -267,4 +269,33 @@ List<bool> _shuffleCards(int fascistBoardCardAmount, int liberalBoardCardAmount,
     }
   }
   return cardColors;
+}
+
+// Method to turn to the next state after the presidential action
+Future<bool> presidentialActionFinished(WidgetRef ref, int? newPresident,
+    int? hitler, List<int>? killedPlayers) async {
+  final databaseApi = ref.read(databaseApiProvider);
+  final gameStateNotifier = ref.read(gameStateProvider.notifier);
+  final gameState = ref.read(gameStateProvider);
+  int? newGameState;
+  // If Hitler is dead, the liberal wins
+  if (killedPlayers != null) {
+    if (killedPlayers.contains(hitler)) {
+      newGameState = 9;
+    }
+  }
+  return await databaseApi.updateDocument(
+    gameStateCollectionId,
+    gameStateNotifier.gameStateDocument!.$id,
+    {
+      'playState': newGameState ?? 0,
+      'formerPresident': gameState.currentPresident,
+      'currentPresident': newPresident ?? _getNextPresident(
+        gameState.currentPresident,
+        killedPlayers ?? gameState.killedPlayers,
+        gameState.chancellorVoting.length,
+      ),
+      'killedPlayers': killedPlayers,
+    },
+  );
 }
