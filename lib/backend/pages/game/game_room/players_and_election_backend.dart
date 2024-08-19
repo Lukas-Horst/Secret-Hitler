@@ -28,7 +28,7 @@ class PlayersAndElectionBackend{
   late List<String> teamMembers;  // The names of all team members
   late int ownPlayerIndex;
   late String id;
-  bool _cardsFlipped = false;
+  bool cardsFlipped = false;
 
   PlayersAndElectionBackend(this.playersAndElectionFrontendKey,
       this.boardOverviewBackend, this.playerNames, this.playerOrder, this.id,
@@ -82,14 +82,13 @@ class PlayersAndElectionBackend{
   // Method to flip the ballot cards based on the play state
   Future<void> flipBallotCards(int playState, List<int> chancellorVoting) async {
     bool voted = chancellorVoting[ownPlayerIndex] != 0;
-    if (!_cardsFlipped && playState == 1 && !voted) {
-      await Future.delayed(const Duration(milliseconds: 500));
-      _cardsFlipped = true;
+    if (!cardsFlipped && playState == 1 && !voted) {
+      cardsFlipped = true;
       for (GlobalKey<FlipAnimationState> flipKey in ballotCardFlipKeys) {
         flipKey.currentState?.animate();
       }
-    } else if (_cardsFlipped && (playState != 1 || voted)) {
-      _cardsFlipped = false;
+    } else if (cardsFlipped && (playState != 1 || voted)) {
+      cardsFlipped = false;
       for (GlobalKey<FlipAnimationState> flipKey in ballotCardFlipKeys) {
         flipKey.currentState?.animate();
       }

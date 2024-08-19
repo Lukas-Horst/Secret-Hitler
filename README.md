@@ -6,7 +6,8 @@ Flutter project for the game Secret Hitler
 
 1. [Backend](#backend)
 2. [Appwrite](#appwrite)
-3. 
+3. [Custom Widgets](#custom-widgets) 
+   - [playerWidget](#playerwidget)
 
 ## Backend
 
@@ -77,6 +78,9 @@ A boolean which indicated whether the current president is regular or was picked
 ###### killedPlayers:
 The indices of the player which are dead in a list of integers.
 
+###### isInvestigated
+The indices of the player which are already investigated.
+
 ###### playState:
 The play state is an integer variable whereby all actions between the players are synchronized.
 
@@ -87,7 +91,7 @@ The play state is an integer variable whereby all actions between the players ar
 |   2   | The president plays the first card from the drawing pile. |
 |   3   |      The President draw 3 cards and discard on card.      |
 |   4   |  The chancellor play one card and discard the other one.  |
-|   5   |          The President examines the top 3 cards           |
+|   5   |          The President examines the top 3 cards.          |
 |   6   |   The President investigates a player's identity card.    |
 |   7   |          The President pick the next President.           |
 |   8   |               The President kills a player.               |
@@ -120,3 +124,65 @@ The amount of cards on the draw pile which is an int between 0 and 14.
 
 ###### discardedPresidentialCard:
 The card index of the card which was discarded by the president. This can be an int between 0 and 2.
+
+## Custom Widgets
+
+### playerWidget
+The playerWidget is used on the PlayersAndElectionPage to show the current role or former role of the player and his voting for a chancellor.
+It is also used for the presidential actions, which means for nominating a chancellor, checking the role of an player and killing a player.
+
+###### opacityKeys:
+A list of global opacityAnimation keys to have access to following things:
+
+| Index |                       Visibility                       |
+|:-----:|:------------------------------------------------------:|
+|   0   | Visibility of the divider and the presidential action. |
+|   1   |           Visibility of the execution image.           |
+|   2   |       Visibility of the special election image.        |
+|   3   |      Visibility of the investigate loyalty image.      |
+|   4   |             Visibility of the voting icon.             |
+|   5   |       Visibility of the former chancellor card.        |
+|   6   |        Visibility of the former president card.        |
+|   7   |           Visibility of the chancellor card.           |
+|   8   |           Visibility of the president card.            |
+|   9   |              Visibility of the yes card.               |
+|  10   |               Visibility of the no card.               |
+
+###### initialOpacityValues:
+A list of a list of two doubles. The first double is the begin value of the OpacityAnimation the second double is the end value.
+The value are only important for the initial building of the widget and is synchronized with the server backend on the initState() method.
+
+| Index |                           Visibility                           |
+|:-----:|:--------------------------------------------------------------:|
+|   0   | Initial visibility of the divider and the presidential action. |
+|   1   |           Initial visibility of the execution image.           |
+|   2   |       Initial visibility of the special election image.        |
+|   3   |      Initial visibility of the investigate loyalty image.      |
+|   4   |             Initial visibility of the voting icon.             |
+|   5   |       Initial visibility of the former chancellor card.        |
+|   6   |        Initial visibility of the former president card.        |
+|   7   |           Initial visibility of the chancellor card.           |
+|   8   |           Initial visibility of the president card.            |
+|   9   |              Initial visibility of the yes card.               |
+|  10   |               Initial visibility of the no card.               |
+
+###### arePresidentialActionsVisible(GameState gameState):
+Method which returns an integer to decide, whether a presidential action is visible or not.
+
+| Int |             Visibility              |
+|:---:|:-----------------------------------:|
+|  0  | No presidential actions is visible. |
+|  1  | The chancellor election is visible. |
+
+###### presidentialActions
+A list of booleans which indicate if a presidential action is visible.
+
+| Index |                      Visibility                      |
+|:-----:|:----------------------------------------------------:|
+|   0   |     The President decides a chancellor to vote.      |
+|   1   | The President investigates a player's identity card. |
+|   2   |        The President pick the next President.        |
+|   3   |            The President kills a player.             |
+
+###### voted
+A bool which indicate whether the voting card is visible or not.

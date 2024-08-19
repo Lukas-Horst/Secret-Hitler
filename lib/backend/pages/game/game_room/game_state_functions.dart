@@ -8,6 +8,8 @@ import 'package:secret_hitler/backend/database/appwrite/notifiers/game_state_not
 import 'package:secret_hitler/backend/helper/math_functions.dart';
 import 'package:secret_hitler/backend/riverpod/provider.dart';
 
+bool _presidentialActionButton = false;  // Bool to avoid double execution of a function
+
 // Function to get the next president under the player who are alive
 int _getNextPresident(int currentPresident, List<int> killedPlayers,
     int playerAmount) {
@@ -25,19 +27,26 @@ int _getNextPresident(int currentPresident, List<int> killedPlayers,
 
 // Function to update the play state to the chancellor voting
 Future<bool> chancellorVotingState(WidgetRef ref, int chancellorIndex) async {
-  final databaseApi = ref.read(databaseApiProvider);
-  final gameStateNotifier = ref.read(gameStateProvider.notifier);
-  return await databaseApi.updateDocument(
-    gameStateCollectionId,
-    gameStateNotifier.gameStateDocument!.$id,
-    {
-      'playState': 1,
-      'currentChancellor': chancellorIndex,
-    },
-  );
+  if (!_presidentialActionButton) {
+    _presidentialActionButton = true;
+    final databaseApi = ref.read(databaseApiProvider);
+    final gameStateNotifier = ref.read(gameStateProvider.notifier);
+    bool response = await databaseApi.updateDocument(
+      gameStateCollectionId,
+      gameStateNotifier.gameStateDocument!.$id,
+      {
+        'playState': 1,
+        'currentChancellor': chancellorIndex,
+      },
+    );
+    _presidentialActionButton = false;
+    return response;
+  } else {
+    return false;
+  }
 }
 
-// Function to update the voting from the player and if all voted change in
+// Function to update the voting from the player and if all voted, change in
 // the next state
 Future<bool> voteForChancellor(WidgetRef ref, int voting,
     int ownPlayerIndex) async {
