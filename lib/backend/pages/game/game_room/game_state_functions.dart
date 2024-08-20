@@ -49,7 +49,7 @@ Future<bool> chancellorVotingState(WidgetRef ref, int chancellorIndex) async {
 // Function to update the voting from the player and if all voted, change in
 // the next state
 Future<bool> voteForChancellor(WidgetRef ref, int voting,
-    int ownPlayerIndex) async {
+    int ownPlayerIndex, int hitler) async {
   final databaseApi = ref.read(databaseApiProvider);
   final gameStateNotifier = ref.read(gameStateProvider.notifier);
   final gameState = ref.read(gameStateProvider);
@@ -67,6 +67,33 @@ Future<bool> voteForChancellor(WidgetRef ref, int voting,
       newElectionTracker = 0;
     }
   }
+  int newPresident = gameState.currentPresident;
+  int? newChancellor = gameState.currentChancellor;
+  int? newFormerPresident = gameState.formerPresident;
+  int? newFormerChancellor = gameState.formerChancellor;
+  if (newState == 0) {
+    newChancellor = null;
+    newPresident = _getNextPresident(
+      gameState.regularPresident
+          ? newPresident
+          : gameState.formerPresident!,
+      gameState.killedPlayers,
+      gameState.chancellorVoting.length,
+    );
+  }
+  // The voting was successful
+  if (votingFinished && newState > 2) {
+    // Hitler danger
+    if (gameState.fascistBoardCardAmount >= 3) {
+      // If hitler is successfully voted the fascist win
+      if (newChancellor == hitler) {
+        newState = 10;
+        // Else the chancellor is confirmed not hitler
+      } else {
+        gameState.notHitlerConfirmed.add(newChancellor!);
+      }
+    }
+  }
   return await databaseApi.updateDocument(
     gameStateCollectionId,
     gameStateNotifier.gameStateDocument!.$id,
@@ -74,6 +101,12 @@ Future<bool> voteForChancellor(WidgetRef ref, int voting,
       'playState': newState,
       'chancellorVoting': chancellorVoting,
       'electionTracker': newElectionTracker,
+      'currentPresident': newPresident,
+      'currentChancellor': newChancellor,
+      'formerPresident': newFormerPresident,
+      'formerChancellor': newFormerChancellor,
+      'regularPresident': newState == 0 ? true : gameState.regularPresident,
+      'notHitlerConfirmed': gameState.notHitlerConfirmed,
     },
   );
 }
@@ -194,6 +227,10 @@ Future<bool> playCard(WidgetRef ref, int cardIndex, bool normalPlay) async {
     );
     newFormerPresident = gameState.currentPresident;
   }
+  if (!normalPlay) {
+    newFormerChancellor = null;
+    newFormerPresident = null;
+  }
   return await databaseApi.updateDocument(
     gameStateCollectionId,
     gameStateNotifier.gameStateDocument!.$id,
@@ -209,6 +246,7 @@ Future<bool> playCard(WidgetRef ref, int cardIndex, bool normalPlay) async {
       'currentChancellor': null,
       'formerPresident': newFormerPresident,
       'formerChancellor': newFormerChancellor,
+      'regularPresident': true,
     },
   );
 }
@@ -282,29 +320,49 @@ List<bool> _shuffleCards(int fascistBoardCardAmount, int liberalBoardCardAmount,
 
 // Method to turn to the next state after the presidential action
 Future<bool> presidentialActionFinished(WidgetRef ref, int? newPresident,
-    int? hitler, List<int>? killedPlayers) async {
-  final databaseApi = ref.read(databaseApiProvider);
-  final gameStateNotifier = ref.read(gameStateProvider.notifier);
-  final gameState = ref.read(gameStateProvider);
-  int? newGameState;
-  // If Hitler is dead, the liberal wins
-  if (killedPlayers != null) {
-    if (killedPlayers.contains(hitler)) {
-      newGameState = 9;
+    int? hitler, int? killedPlayer) async {
+  if (!_presidentialActionButton) {
+    _presidentialActionButton = true;
+    final databaseApi = ref.read(databaseApiProvider);
+    final gameStateNotifier = ref.read(gameStateProvider.notifier);
+    final gameState = ref.read(gameStateProvider);
+    int? newGameState;
+    List<int> killedPlayers = gameState.killedPlayers;
+    int? newFormerChancellor = gameState.formerChancellor;
+    if (killedPlayer != null) {
+      killedPlayers.add(killedPlayer);
+      // If Hitler is dead, the liberal wins
+      if (killedPlayers.contains(hitler)) {
+        newGameState = 9;
+      } else if (!gameState.notHitlerConfirmed.contains(killedPlayer)) {
+        gameState.notHitlerConfirmed.add(killedPlayer);
+      }
     }
+    // Updating the former chancellor to null if he is dead
+    if (newFormerChancellor != null) {
+      if (killedPlayers.contains(newFormerChancellor)) {
+        newFormerChancellor = null;
+      }
+    }
+    bool response = await databaseApi.updateDocument(
+      gameStateCollectionId,
+      gameStateNotifier.gameStateDocument!.$id,
+      {
+        'playState': newGameState ?? 0,
+        'formerPresident': gameState.currentPresident,
+        'formerChancellor': newFormerChancellor,
+        'currentPresident': newPresident ?? _getNextPresident(
+          gameState.currentPresident,
+          killedPlayers,
+          gameState.chancellorVoting.length,
+        ),
+        'killedPlayers': killedPlayers,
+        'regularPresident': newPresident == null,
+        'notHitlerConfirmed': gameState.notHitlerConfirmed,
+      },
+    );
+    _presidentialActionButton = false;
+    return response;
   }
-  return await databaseApi.updateDocument(
-    gameStateCollectionId,
-    gameStateNotifier.gameStateDocument!.$id,
-    {
-      'playState': newGameState ?? 0,
-      'formerPresident': gameState.currentPresident,
-      'currentPresident': newPresident ?? _getNextPresident(
-        gameState.currentPresident,
-        killedPlayers ?? gameState.killedPlayers,
-        gameState.chancellorVoting.length,
-      ),
-      'killedPlayers': killedPlayers,
-    },
-  );
+  return false;
 }

@@ -154,9 +154,11 @@ class BoardOverviewBackend{
       await discardCard(ref, cardIndex);
     // Play 1 card and discard the other one
     } else if (playCardState == 2) {
-      textTransitionKey.currentState?.animate();
-      await playCard(ref, cardIndex, true);
       playCardState = -2;
+      textTransitionKey.currentState?.animate();
+      if (!await playCard(ref, cardIndex, true)) {
+        playCardState = 2;
+      }
     // Playing the top card because the election tracker moved 3 times forward
     } else if (playCardState == 3) {
       await playCard(ref, 2, false);
@@ -234,6 +236,7 @@ class BoardOverviewBackend{
     if (playState == 3 && (playCardState < 0 || playCardState != 1)) {
       playCardState = 0;
       if (!init) {
+        // TODO Non playable cards are not always right
         await boardOverviewFrontendKey.currentState?.updateDrawPile();
         if (!isOnTheMove(ref)) {
           await boardOverviewFrontendKey.currentState?.discoverCards();

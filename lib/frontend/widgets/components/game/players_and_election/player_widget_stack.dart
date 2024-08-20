@@ -51,6 +51,7 @@ class _PlayerWidgetStackState extends State<PlayerWidgetStack> {
             width: ScreenSize.screenWidth * 0.45,
             index: i,
             ownPlayerIndex: backend.ownPlayerIndex,
+            backend: backend,
           ),
         ),
       );

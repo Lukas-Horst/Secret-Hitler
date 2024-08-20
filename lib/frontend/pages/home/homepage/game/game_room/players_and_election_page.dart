@@ -29,6 +29,7 @@ class PlayersAndElectionState extends ConsumerState<PlayersAndElection> with Aut
   int _voting = 0;
   bool _init = true;
   final List<Widget> _ballotImage = [];
+  late int _hitler;
 
   // Method to check if the ballot cards should be flipped or not
   void _checkBallotCards(GameState gameState) async {
@@ -49,6 +50,7 @@ class PlayersAndElectionState extends ConsumerState<PlayersAndElection> with Aut
   @override
   void initState() {
     backend = widget.backend;
+    _hitler = backend.playerOrder.indexOf(backend.hitler[1]);
     final gameState = ref.read(gameStateProvider);
     for (int i=0; i < 2; i++) {
       _ballotImage.add(Image.asset(
@@ -64,7 +66,7 @@ class PlayersAndElectionState extends ConsumerState<PlayersAndElection> with Aut
             _voting = i == 0
                 ? 1
                 : 2;
-            voteForChancellor(ref, _voting, backend.ownPlayerIndex);
+            voteForChancellor(ref, _voting, backend.ownPlayerIndex, _hitler);
           }
         },
         child: Image.asset(
@@ -89,14 +91,12 @@ class PlayersAndElectionState extends ConsumerState<PlayersAndElection> with Aut
       if (playState != 1 && _voting != 0) {
         _voting = 0;
       }
-      if (playState < 4) {
-        backend.flipBallotCards(playState, chancellorVoting);
-      }
+      backend.flipBallotCards(playState, chancellorVoting);
       // If the voting didn't worked successfully cause two players voted at the
       // same time we repeat the voting
       if (_voting != 0 && chancellorVoting[backend.ownPlayerIndex] == 0
           && next.playState == 1) {
-        voteForChancellor(ref, _voting, backend.ownPlayerIndex);
+        voteForChancellor(ref, _voting, backend.ownPlayerIndex, _hitler);
       }
     });
     return Column(

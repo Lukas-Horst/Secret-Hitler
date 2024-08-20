@@ -7,6 +7,7 @@ import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/backend/database/appwrite/notifiers/game_state_notifier.dart';
 import 'package:secret_hitler/backend/helper/datastructure_functions.dart';
 import 'package:secret_hitler/backend/pages/game/game_room/game_state_functions.dart';
+import 'package:secret_hitler/backend/pages/game/game_room/players_and_election_backend.dart';
 import 'package:secret_hitler/backend/riverpod/provider.dart';
 import 'package:secret_hitler/frontend/widgets/animations/flip_animation.dart';
 import 'package:secret_hitler/frontend/widgets/animations/opacity_animation.dart';
@@ -20,9 +21,11 @@ class PlayerWidget extends ConsumerStatefulWidget {
   final double width;
   final int index;
   final int ownPlayerIndex;
+  final PlayersAndElectionBackend backend;
 
   const PlayerWidget({super.key, required this.playerName, required this.height,
-    required this.width, required this.index, required this.ownPlayerIndex});
+    required this.width, required this.index, required this.ownPlayerIndex,
+    required this.backend});
 
   @override
   ConsumerState<PlayerWidget> createState() => PlayerWidgetState();
@@ -42,6 +45,8 @@ class PlayerWidgetState extends ConsumerState<PlayerWidget> {
     GlobalKey<OpacityAnimationState>(), // Visibility of the president card
     GlobalKey<OpacityAnimationState>(), // Visibility of the yes card
     GlobalKey<OpacityAnimationState>(), // Visibility of the no card
+    GlobalKey<OpacityAnimationState>(), // Visibility of the whole widget excepts the cards
+    GlobalKey<OpacityAnimationState>(), // Visibility of the not hitler sign
   ];
 
   final List<List<double>> _initialOpacityValues = [];
@@ -68,7 +73,9 @@ class PlayerWidgetState extends ConsumerState<PlayerWidget> {
   bool _isInvestigated = false;
   bool _voted = false;
   bool _votingCardFlipped = false;
+  bool _isNotHitler = false;
   bool _init = true;
+  late PlayersAndElectionBackend _backend;
 
   List<OpacityAnimation> _getImages() {
     List<OpacityAnimation> imagesList = [];
@@ -90,11 +97,18 @@ class PlayerWidgetState extends ConsumerState<PlayerWidget> {
                 : const EdgeInsets.all(0),
             child: IconButton(
               onPressed: () {
-                final gameStateNotifier = ref.read(gameStateProvider);
-                int playState = gameStateNotifier.playState;
+                final gameState = ref.read(gameStateProvider);
+                int playState = gameState.playState;
                 // Changing from playState=0 to playState=1
                 if (playState == 0) {
                   chancellorVotingState(ref, widget.index);
+                // Picking the next president
+                } else if (playState == 7) {
+                  presidentialActionFinished(ref, widget.index, null, null);
+                // Killing a player
+                } else if (playState == 8) {
+                  int hitler = _backend.playerOrder.indexOf(_backend.hitler[1]);
+                  presidentialActionFinished(ref, null, hitler, widget.index);
                 }
               },
               icon: i == 3
@@ -352,15 +366,43 @@ class PlayerWidgetState extends ConsumerState<PlayerWidget> {
     }
   }
 
+  // Method to check if the player is dead
+  Future<void> _checkForDeath(GameState gameState) async {
+    if (_isDead != gameState.killedPlayers.contains(widget.index)) {
+      _isDead = gameState.killedPlayers.contains(widget.index);
+      if (_init) {
+        _initialOpacityValues[11] = [0.3, 1.0];
+      } else {
+        _opacityKeys[11].currentState?.animate();
+      }
+    }
+  }
+
+  // Method to check if the player is confirmed not hitler
+  Future<void> _checkForNotHitler(GameState gameState) async {
+    if (_isNotHitler != gameState.notHitlerConfirmed.contains(widget.index)) {
+      _isNotHitler = gameState.notHitlerConfirmed.contains(widget.index);
+      if (_init) {
+        _initialOpacityValues[12] = [1.0, 0.0];
+      } else {
+        _opacityKeys[12].currentState?.animate();
+      }
+    }
+  }
+
   @override
   void initState() {
+    _backend = widget.backend;
     for (int i=0; i < 11; i++) {
       _initialOpacityValues.add([0.0, 1.0]);
     }
+    _initialOpacityValues.add([1.0, 0.3]);
+    _initialOpacityValues.add([0.0, 1.0]);
     _initialWidthValues.add(widget.width);
     _initialWidthValues.add(widget.width/1.4 - 1.5);
     final gameState = ref.read(gameStateProvider);
-    _isDead = gameState.killedPlayers.contains(widget.index);
+    _checkForDeath(gameState);
+    _checkForNotHitler(gameState);
     _isInvestigated = gameState.investigatedPlayers.contains(widget.index);
     _checkForGovernmentChanges(gameState);
     _checkForPresidentActions(gameState);
@@ -372,7 +414,8 @@ class PlayerWidgetState extends ConsumerState<PlayerWidget> {
   @override
   Widget build(BuildContext context) {
     ref.listen(gameStateProvider, (previous, next) async {
-      _isDead = next.killedPlayers.contains(widget.index);
+      _checkForDeath(next);
+      _checkForNotHitler(next);
       await _checkForGovernmentChanges(next);
       _checkForPresidentActions(next);
       _checkChancellorVoting(next.chancellorVoting, next.playState);
@@ -380,118 +423,125 @@ class PlayerWidgetState extends ConsumerState<PlayerWidget> {
     return SizedBox(
       height: widget.height + ScreenSize.screenHeight * 0.0225,
       child: Stack(
+        clipBehavior: Clip.none,
         children: [
-          SizedBox(
-            height: widget.height,
-            width: widget.width,
-            child: Stack(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: AppDesign.getPrimaryColor(),
-                    borderRadius: const BorderRadius.all(Radius.circular(50)),
-                    border: Border.all(color: Colors.black, width: 3),
+          OpacityAnimation(
+            key: _opacityKeys[11],
+            duration: const Duration(milliseconds: 500),
+            begin: _initialOpacityValues[11][0],
+            end: _initialOpacityValues[11][1],
+            child: SizedBox(
+              height: widget.height,
+              width: widget.width,
+              child: Stack(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: AppDesign.getPrimaryColor(),
+                      borderRadius: const BorderRadius.all(Radius.circular(50)),
+                      border: Border.all(color: Colors.black, width: 3),
+                    ),
                   ),
-                ),
-                OpacityAnimation(
-                  key: _opacityKeys[0],
-                  duration: const Duration(milliseconds: 1000),
-                  begin: _initialOpacityValues[0][0],
-                  end: _initialOpacityValues[0][1],
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      // Left side
-                      Container(
-                        height: widget.height,
-                        width: widget.width - widget.width/3 - 1.5,
-                        decoration: BoxDecoration(
-                          color: AppDesign.getPrimaryColor(),
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(50),
-                            bottomLeft: Radius.circular(50),
-                          ),
-                          border: const Border(
-                            left: BorderSide(
-                              color: Colors.black,
-                              width: 3,
+                  OpacityAnimation(
+                    key: _opacityKeys[0],
+                    duration: const Duration(milliseconds: 1000),
+                    begin: _initialOpacityValues[0][0],
+                    end: _initialOpacityValues[0][1],
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        // Left side
+                        Container(
+                          height: widget.height,
+                          width: widget.width - widget.width/3 - 1.5,
+                          decoration: BoxDecoration(
+                            color: AppDesign.getPrimaryColor(),
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(50),
+                              bottomLeft: Radius.circular(50),
                             ),
-                            bottom: BorderSide(
-                              color: Colors.black,
-                              width: 3,
-                            ),
-                            top: BorderSide(
-                              color: Colors.black,
-                              width: 3,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const Expanded(
-                        child: VerticalDivider(
-                          thickness: 3,
-                          color: Colors.black,
-                        ),
-                      ),
-                      // Right size
-                      Container(
-                        height: widget.height,
-                        width: widget.width/3 - 1.5,
-                        decoration: BoxDecoration(
-                          color: AppDesign.getPrimaryColor(),
-                          borderRadius: const BorderRadius.only(
-                            topRight: Radius.circular(50),
-                            bottomRight: Radius.circular(50),
-                          ),
-                          border: const Border(
-                            right: BorderSide(
-                              color: Colors.black,
-                              width: 3,
-                            ),
-                            bottom: BorderSide(
-                              color: Colors.black,
-                              width: 3,
-                            ),
-                            top: BorderSide(
-                              color: Colors.black,
-                              width: 3,
+                            border: const Border(
+                              left: BorderSide(
+                                color: Colors.black,
+                                width: 3,
+                              ),
+                              bottom: BorderSide(
+                                color: Colors.black,
+                                width: 3,
+                              ),
+                              top: BorderSide(
+                                color: Colors.black,
+                                width: 3,
+                              ),
                             ),
                           ),
                         ),
-                        child: Stack(
-                          children: _getImages(),
+                        const Expanded(
+                          child: VerticalDivider(
+                            thickness: 3,
+                            color: Colors.black,
+                          ),
                         ),
-                      ),
-                    ],
+                        // Right size
+                        Container(
+                          height: widget.height,
+                          width: widget.width/3 - 1.5,
+                          decoration: BoxDecoration(
+                            color: AppDesign.getPrimaryColor(),
+                            borderRadius: const BorderRadius.only(
+                              topRight: Radius.circular(50),
+                              bottomRight: Radius.circular(50),
+                            ),
+                            border: const Border(
+                              right: BorderSide(
+                                color: Colors.black,
+                                width: 3,
+                              ),
+                              bottom: BorderSide(
+                                color: Colors.black,
+                                width: 3,
+                              ),
+                              top: BorderSide(
+                                color: Colors.black,
+                                width: 3,
+                              ),
+                            ),
+                          ),
+                          child: Stack(
+                            children: _getImages(),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                SizeAnimation(
-                  key: _sizeAnimationKeys[0],
-                  duration: const Duration(milliseconds: 1500),
-                  firstHeight: widget.height,
-                  firstWidth: _initialWidthValues[0],
-                  secondHeight: widget.height,
-                  secondWidth: _initialWidthValues[1],
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Center(
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Text(
-                          widget.playerName,
-                          style: TextStyle(
-                            fontFamily: 'EskapadeFrakturW04BlackFamily',
-                            color: Colors.white,
-                            fontSize: ScreenSize.screenHeight * 0.02 +
-                                ScreenSize.screenWidth * 0.02,
+                  SizeAnimation(
+                    key: _sizeAnimationKeys[0],
+                    duration: const Duration(milliseconds: 1500),
+                    firstHeight: widget.height,
+                    firstWidth: _initialWidthValues[0],
+                    secondHeight: widget.height,
+                    secondWidth: _initialWidthValues[1],
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Center(
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Text(
+                            widget.playerName,
+                            style: TextStyle(
+                              fontFamily: 'EskapadeFrakturW04BlackFamily',
+                              color: Colors.white,
+                              fontSize: ScreenSize.screenHeight * 0.02 +
+                                  ScreenSize.screenWidth * 0.02,
+                            ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           // Former chancellor and president cards
@@ -551,6 +601,21 @@ class PlayerWidgetState extends ConsumerState<PlayerWidget> {
                   ],
                 ),
               ],
+            ),
+          ),
+          Positioned(
+            left: widget.width - ScreenSize.screenWidth * 0.09,
+            top: ScreenSize.screenHeight * 0.0125,
+            child: OpacityAnimation(
+              key: _opacityKeys[12],
+              duration: const Duration(milliseconds: 500),
+              begin: _initialOpacityValues[12][0],
+              end: _initialOpacityValues[12][1],
+              child: Image.asset(
+                'assets/images/not_hitler.png',
+                height: ScreenSize.screenHeight * 0.09,
+                width: ScreenSize.screenWidth * 0.09,
+              ),
             ),
           ),
           // Voting cards

@@ -81,6 +81,9 @@ The indices of the player which are dead in a list of integers.
 ###### isInvestigated
 The indices of the player which are already investigated.
 
+###### notHitlerConfirmed
+The indices of the player which are not hitler confirmed.
+
 ###### playState:
 The play state is an integer variable whereby all actions between the players are synchronized.
 
@@ -147,6 +150,8 @@ A list of global opacityAnimation keys to have access to following things:
 |   8   |           Visibility of the president card.            |
 |   9   |              Visibility of the yes card.               |
 |  10   |               Visibility of the no card.               |
+|  11   |   Visibility of the whole widget excepts the cards.    |
+|  12   |           Visibility of the not hitler sign.           |
 
 ###### initialOpacityValues:
 A list of a list of two doubles. The first double is the begin value of the OpacityAnimation the second double is the end value.
@@ -165,6 +170,9 @@ The value are only important for the initial building of the widget and is synch
 |   8   |           Initial visibility of the president card.            |
 |   9   |              Initial visibility of the yes card.               |
 |  10   |               Initial visibility of the no card.               |
+|  10   |               Initial visibility of the no card.               |
+|  11   |   Initial visibility of the whole widget excepts the cards.    |
+|  12   |           Initial visibility of the not hitler sign.           |
 
 ###### arePresidentialActionsVisible(GameState gameState):
 Method which returns an integer to decide, whether a presidential action is visible or not.

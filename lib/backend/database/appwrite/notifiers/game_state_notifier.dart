@@ -21,6 +21,7 @@ class GameState {
   int drawPileCardAmount;
   List<bool> cardColors;
   List<int> investigatedPlayers;
+  List<int> notHitlerConfirmed;
   int? currentChancellor;
   int? formerChancellor;
   int? formerPresident;
@@ -32,9 +33,9 @@ class GameState {
     required this.chancellorVoting, required this.electionTracker,
     required this.fascistBoardCardAmount, required this.liberalBoardCardAmount,
     required this.drawPileCardAmount, required this.cardColors,
-    required this.investigatedPlayers, this.currentChancellor,
-    this.formerChancellor, this.formerPresident, this.discardedPresidentialCard,
-    this.playedCard});
+    required this.investigatedPlayers, required this.notHitlerConfirmed,
+    this.currentChancellor, this.formerChancellor, this.formerPresident,
+    this.discardedPresidentialCard, this.playedCard});
 }
 
 class GameStateNotifier extends StateNotifier<GameState> {
@@ -60,6 +61,7 @@ class GameStateNotifier extends StateNotifier<GameState> {
       drawPileCardAmount: 14,
       cardColors: [],
       investigatedPlayers: [],
+      notHitlerConfirmed: [],
     )
   );
 
@@ -86,6 +88,9 @@ class GameStateNotifier extends StateNotifier<GameState> {
       List<int> investigatedPlayers = convertDynamicToIntList(
         gameStateDocument!.data['investigatedPlayers'],
       );
+      List<int> notHitlerConfirmed = convertDynamicToIntList(
+        gameStateDocument!.data['notHitlerConfirmed'],
+      );
       int? discardedPresidentialCard = gameStateDocument!.data['discardedPresidentialCard'];
       int? playedCard = gameStateDocument!.data['playedCard'];
       state = GameState(
@@ -105,6 +110,7 @@ class GameStateNotifier extends StateNotifier<GameState> {
         discardedPresidentialCard: discardedPresidentialCard,
         playedCard: playedCard,
         investigatedPlayers: investigatedPlayers,
+        notHitlerConfirmed: notHitlerConfirmed,
       );
     } catch(e) {print(e);}
   }
