@@ -141,6 +141,7 @@ class BoardOverviewBackend{
       playCardState++;
     // Discard 1 card as the president
     } else if (playCardState == 1) {
+      playCardState = -2;
       textTransitionKey.currentState?.animate();
       Timer(const Duration(milliseconds: 600), () {
         boardOverviewFrontendKey.currentState?.updateExplainingText(
@@ -233,10 +234,9 @@ class BoardOverviewBackend{
     }
     playState = gameState.playState;
     // Checking for a change of the play state and the play card state
-    if (playState == 3 && (playCardState < 0 || playCardState != 1)) {
+    if (playState == 3 && (playCardState < 0 || playCardState > 1)) {
       playCardState = 0;
       if (!init) {
-        // TODO Non playable cards are not always right
         await boardOverviewFrontendKey.currentState?.updateDrawPile();
         if (!isOnTheMove(ref)) {
           await boardOverviewFrontendKey.currentState?.discoverCards();
@@ -246,6 +246,7 @@ class BoardOverviewBackend{
       // Activate the discard animation for all players who wasn't on the move
       if (!init) {
         await boardOverviewFrontendKey.currentState?.coverCards();
+        playCardState = 1;
         await boardOverviewFrontendKey.currentState?.discard(discardedPresidentialCard!);
         await boardOverviewFrontendKey.currentState?.discoverCards();
       }

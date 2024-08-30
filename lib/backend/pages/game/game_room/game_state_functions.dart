@@ -88,9 +88,11 @@ Future<bool> voteForChancellor(WidgetRef ref, int voting,
       // If hitler is successfully voted the fascist win
       if (newChancellor == hitler) {
         newState = 10;
-        // Else the chancellor is confirmed not hitler
+      // Else the chancellor is confirmed not hitler
       } else {
-        gameState.notHitlerConfirmed.add(newChancellor!);
+        if (!gameState.notHitlerConfirmed.contains(newChancellor!)) {
+          gameState.notHitlerConfirmed.add(newChancellor);
+        }
       }
     }
   }

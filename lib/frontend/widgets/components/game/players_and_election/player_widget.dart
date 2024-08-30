@@ -402,10 +402,10 @@ class PlayerWidgetState extends ConsumerState<PlayerWidget> {
     _initialWidthValues.add(widget.width/1.4 - 1.5);
     final gameState = ref.read(gameStateProvider);
     _checkForDeath(gameState);
-    _checkForNotHitler(gameState);
     _isInvestigated = gameState.investigatedPlayers.contains(widget.index);
     _checkForGovernmentChanges(gameState);
     _checkForPresidentActions(gameState);
+    _checkForNotHitler(gameState);
     _checkChancellorVoting(gameState.chancellorVoting, gameState.playState);
     _init = false;
     super.initState();
