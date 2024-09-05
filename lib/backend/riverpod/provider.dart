@@ -1,5 +1,6 @@
 // author: Lukas Horst
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/authentication/appwrite/auth_api.dart';
 import 'package:secret_hitler/backend/authentication/user_state_notifier.dart';
@@ -8,6 +9,7 @@ import 'package:secret_hitler/backend/database/appwrite/notifiers/game_room_stat
 import 'package:secret_hitler/backend/database/appwrite/notifiers/game_state_notifier.dart';
 import 'package:secret_hitler/backend/helper/timer.dart';
 import 'package:secret_hitler/backend/riverpod/qr_code/qr_code_notifier.dart';
+import 'package:secret_hitler/frontend/widgets/components/useful_widgets/page_view.dart';
 
 // The provider for the auth api
 final authApiProvider = Provider<AuthApi>((ref) {
@@ -48,4 +50,9 @@ final gameStateProvider = StateNotifierProvider<GameStateNotifier, GameState>((r
   final authApi = ref.watch(authApiProvider);
   final databaseApi = ref.watch(databaseApiProvider);
   return GameStateNotifier(databaseApi, authApi.getClient());
+});
+
+// The provider for a key of a custom page view
+final customPageViewKeyProvider = Provider<GlobalKey<CustomPageViewState>>((ref) {
+  return GlobalKey<CustomPageViewState>();
 });

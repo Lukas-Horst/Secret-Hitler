@@ -24,6 +24,8 @@ class _RolesState extends State<Roles> with AutomaticKeepAliveClientMixin {
   final GlobalKey<FlipAnimationState> _membershipFlipKey = GlobalKey<FlipAnimationState>();
   final GlobalKey<FlipAnimationState> _secretRoleFlipKey = GlobalKey<FlipAnimationState>();
   final GlobalKey<OpacityAnimationState> _teamMembersOpacityKey = GlobalKey<OpacityAnimationState>();
+  final GlobalKey<ToggleGestureDetectorState> _secretRoleToggleKey = GlobalKey<ToggleGestureDetectorState>();
+  final GlobalKey<ToggleGestureDetectorState> _membershipRoleToggleKey = GlobalKey<ToggleGestureDetectorState>();
 
   late final PlayersAndElectionBackend _backend;
 
@@ -37,6 +39,18 @@ class _RolesState extends State<Roles> with AutomaticKeepAliveClientMixin {
       return '${AppLanguage.getLanguageData()['You don\'t know any other team member']}.';
     }
     return teamMembers;
+  }
+
+  // Method to check if any of the two gesture detection is toggled
+  bool _checkToggle() {
+    return _membershipRoleToggleKey.currentState!.toggle
+        || _secretRoleToggleKey.currentState!.toggle;
+  }
+
+  // Method to reset both toggles
+  void _resetToggle() {
+    _membershipRoleToggleKey.currentState!.toggle = false;
+    _secretRoleToggleKey.currentState!.toggle = false;
   }
 
   @override
@@ -56,13 +70,19 @@ class _RolesState extends State<Roles> with AutomaticKeepAliveClientMixin {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             ToggleGestureDetector(
-              resetTimer: const Duration(milliseconds: 4600),
+              key: _membershipRoleToggleKey,
               onTap: () async {
-                _membershipFlipKey.currentState?.animate();
-                _teamMembersOpacityKey.currentState?.animate();
-                await Future.delayed(const Duration(milliseconds: 4000));
-                _membershipFlipKey.currentState?.animate();
-                _teamMembersOpacityKey.currentState?.animate();
+                if (!_checkToggle()) {
+                  _membershipFlipKey.currentState?.animate();
+                  _teamMembersOpacityKey.currentState?.animate();
+                  _secretRoleFlipKey.currentState?.animate();
+                  await Future.delayed(const Duration(milliseconds: 4000));
+                  _membershipFlipKey.currentState?.animate();
+                  _teamMembersOpacityKey.currentState?.animate();
+                  _secretRoleFlipKey.currentState?.animate();
+                  await Future.delayed(const Duration(milliseconds: 600));
+                  _resetToggle();
+                }
               },
               child: FlipAnimation(
                 key: _membershipFlipKey,
@@ -80,11 +100,19 @@ class _RolesState extends State<Roles> with AutomaticKeepAliveClientMixin {
               ),
             ),
             ToggleGestureDetector(
-              resetTimer: const Duration(milliseconds: 3600),
+              key: _secretRoleToggleKey,
               onTap: () async {
-                _secretRoleFlipKey.currentState?.animate();
-                await Future.delayed(const Duration(milliseconds: 3000));
-                _secretRoleFlipKey.currentState?.animate();
+                if (!_checkToggle()) {
+                  _membershipFlipKey.currentState?.animate();
+                  _teamMembersOpacityKey.currentState?.animate();
+                  _secretRoleFlipKey.currentState?.animate();
+                  await Future.delayed(const Duration(milliseconds: 4000));
+                  _membershipFlipKey.currentState?.animate();
+                  _teamMembersOpacityKey.currentState?.animate();
+                  _secretRoleFlipKey.currentState?.animate();
+                  await Future.delayed(const Duration(milliseconds: 600));
+                  _resetToggle();
+                }
               },
               child: FlipAnimation(
                 key: _secretRoleFlipKey,

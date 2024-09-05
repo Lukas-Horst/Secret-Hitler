@@ -32,8 +32,8 @@ class ToggleGestureDetectorState extends State<ToggleGestureDetector> {
     return GestureDetector(
       onTap: () async {
         if (!toggle) {
-          toggle = true;
           widget.onTap();
+          toggle = true;
           if (widget.resetTimer != null) {
             await Future.delayed(widget.resetTimer!);
             toggle = false;

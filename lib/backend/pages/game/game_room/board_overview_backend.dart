@@ -105,12 +105,10 @@ class BoardOverviewBackend{
   List<int> playedCardIndices = [];
   late GlobalKey<BoardOverviewState> boardOverviewFrontendKey;
   late int playerAmount;
-  late Function(int) changePage;
   late PlayersAndElectionBackend playersAndElectionBackend;
   bool cardClickBlocked = false;
 
-  BoardOverviewBackend(this.boardOverviewFrontendKey, this.playerAmount,
-      this.changePage);
+  BoardOverviewBackend(this.boardOverviewFrontendKey, this.playerAmount);
 
   // Setter method for the playerAndElectionBackend cause this can only set after the constructor
   void setPlayersAndElectionBackend(PlayersAndElectionBackend playersAndElectionBackend) {

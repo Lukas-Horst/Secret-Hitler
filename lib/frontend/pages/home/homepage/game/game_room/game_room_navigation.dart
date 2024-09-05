@@ -1,7 +1,5 @@
 // author: Lukas Horst
 
-import 'dart:async';
-
 import 'package:appwrite/models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,6 +12,7 @@ import 'package:secret_hitler/frontend/pages/home/homepage/game/game_room/board_
 import 'package:secret_hitler/frontend/pages/home/homepage/game/game_room/game_room_settings_page.dart';
 import 'package:secret_hitler/frontend/pages/home/homepage/game/game_room/players_and_election_page.dart';
 import 'package:secret_hitler/frontend/pages/home/homepage/game/game_room/roles_page.dart';
+import 'package:secret_hitler/frontend/widgets/components/useful_widgets/page_view.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class GameRoomNavigation extends ConsumerStatefulWidget {
@@ -32,18 +31,12 @@ class _GameRoomNavigationState extends ConsumerState<GameRoomNavigation> {
   late BoardOverviewBackend boardOverviewBackend;
   late GlobalKey<PlayersAndElectionState> playersAndElectionFrontendKey;
   late PlayersAndElectionBackend playersAndElectionBackend;
-  final _pageViewController = PageController();
-
-  void _changePage(int pageNumber) {
-    _pageViewController.animateToPage(
-      pageNumber,
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.easeInOut,
-    );
-  }
+  final PageController _pageViewController = PageController(initialPage: 1);
+  late final _pageViewKey;
 
   @override
   void initState() {
+    _pageViewKey = ref.read(customPageViewKeyProvider);
     final List<String> playerNames = convertDynamicToStringList(
         widget.gameStateDocument.data['playerNames']);
     final List<String> playerOrder = convertDynamicToStringList(
@@ -56,7 +49,6 @@ class _GameRoomNavigationState extends ConsumerState<GameRoomNavigation> {
     boardOverviewBackend = BoardOverviewBackend(
       boardOverviewFrontendKey,
       playerOrder.length,
-      _changePage,
     );
     playersAndElectionFrontendKey = GlobalKey<PlayersAndElectionState>();
     playersAndElectionBackend = PlayersAndElectionBackend(
@@ -87,7 +79,8 @@ class _GameRoomNavigationState extends ConsumerState<GameRoomNavigation> {
             children: [
               SizedBox(
                 height: ScreenSize.screenHeight * 0.88,
-                child: PageView(
+                child: CustomPageView(
+                  key: _pageViewKey,
                   controller: _pageViewController,
                   children: [
                     const GameRoomSettings(),

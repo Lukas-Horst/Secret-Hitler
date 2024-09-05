@@ -119,10 +119,12 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
       }
       backend.cardVisibility[i] = true;
     }
-    for (int i=0; i < 3; i++) {
-      setState(() {
-        pile_functions.removeCard(backend.drawPileKey.currentState!.pileElements);
-      });
+    if ((backend.playState == 3 && backend.isOnTheMove(ref)) || !_init) {
+      for (int i=0; i < 3; i++) {
+        setState(() {
+          pile_functions.removeCard(backend.drawPileKey.currentState!.pileElements);
+        });
+      }
     }
     await Future.delayed(const Duration(milliseconds: 100));
   }
@@ -232,7 +234,8 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
     }
     await Future.delayed(const Duration(milliseconds: 600));
     // Flip the cards
-    if (backend.isOnTheMove(ref) || backend.playCardState == -2) {
+    if ((backend.isOnTheMove(ref) || backend.playCardState == -2)
+        && backend.playCardState != 0) {
       for (int i=0; i < 3; i++) {
         backend.cardFlipKey[i].currentState?.animate();
       }
@@ -413,6 +416,11 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
   }
 
   Future<void> initialize() async {
+    // Removing 2 or 3 cards from the draw pile
+    if ((!backend.isOnTheMove(ref) && backend.playState == 3)
+        || backend.playState == 4) {
+      backend.drawPileCardAmount -= (3 - (backend.playState % 3));
+    }
     await Future.delayed(const Duration(milliseconds: 50));
     if (backend.playState > 2 && backend.playCardState < 6) {
       await updateDrawPile();
