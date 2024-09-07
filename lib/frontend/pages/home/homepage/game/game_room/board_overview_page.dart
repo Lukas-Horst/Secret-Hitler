@@ -422,7 +422,7 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
       backend.drawPileCardAmount -= (3 - (backend.playState % 3));
     }
     await Future.delayed(const Duration(milliseconds: 50));
-    if (backend.playState > 2 && backend.playCardState < 6) {
+    if (backend.playState > 1 && backend.playCardState < 6) {
       await updateDrawPile();
     }
     if ((!backend.isOnTheMove(ref) && backend.playState == 3)

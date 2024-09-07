@@ -221,6 +221,12 @@ class PlayerWidgetState extends ConsumerState<PlayerWidget> {
     }
     await Future.delayed(const Duration(milliseconds: 500));
     if (isVotingFinished(chancellorVoting) && !_votingCardFlipped && _voted) {
+      final pageViewKey = ref.read(customPageViewKeyProvider);
+      pageViewKey.currentState?.changeScrollPhysics(
+        false,
+        const Duration(seconds: 9),
+        2,
+      );
       await _flipVotingCard();
     }
   }
@@ -416,9 +422,9 @@ class PlayerWidgetState extends ConsumerState<PlayerWidget> {
     ref.listen(gameStateProvider, (previous, next) async {
       _checkForDeath(next);
       _checkForNotHitler(next);
+      _checkChancellorVoting(next.chancellorVoting, next.playState);
       await _checkForGovernmentChanges(next);
       _checkForPresidentActions(next);
-      _checkChancellorVoting(next.chancellorVoting, next.playState);
     });
     return SizedBox(
       height: widget.height + ScreenSize.screenHeight * 0.0225,

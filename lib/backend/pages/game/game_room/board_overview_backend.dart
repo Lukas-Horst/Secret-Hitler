@@ -190,10 +190,19 @@ class BoardOverviewBackend{
 
   // Method to synchronize all values with the server
   void synchronizeValues(GameState gameState, bool init, WidgetRef ref) async {
+    final pageViewKey = ref.read(customPageViewKeyProvider);
     bool cardPlayed = false;
     bool shuffle = false;
     // The election tracker moved
     if (electionTracker != gameState.electionTracker) {
+      if (!init && playState == 1) {
+        await Future.delayed(const Duration(milliseconds: 9600));
+        pageViewKey.currentState?.changeScrollPhysics(
+          gameState.electionTracker == 3 ? true : false,
+          gameState.electionTracker == 3 ? null : const Duration(seconds:  2),
+          gameState.electionTracker == 3 ? null : 3,
+        );
+      }
       // Resetting the election tracker
       if (electionTracker > gameState.electionTracker && !init) {
         liberalBoardKey.currentState?.resetElectionTracker();
@@ -269,7 +278,11 @@ class BoardOverviewBackend{
 
   // Method to start the animation for playing a card
   Future<void> _playCardAnimation(bool cardColor, bool init, WidgetRef ref) async {
+    final pageViewKey = ref.read(customPageViewKeyProvider);
+    final gameState = ref.read(gameStateProvider);
     bool normalPlay = playCardState != 3;
+    await pageViewKey.currentState?.changePage(2);
+    pageViewKey.currentState?.changeScrollPhysics(false, null, null);
     if (!init && normalPlay) {
       playedCardIndices = [0, 1, 2];
       playedCardIndices.remove(discardedPresidentialCard);
@@ -285,5 +298,13 @@ class BoardOverviewBackend{
       normalPlay,
       cardColor,
     );
+    if (gameState.playState < 9 && gameState.playState != 5) {
+      await Future.delayed(const Duration(seconds: 1));
+      pageViewKey.currentState?.changeScrollPhysics(
+        true,
+        null,
+        3,
+      );
+    }
   }
 }

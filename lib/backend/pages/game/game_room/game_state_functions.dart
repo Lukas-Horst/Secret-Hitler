@@ -61,8 +61,10 @@ Future<bool> voteForChancellor(WidgetRef ref, int voting,
   int newElectionTracker = gameState.electionTracker;
   if (votingFinished) {
     newState = _countVoting(chancellorVoting, gameState.electionTracker);
+    // If the voting wasn't successful
     if (newState != 3) {
       newElectionTracker++;
+    // Else the election tracker resets
     } else {
       newElectionTracker = 0;
     }

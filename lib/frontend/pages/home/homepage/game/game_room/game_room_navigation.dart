@@ -82,6 +82,7 @@ class _GameRoomNavigationState extends ConsumerState<GameRoomNavigation> {
                 child: CustomPageView(
                   key: _pageViewKey,
                   controller: _pageViewController,
+                  firstPage: 1,
                   children: [
                     const GameRoomSettings(),
                     Roles(

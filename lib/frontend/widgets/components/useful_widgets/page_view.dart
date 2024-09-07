@@ -1,14 +1,16 @@
 // author: Lukas Horst
 
 import 'package:flutter/material.dart';
+import 'package:secret_hitler/backend/helper/timer.dart';
 
 class CustomPageView extends StatefulWidget {
 
   final PageController controller;
   final List<Widget> children;
+  final int firstPage;
 
   const CustomPageView({super.key, required this.controller,
-    required this.children});
+    required this.children, required this.firstPage});
 
   @override
   State<CustomPageView> createState() => CustomPageViewState();
@@ -16,33 +18,63 @@ class CustomPageView extends StatefulWidget {
 
 class CustomPageViewState extends State<CustomPageView> {
 
-  ScrollPhysics scrollPhysics = const ScrollPhysics();
+  ScrollPhysics _scrollPhysics = const ScrollPhysics();
+  late int _currentPage;
 
   // Method to make the page view scrollable or unscrollable
-  void changeScrollPhysics(bool scrollable) {
+  void changeScrollPhysics(bool scrollable, Duration? duration, int? newPage) async {
+    // Checking if no change is needed
+    if (_scrollPhysics == const ScrollPhysics()) {
+      if (scrollable) {return;}
+    } else if (!scrollable) {return;}
     setState(() {
       if (scrollable) {
-        scrollPhysics = const ScrollPhysics();
+        _scrollPhysics = const ScrollPhysics();
       } else {
-        scrollPhysics = const NeverScrollableScrollPhysics();
+        _scrollPhysics = const NeverScrollableScrollPhysics();
       }
     });
+    // Changing to the old scroll physics back if we have a duration
+    if (duration != null) {
+      await Future.delayed(duration);
+      changeScrollPhysics(!scrollable, null, null);
+    }
+    // Changing to a new page if it is given
+    if (newPage != null) {
+      changePage(newPage);
+    }
   }
 
   // Method to change the page
-  void changePage(int pageNumber) {
-    widget.controller.animateToPage(
-      pageNumber,
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.easeInOut,
-    );
+  Future<void> changePage(int pageNumber) async {
+    if (_currentPage != pageNumber) {
+      widget.controller.animateToPage(
+        pageNumber,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+      await Future.delayed(const Duration(milliseconds: 500));
+    }
+  }
+
+  int getCurrentPage() {
+    return _currentPage;
+  }
+
+  @override
+  void initState() {
+    _currentPage = widget.firstPage;
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return PageView(
       controller: widget.controller,
-      physics: scrollPhysics,
+      physics: _scrollPhysics,
+      onPageChanged: (int page) {
+        _currentPage = page;
+      },
       children: widget.children,
     );
   }
