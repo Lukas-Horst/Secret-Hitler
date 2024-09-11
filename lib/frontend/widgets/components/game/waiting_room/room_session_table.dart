@@ -4,6 +4,7 @@ import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:secret_hitler/backend/app_language/app_language.dart';
 import 'package:secret_hitler/backend/constants/appwrite_constants.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/backend/riverpod/provider.dart';
@@ -75,7 +76,7 @@ class _RoomSessionTableState extends ConsumerState<RoomSessionTable> {
                   width: ScreenSize.screenWidth * 0.18,
                   child: Center(
                     child: AdjustableStandardText(
-                      text: 'NR:',
+                      text: '${AppLanguage.getLanguageData()['NO']}:',
                       color: Colors.white,
                       size: ScreenSize.screenHeight * 0.02 +
                           ScreenSize.screenWidth * 0.02,

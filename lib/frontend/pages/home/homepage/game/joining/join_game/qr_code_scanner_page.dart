@@ -3,10 +3,8 @@
 import 'package:appwrite/models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:secret_hitler/backend/app_language/app_language.dart';
 import 'package:secret_hitler/backend/database/appwrite/collections/game_room_collection_functions.dart';
 import 'package:secret_hitler/backend/riverpod/provider.dart';
-import 'package:secret_hitler/frontend/widgets/components/snackbar.dart';
 import 'package:secret_hitler/frontend/widgets/components/useful_widgets/activate_widget.dart';
 import 'package:secret_hitler/frontend/widgets/components/useful_widgets/bottom_navigation_bar.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons/navigation_back_button.dart';
@@ -20,8 +18,6 @@ class QrCodeScannerPage extends ConsumerStatefulWidget {
 }
 
 class _QrCodeScannerPageState extends ConsumerState<QrCodeScannerPage> {
-
-  final GlobalKey<ActivateWidgetState> _navigationBarActivateKey = GlobalKey<ActivateWidgetState>();
 
   void _goBack(BuildContext context) {
     Navigator.pop(context);
@@ -42,7 +38,6 @@ class _QrCodeScannerPageState extends ConsumerState<QrCodeScannerPage> {
         potencialWaitingRoom,
         context,
         2,
-        _navigationBarActivateKey
       );
     }
   }
@@ -66,7 +61,6 @@ class _QrCodeScannerPageState extends ConsumerState<QrCodeScannerPage> {
         child: Scaffold(
           body: const QrCodeScanner(),
           bottomNavigationBar: ActivateWidget(
-            key: _navigationBarActivateKey,
             child: CustomBottomNavigationBar(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,

@@ -148,6 +148,7 @@ mixin LocaleData {
     'There is currently an active game': 'There is currently an active game',
 
     'Waiting room': 'Waiting room',
+    'NO': 'NO',
     'Waiting room QR-Code': 'Waiting room QR-Code',
     'Players': 'Players',
     'Wrong password': 'Wrong password',
@@ -317,6 +318,7 @@ mixin LocaleData {
     'There is currently an active game': 'Es gibt gerade ein aktives Spiel',
 
     'Waiting room': 'Warteraum',
+    'NO': 'NR',
     'Waiting room QR-Code': 'Warteraum QR-Code',
     'Players': 'Spieler',
     'Wrong password': 'Falsches Passwort',

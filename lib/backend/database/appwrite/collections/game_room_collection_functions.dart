@@ -12,7 +12,6 @@ import 'package:secret_hitler/backend/riverpod/provider.dart';
 import 'package:secret_hitler/frontend/pages/home/homepage/game/game_room/game_room_navigation.dart';
 import 'package:secret_hitler/frontend/pages/home/homepage/game/joining/waiting_room/waiting_room_page.dart';
 import 'package:secret_hitler/frontend/widgets/components/snackbar.dart';
-import 'package:secret_hitler/frontend/widgets/components/useful_widgets/activate_widget.dart';
 import 'package:secret_hitler/frontend/widgets/loading_spin.dart';
 
 // Function to create a waiting room in the database
@@ -41,6 +40,7 @@ Future<void> createWaitingRoom(WidgetRef ref, String password,
   LoadingSpin.closeLoadingSpin(context);
   if (gameRoomDocument == null) {return;}
   await createGameStateDocument(ref, gameRoomDocument);
+  closePage(context, 1);
   newPage(context, WaitingRoom(gameRoomDocument: gameRoomDocument,));
 }
 
@@ -84,8 +84,7 @@ Future<Document?> getWaitingRoom(WidgetRef ref, String roomId,
 
 // Function to join the waiting room and add the user to the player list
 Future<void> joinWaitingRoom(WidgetRef ref, Document gameRoomDocument,
-    BuildContext context, int popPages,
-    GlobalKey<ActivateWidgetState>? navigationBarActivateKey) async {
+    BuildContext context, int popPages) async {
   LoadingSpin.openLoadingSpin(context);
   final databaseApi = ref.watch(databaseApiProvider);
   Document? gameStateDocument = await databaseApi.getDocumentById(
@@ -102,7 +101,6 @@ Future<void> joinWaitingRoom(WidgetRef ref, Document gameRoomDocument,
         AppLanguage.getLanguageData()['There is currently an active game'],
         Colors.red,
         const Duration(seconds: 3),
-        navigationBarActivateKey,
       );
       return;
     }
@@ -116,7 +114,6 @@ Future<void> joinWaitingRoom(WidgetRef ref, Document gameRoomDocument,
           AppLanguage.getLanguageData()['The waiting room is full'],
           Colors.red,
           const Duration(seconds: 3),
-          navigationBarActivateKey,
         );
         return;
       }

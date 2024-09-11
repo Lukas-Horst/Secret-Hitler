@@ -177,7 +177,7 @@ class PlayerWidgetState extends ConsumerState<PlayerWidget> {
     }
   }
 
-  // Method to flip the voting card for 20 seconds and then hide it
+  // Method to flip the voting card for 10 seconds and then hide it
   Future<void> _flipVotingCard() async {
     if (!_votingCardFlipped) {
       _votingCardFlipped = true;
@@ -222,6 +222,7 @@ class PlayerWidgetState extends ConsumerState<PlayerWidget> {
     await Future.delayed(const Duration(milliseconds: 500));
     if (isVotingFinished(chancellorVoting) && !_votingCardFlipped && _voted) {
       final pageViewKey = ref.read(customPageViewKeyProvider);
+      await pageViewKey.currentState?.changePage(3);
       pageViewKey.currentState?.changeScrollPhysics(
         false,
         const Duration(seconds: 9),
@@ -234,14 +235,12 @@ class PlayerWidgetState extends ConsumerState<PlayerWidget> {
   // Method to check if we have any changes of the government and update if
   // it is so
   Future<void> _checkForGovernmentChanges(GameState gameState) async {
-    bool change = false;
     if (_isFormerChancellor != (gameState.formerChancellor == widget.index)) {
       _isFormerChancellor = gameState.formerChancellor == widget.index;
       if (_init) {
         _initialOpacityValues[5] = [1.0, 0.0];
       } else {
         _opacityKeys[5].currentState?.animate();
-        change = true;
       }
     }
     if (_isFormerPresident != (gameState.formerPresident == widget.index)) {
@@ -250,7 +249,6 @@ class PlayerWidgetState extends ConsumerState<PlayerWidget> {
         _initialOpacityValues[6] = [1.0, 0.0];
       } else {
         _opacityKeys[6].currentState?.animate();
-        change = true;
       }
     }
     if (_isChancellor != (gameState.currentChancellor == widget.index)) {
@@ -259,7 +257,6 @@ class PlayerWidgetState extends ConsumerState<PlayerWidget> {
         _initialOpacityValues[7] = [1.0, 0.0];
       } else {
         _opacityKeys[7].currentState?.animate();
-        change = true;
       }
     }
     if (_isPresident != (gameState.currentPresident == widget.index)) {
@@ -268,19 +265,15 @@ class PlayerWidgetState extends ConsumerState<PlayerWidget> {
         _initialOpacityValues[8] = [1.0, 0.0];
       } else {
         _opacityKeys[8].currentState?.animate();
-        change = true;
       }
     }
-    if (change) {
-      await Future.delayed(const Duration(milliseconds: 500));
-    }
+    await Future.delayed(const Duration(milliseconds: 500));
   }
 
   // Method to check if the president has any action to take
   Future<void> _checkForPresidentActions(GameState gameState) async {
     int currentPresident = gameState.currentPresident;
     int playState = gameState.playState;
-
     if (!_init) {
       await _hidePresidentialActions(playState);
     }

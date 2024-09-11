@@ -37,7 +37,6 @@ class _WaitingRoomState extends ConsumerState<WaitingRoom> {
 
   late List _playerNames;
   bool _firstBuild = true;
-  final GlobalKey<ActivateWidgetState> _navigationBarActivateKey = GlobalKey<ActivateWidgetState>();
 
   Future<void> _goBack(BuildContext context, WidgetRef ref,
       GameRoomStateNotifier gameRoomStateNotifier, Document gameRoomDocument) async {
@@ -137,7 +136,9 @@ class _WaitingRoomState extends ConsumerState<WaitingRoom> {
           backgroundColor: const Color(0xFF474747),
           body: Column(
             children: [
-              Header(headerText: AppLanguage.getLanguageData()['Waiting room']),
+              Header(headerText: '${AppLanguage.getLanguageData()['Waiting room']} '
+                  '(${AppLanguage.getLanguageData()['NO']}:'
+                  ' ${widget.gameRoomDocument.data['roomNumber']})'),
               SizedBox(height: ScreenSize.screenHeight * 0.02),
               ExplainingText(
                 text: '${AppLanguage.getLanguageData()['Room id']}:',
@@ -159,10 +160,10 @@ class _WaitingRoomState extends ConsumerState<WaitingRoom> {
               ),
               SizedBox(
                 width: ScreenSize.screenWidth * 0.90,
-                height: ScreenSize.screenHeight * 0.22,
+                height: ScreenSize.screenHeight * 0.28,
                 child: _showPlayerNames(),
               ),
-              SizedBox(height: ScreenSize.screenHeight * 0.06),
+              SizedBox(height: ScreenSize.screenHeight * 0.01),
               PrimaryElevatedButton(
                 text: AppLanguage.getLanguageData()['Start game'],
                 onPressed: () async {
@@ -176,7 +177,6 @@ class _WaitingRoomState extends ConsumerState<WaitingRoom> {
                       AppLanguage.getLanguageData()['Too few players'],
                       Colors.red,
                       const Duration(seconds: 3),
-                      _navigationBarActivateKey,
                     );
                   }
                 },
@@ -184,7 +184,6 @@ class _WaitingRoomState extends ConsumerState<WaitingRoom> {
             ],
           ),
           bottomNavigationBar: ActivateWidget(
-            key: _navigationBarActivateKey,
             child: CustomBottomNavigationBar(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,

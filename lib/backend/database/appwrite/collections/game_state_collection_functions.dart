@@ -7,6 +7,7 @@ import 'package:secret_hitler/backend/constants/appwrite_constants.dart';
 import 'package:secret_hitler/backend/database/appwrite/notifiers/game_room_state_notifier.dart';
 import 'package:secret_hitler/backend/helper/convertAppwriteData.dart';
 import 'package:secret_hitler/backend/helper/useful_functions.dart';
+import 'package:secret_hitler/backend/pages/game/game_room/game_state_functions.dart';
 import 'package:secret_hitler/backend/riverpod/provider.dart';
 import 'package:secret_hitler/frontend/pages/home/homepage/game/game_room/game_room_navigation.dart';
 import 'package:secret_hitler/frontend/widgets/loading_spin.dart';
@@ -74,6 +75,7 @@ Future<void> startGame(WidgetRef ref, Document gameRoomDocument,
       'playerOrder': playerOrder,
       'playerRoles': playerRoles,
       'chancellorVoting': chancellorVoting,
+      'cardColors': shuffleCards(0, 0, 14),
     },
   );
   Document? gameStateDocument = await databaseApi.getDocumentById(

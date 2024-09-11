@@ -203,7 +203,7 @@ Future<bool> playCard(WidgetRef ref, int cardIndex, bool normalPlay) async {
   // from the discards pile
   if (newDrawPileCardAmount < 3) {
     newDrawPileCardAmount = 14 - newFascistBoardCardAmount - newLiberalBoardCardAmount;
-    newCardColors = _shuffleCards(
+    newCardColors = shuffleCards(
       newFascistBoardCardAmount,
       newLiberalBoardCardAmount,
       newDrawPileCardAmount,
@@ -293,7 +293,7 @@ int _getNewGameState(bool cardColor, GameState gameState, int fascistBoardCardAm
 }
 
 // Method to shuffle the cards on the draw pile
-List<bool> _shuffleCards(int fascistBoardCardAmount, int liberalBoardCardAmount,
+List<bool> shuffleCards(int fascistBoardCardAmount, int liberalBoardCardAmount,
     int drawPileCardAmount) {
   int fascistCardAmount = 8 - fascistBoardCardAmount;
   int liberalCardAmount = 6 - liberalBoardCardAmount;

@@ -19,8 +19,6 @@ class SearchGameRoom extends ConsumerStatefulWidget {
 
 class _SearchGameRoomState extends ConsumerState<SearchGameRoom> {
 
-  final GlobalKey<ActivateWidgetState> _navigationBarActivateKey = GlobalKey<ActivateWidgetState>();
-
   void _goBack(BuildContext context) {
     Navigator.pop(context);
   }

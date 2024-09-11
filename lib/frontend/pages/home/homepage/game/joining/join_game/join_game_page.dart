@@ -9,7 +9,6 @@ import 'package:secret_hitler/backend/database/appwrite/collections/game_room_co
 import 'package:secret_hitler/backend/helper/useful_functions.dart';
 import 'package:secret_hitler/frontend/pages/home/homepage/game/joining/join_game/qr_code_scanner_page.dart';
 import 'package:secret_hitler/frontend/pages/home/homepage/game/joining/join_game/search_game_room_page.dart';
-import 'package:secret_hitler/frontend/widgets/components/snackbar.dart';
 import 'package:secret_hitler/frontend/widgets/components/useful_widgets/activate_widget.dart';
 import 'package:secret_hitler/frontend/widgets/components/useful_widgets/bottom_navigation_bar.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons/navigation_back_button.dart';
@@ -121,7 +120,6 @@ class _JoinGameState extends ConsumerState<JoinGame> {
                                 gameRoomDocument,
                                 context,
                                 1,
-                                _navigationBarActivateKey,
                               );
                             } else {
                               _roomPasswordTextFieldKey.currentState?.showError(
@@ -141,7 +139,6 @@ class _JoinGameState extends ConsumerState<JoinGame> {
             ],
           ),
           bottomNavigationBar: ActivateWidget(
-            key: _navigationBarActivateKey,
             child: CustomBottomNavigationBar(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,

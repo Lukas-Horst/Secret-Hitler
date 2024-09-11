@@ -50,7 +50,6 @@ CustomBottomSheet joinGameRoomBottomSheet(Document gameRoomDocument,
             gameRoomDocument,
             context,
             3,
-            null,
           );
         } else {
           joinTextFieldKey.currentState?.showError(

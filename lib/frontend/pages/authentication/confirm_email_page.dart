@@ -74,7 +74,6 @@ class _ConfirmEmailState extends ConsumerState<ConfirmEmail> {
                         AppLanguage.getLanguageData()['Confirmation email sent'],
                         Colors.green,
                         const Duration(seconds: 3),
-                        null,
                       );
                     } else {
                       CustomSnackbar.showSnackbar(
@@ -82,7 +81,6 @@ class _ConfirmEmailState extends ConsumerState<ConfirmEmail> {
                         AppLanguage.getLanguageData()['Confirmation email could not be sent'],
                         Colors.red,
                         const Duration(seconds: 3),
-                        null,
                       );
                     }
                   } else {
@@ -91,7 +89,6 @@ class _ConfirmEmailState extends ConsumerState<ConfirmEmail> {
                       AppLanguage.getLanguageData()['Email already sent'],
                       Colors.green,
                       const Duration(seconds: 3),
-                      null,
                     );
                   }
                 },

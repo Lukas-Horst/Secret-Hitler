@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/constants/appwrite_constants.dart';
 import 'package:secret_hitler/backend/database/appwrite/database_api.dart';
 import 'package:secret_hitler/backend/helper/convertAppwriteData.dart';
-import 'package:secret_hitler/backend/pages/game/game_room/game_state_functions.dart';
 
 class GameState {
 
