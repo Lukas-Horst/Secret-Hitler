@@ -6,6 +6,7 @@ import 'package:secret_hitler/backend/app_design/app_design.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/backend/database/appwrite/notifiers/game_state_notifier.dart';
 import 'package:secret_hitler/backend/helper/datastructure_functions.dart';
+import 'package:secret_hitler/backend/helper/progress_blocker.dart';
 import 'package:secret_hitler/backend/pages/game/game_room/game_state_functions.dart';
 import 'package:secret_hitler/backend/pages/game/game_room/players_and_election_backend.dart';
 import 'package:secret_hitler/backend/riverpod/provider.dart';
@@ -48,7 +49,6 @@ class PlayerWidgetState extends ConsumerState<PlayerWidget> {
     GlobalKey<OpacityAnimationState>(), // Visibility of the whole widget excepts the cards
     GlobalKey<OpacityAnimationState>(), // Visibility of the not hitler sign
   ];
-
   final List<List<double>> _initialOpacityValues = [];
   final List<double> _initialWidthValues = [];
 
@@ -76,6 +76,7 @@ class PlayerWidgetState extends ConsumerState<PlayerWidget> {
   bool _isNotHitler = false;
   bool _init = true;
   late PlayersAndElectionBackend _backend;
+  bool _progressBlocked = false;
 
   List<OpacityAnimation> _getImages() {
     List<OpacityAnimation> imagesList = [];
@@ -103,12 +104,14 @@ class PlayerWidgetState extends ConsumerState<PlayerWidget> {
                 if (playState == 0) {
                   chancellorVotingState(ref, widget.index);
                 // Picking the next president
+                } else if (playState == 6) {
+                  presidentialActionFinished(ref, null, null, null, widget.index);
                 } else if (playState == 7) {
-                  presidentialActionFinished(ref, widget.index, null, null);
+                  presidentialActionFinished(ref, widget.index, null, null, null);
                 // Killing a player
                 } else if (playState == 8) {
                   int hitler = _backend.playerOrder.indexOf(_backend.hitler[1]);
-                  presidentialActionFinished(ref, null, hitler, widget.index);
+                  presidentialActionFinished(ref, null, hitler, widget.index, null);
                 }
               },
               icon: i == 3
@@ -221,14 +224,18 @@ class PlayerWidgetState extends ConsumerState<PlayerWidget> {
     }
     await Future.delayed(const Duration(milliseconds: 500));
     if (isVotingFinished(chancellorVoting) && !_votingCardFlipped && _voted) {
+      ProgressBlocker boardOverviewProgressBlocker = ref.read(
+          boardOverviewProgressBlockerProvider.notifier);
       final pageViewKey = ref.read(customPageViewKeyProvider);
       await pageViewKey.currentState?.changePage(3);
       pageViewKey.currentState?.changeScrollPhysics(
         false,
-        const Duration(seconds: 9),
+        const Duration(seconds: 10),
         2,
+        null
       );
       await _flipVotingCard();
+      boardOverviewProgressBlocker.updateCompleter(true);
     }
   }
 
@@ -416,8 +423,16 @@ class PlayerWidgetState extends ConsumerState<PlayerWidget> {
       _checkForDeath(next);
       _checkForNotHitler(next);
       _checkChancellorVoting(next.chancellorVoting, next.playState);
-      await _checkForGovernmentChanges(next);
-      _checkForPresidentActions(next);
+      _isInvestigated = next.investigatedPlayers.contains(widget.index);
+      ProgressBlocker progressBlocker = ref.read(playersAndElectionProgressBlockerProvider.notifier);
+      await progressBlocker.waitForUpdate();
+      if (!_progressBlocked) {
+        _progressBlocked = true;
+        await _checkForGovernmentChanges(next);
+        _checkForPresidentActions(next);
+        await Future.delayed(const Duration(seconds: 4));
+        _progressBlocked = false;
+      }
     });
     return SizedBox(
       height: widget.height + ScreenSize.screenHeight * 0.0225,

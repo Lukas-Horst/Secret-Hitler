@@ -1,6 +1,7 @@
 // author: Lukas Horst
 
 import 'package:flutter/material.dart';
+import 'package:secret_hitler/backend/helper/progress_blocker.dart';
 import 'package:secret_hitler/backend/helper/timer.dart';
 
 class CustomPageView extends StatefulWidget {
@@ -22,7 +23,8 @@ class CustomPageViewState extends State<CustomPageView> {
   late int _currentPage;
 
   // Method to make the page view scrollable or unscrollable
-  void changeScrollPhysics(bool scrollable, Duration? duration, int? newPage) async {
+  Future<void> changeScrollPhysics(bool scrollable, Duration? duration,
+      int? newPage, ProgressBlocker? progressBlocker) async {
     // Checking if no change is needed
     if (_scrollPhysics == const ScrollPhysics()) {
       if (scrollable) {return;}
@@ -37,11 +39,15 @@ class CustomPageViewState extends State<CustomPageView> {
     // Changing to the old scroll physics back if we have a duration
     if (duration != null) {
       await Future.delayed(duration);
-      changeScrollPhysics(!scrollable, null, null);
+      changeScrollPhysics(!scrollable, null, null, null);
     }
     // Changing to a new page if it is given
     if (newPage != null) {
-      changePage(newPage);
+      await changePage(newPage);
+    }
+    // If given the progress blocker updates
+    if (progressBlocker != null) {
+      progressBlocker.updateCompleter(true);
     }
   }
 

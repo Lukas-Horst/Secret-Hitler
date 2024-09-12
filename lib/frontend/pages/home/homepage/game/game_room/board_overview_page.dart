@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/constants/board_overview_constants.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
+import 'package:secret_hitler/backend/database/appwrite/notifiers/game_state_notifier.dart';
+import 'package:secret_hitler/backend/helper/progress_blocker.dart';
 import 'package:secret_hitler/backend/pages/game/game_room/board_overview_backend.dart';
 import 'package:secret_hitler/backend/riverpod/provider.dart';
 import 'package:secret_hitler/frontend/widgets/animations/flip_animation.dart';
@@ -411,17 +413,22 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
     backend = widget.backend;
     final gameState = ref.read(gameStateProvider);
     backend.synchronizeValues(gameState, _init, ref);
-    initialize();
+    initialize(gameState);
     super.initState();
   }
 
-  Future<void> initialize() async {
+  Future<void> initialize(GameState gameState) async {
     // Removing 2 or 3 cards from the draw pile
     if ((!backend.isOnTheMove(ref) && backend.playState == 3)
         || backend.playState == 4) {
       backend.drawPileCardAmount -= (3 - (backend.playState % 3));
     }
     await Future.delayed(const Duration(milliseconds: 50));
+    // Check for progress block on the player and election page
+    if (gameState.playState == 4) {
+      ProgressBlocker progressBlocker = ref.read(playersAndElectionProgressBlockerProvider.notifier);
+      progressBlocker.updateCompleter(false);
+    }
     if (backend.playState > 1 && backend.playCardState < 6) {
       await updateDrawPile();
     }

@@ -7,6 +7,7 @@ import 'package:secret_hitler/backend/authentication/user_state_notifier.dart';
 import 'package:secret_hitler/backend/database/appwrite/database_api.dart';
 import 'package:secret_hitler/backend/database/appwrite/notifiers/game_room_state_notifier.dart';
 import 'package:secret_hitler/backend/database/appwrite/notifiers/game_state_notifier.dart';
+import 'package:secret_hitler/backend/helper/progress_blocker.dart';
 import 'package:secret_hitler/backend/helper/timer.dart';
 import 'package:secret_hitler/backend/riverpod/qr_code/qr_code_notifier.dart';
 import 'package:secret_hitler/frontend/widgets/components/useful_widgets/page_view.dart';
@@ -55,4 +56,16 @@ final gameStateProvider = StateNotifierProvider<GameStateNotifier, GameState>((r
 // The provider for a key of a custom page view
 final customPageViewKeyProvider = Provider<GlobalKey<CustomPageViewState>>((ref) {
   return GlobalKey<CustomPageViewState>();
+});
+
+// The provider for the progress blocker notifier for the players and election page
+final playersAndElectionProgressBlockerProvider = StateNotifierProvider<
+    ProgressBlocker, bool>((ref) {
+  return ProgressBlocker();
+});
+
+// The provider for the progress blocker notifier for the board overview page
+final boardOverviewProgressBlockerProvider = StateNotifierProvider<
+    ProgressBlocker, bool>((ref) {
+  return ProgressBlocker();
 });

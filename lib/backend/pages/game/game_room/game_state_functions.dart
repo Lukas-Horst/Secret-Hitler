@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/constants/appwrite_constants.dart';
 import 'package:secret_hitler/backend/database/appwrite/notifiers/game_state_notifier.dart';
 import 'package:secret_hitler/backend/helper/math_functions.dart';
+import 'package:secret_hitler/backend/helper/progress_blocker.dart';
 import 'package:secret_hitler/backend/riverpod/provider.dart';
 
 bool _presidentialActionButton = false;  // Bool to avoid double execution of a function
@@ -53,6 +54,10 @@ Future<bool> voteForChancellor(WidgetRef ref, int voting,
   final databaseApi = ref.read(databaseApiProvider);
   final gameStateNotifier = ref.read(gameStateProvider.notifier);
   final gameState = ref.read(gameStateProvider);
+  ProgressBlocker boardOverviewProgressBlocker = ref.read(
+      boardOverviewProgressBlockerProvider.notifier);
+  ProgressBlocker playersAndElectionProgressBlocker = ref.read(
+      playersAndElectionProgressBlockerProvider.notifier);
   List<int> chancellorVoting = gameState.chancellorVoting;
   // Updating the own voting
   chancellorVoting[ownPlayerIndex] = voting;
@@ -97,6 +102,15 @@ Future<bool> voteForChancellor(WidgetRef ref, int voting,
         }
       }
     }
+  }
+  // Checking if we must block the progress on the players and election page
+  if (newState == 4) {
+    playersAndElectionProgressBlocker.updateCompleter(false);
+  }
+  // Checking if we must block the progress on the board overview page
+  if (newElectionTracker != gameState.electionTracker) {
+    boardOverviewProgressBlocker.updateCompleter(false);
+    playersAndElectionProgressBlocker.updateCompleter(false);
   }
   return await databaseApi.updateDocument(
     gameStateCollectionId,
@@ -324,7 +338,7 @@ List<bool> shuffleCards(int fascistBoardCardAmount, int liberalBoardCardAmount,
 
 // Method to turn to the next state after the presidential action
 Future<bool> presidentialActionFinished(WidgetRef ref, int? newPresident,
-    int? hitler, int? killedPlayer) async {
+    int? hitler, int? killedPlayer, int? investigatedPlayer) async {
   if (!_presidentialActionButton) {
     _presidentialActionButton = true;
     final databaseApi = ref.read(databaseApiProvider);
@@ -348,6 +362,11 @@ Future<bool> presidentialActionFinished(WidgetRef ref, int? newPresident,
         newFormerChancellor = null;
       }
     }
+    List<int> investigatedPlayers = gameState.investigatedPlayers;
+    // Updating the investigatedPlayer
+    if (investigatedPlayer != null) {
+      investigatedPlayers.add(investigatedPlayer);
+    }
     bool response = await databaseApi.updateDocument(
       gameStateCollectionId,
       gameStateNotifier.gameStateDocument!.$id,
@@ -363,6 +382,7 @@ Future<bool> presidentialActionFinished(WidgetRef ref, int? newPresident,
         'killedPlayers': killedPlayers,
         'regularPresident': newPresident == null,
         'notHitlerConfirmed': gameState.notHitlerConfirmed,
+        'investigatedPlayers': investigatedPlayers,
       },
     );
     _presidentialActionButton = false;
