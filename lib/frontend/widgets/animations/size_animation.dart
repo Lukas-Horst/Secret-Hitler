@@ -27,12 +27,13 @@ class SizeAnimationState extends State<SizeAnimation> with SingleTickerProviderS
   late Animation<double> _widthAnimation;
   AnimationStatus _status = AnimationStatus.dismissed;
 
-  void animate() {
+  Future<void> animate() async {
     if (_status == AnimationStatus.dismissed) {
       _controller.forward();
     } else {
       _controller.reverse();
     }
+    await Future.delayed(widget.duration);
   }
 
   @override

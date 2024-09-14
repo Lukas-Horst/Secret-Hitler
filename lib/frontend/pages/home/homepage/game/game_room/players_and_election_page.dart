@@ -2,10 +2,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:secret_hitler/backend/app_language/app_language.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/backend/database/appwrite/notifiers/game_state_notifier.dart';
 import 'package:secret_hitler/backend/helper/datastructure_functions.dart';
 import 'package:secret_hitler/backend/helper/progress_blocker.dart';
+import 'package:secret_hitler/backend/pages/game/game_room/board_overview_backend.dart';
 import 'package:secret_hitler/backend/pages/game/game_room/game_state_functions.dart';
 import 'package:secret_hitler/backend/pages/game/game_room/players_and_election_backend.dart';
 import 'package:secret_hitler/backend/riverpod/provider.dart';
@@ -13,6 +15,7 @@ import 'package:secret_hitler/frontend/widgets/animations/flip_animation.dart';
 import 'package:secret_hitler/frontend/widgets/animations/opacity_animation.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons/toggle_gesture_detector.dart';
 import 'package:secret_hitler/frontend/widgets/components/game/players_and_election/player_widget_stack.dart';
+import 'package:secret_hitler/frontend/widgets/components/text/game_room_text.dart';
 import 'package:secret_hitler/frontend/widgets/components/transformed_widgets/angle_widget.dart';
 
 class PlayersAndElection extends ConsumerStatefulWidget {
@@ -46,6 +49,7 @@ class PlayersAndElectionState extends ConsumerState<PlayersAndElection> with Aut
   bool _ballotCardsVisibility = true;
   late int _hitler;
   bool _progressBlocked = false;
+  late final String _initialExplainingText;
 
   // Method to check if the ballot cards should be flipped or not
   void _checkBallotCards(GameState gameState) async {
@@ -108,11 +112,30 @@ class PlayersAndElectionState extends ConsumerState<PlayersAndElection> with Aut
     }
   }
 
+  String _getInitialExplainingText(int playState, GameState gameState) {
+    String text = '';
+    BoardOverviewBackend boardOverviewBackend = backend.boardOverviewBackend;
+    if (playState == 0) {
+      if (boardOverviewBackend.isOnTheMove(ref)) {
+        text = AppLanguage.getLanguageData()['Pick a chancellor candidate'];
+      } else {
+        text = AppLanguage.getLanguageData()['The president picks a chancellor candidate'];
+      }
+    } else if (playState == 1) {
+      int chancellor = gameState.currentChancellor!;
+      String chancellorName = backend.playerNames[chancellor];
+      text = '${AppLanguage.getLanguageData()['Vote for or against']}:\n$chancellorName';
+    }
+    return text;
+  }
+
   @override
   void initState() {
     backend = widget.backend;
     _hitler = backend.playerOrder.indexOf(backend.hitler[1]);
     final gameState = ref.read(gameStateProvider);
+    _initialExplainingText = _getInitialExplainingText(
+        backend.boardOverviewBackend.playState, gameState);
     investigatedPlayers = gameState.investigatedPlayers;
     for (int i=0; i < 2; i++) {
       _initialOpacityValues.add([1.0, 0.0]);
@@ -153,6 +176,7 @@ class PlayersAndElectionState extends ConsumerState<PlayersAndElection> with Aut
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    final gameRoomTextKey = ref.read(playerAndElectionGameRoomTextProvider);
     ref.listen(gameStateProvider, (previous, next) async {
       int playState = next.playState;
       List<int> chancellorVoting = next.chancellorVoting;
@@ -186,6 +210,14 @@ class PlayersAndElectionState extends ConsumerState<PlayersAndElection> with Aut
           child: Stack(
             children: [
               PlayerWidgetStack(backend: backend),
+              Positioned(
+                top: ScreenSize.screenHeight * 0.615,
+                child: GameRoomText(
+                  key: gameRoomTextKey,
+                  duration: const Duration(milliseconds: 600),
+                  initialText: _initialExplainingText,
+                ),
+              ),
               Positioned(
                 top: ScreenSize.screenHeight * 0.73,
                 left: ScreenSize.screenWidth * 0.1,

@@ -92,31 +92,32 @@ class MovingAnimationState extends State<MovingAnimation> with SingleTickerProvi
   }
 
   // The moving and rotate animation
-  void animate() {
+  Future<void> animate() async {
     move();
-    rotation();
+    await rotation();
   }
 
   // If we only want the move animation
-  void move() {
+  Future<void> move() async {
     if (_status == AnimationStatus.dismissed) {
       _controller.forward();
     } else {
       _controller.reverse();
     }
+    await Future.delayed(widget.duration);
   }
 
   // If we only want the rotate animation
-  void rotation() {
+  Future<void> rotation() async {
     if (_withRotation) {
-      _rotationKey.currentState?.animate();
+     await _rotationKey.currentState?.animate();
     }
   }
 
   // If we only want the size animation
-  void size() {
+  Future<void> size() async {
     if (_withSize) {
-      _sizeKey.currentState?.animate();
+      await _sizeKey.currentState?.animate();
     }
   }
 

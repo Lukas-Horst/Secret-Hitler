@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:secret_hitler/backend/app_language/app_language.dart';
 import 'package:secret_hitler/backend/constants/board_overview_constants.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/backend/database/appwrite/notifiers/game_state_notifier.dart';
@@ -20,7 +21,7 @@ import 'package:secret_hitler/frontend/widgets/components/game/board_overview/bo
 import 'package:secret_hitler/frontend/widgets/components/game/board_overview/piles/discard_pile.dart';
 import 'package:secret_hitler/frontend/widgets/components/game/board_overview/piles/draw_pile.dart';
 import 'package:secret_hitler/frontend/widgets/components/game/board_overview/piles/pile_functions.dart' as pile_functions;
-import 'package:secret_hitler/frontend/widgets/components/text/explaining_text.dart';
+import 'package:secret_hitler/frontend/widgets/components/text/game_room_text.dart';
 
 class BoardOverview extends ConsumerStatefulWidget {
 
@@ -35,8 +36,8 @@ class BoardOverview extends ConsumerStatefulWidget {
 class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeepAliveClientMixin {
 
   late BoardOverviewBackend backend;
-  bool _explainingTextActive = true;
   bool _init = true;
+  late final String _initialExplainingText;
 
   // Method to get one off the playing cards
   Widget _getCard(bool isLiberal, bool isCovered, int cardIndex) {
@@ -187,8 +188,7 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
 
   // Draw the given card
   void _drawCard(int cardIndex) async {
-    backend.cardMovingKey[cardIndex].currentState?.animate();
-    await Future.delayed(const Duration(milliseconds: 500));
+    await backend.cardMovingKey[cardIndex].currentState?.animate();
     backend.cardMovingKey[cardIndex].currentState?.rotation();
   }
 
@@ -367,45 +367,22 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
     await Future.delayed(const Duration(milliseconds: 300));
   }
 
-  // Method to return the explaining text if active
-  Widget _getExplainingText(bool isTextActive) {
-    if (isTextActive) {
-      return Positioned(
-        top: ScreenSize.screenHeight * 0.56,
-        child: TransitionAnimation(
-          key: backend.textTransitionKey,
-          duration: const Duration(milliseconds: 600),
-          firstWidget: SizedBox(
-            width: ScreenSize.screenWidth * 0.98,
-            child: ExplainingText(
-              text: backend.firstExplainingText,
-            ),
-          ),
-          secondWidget: SizedBox(
-            width: ScreenSize.screenWidth * 0.98,
-            child: ExplainingText(
-              text: backend.secondExplainingText,
-            ),
-          ),
-        ),
-      );
-    } else {
-      return const SizedBox();
+  String _getInitialExplainingText(int playState) {
+    String text = '';
+    if (playState == 3) {
+      if (backend.isOnTheMove(ref)) {
+        text = AppLanguage.getLanguageData()['Draw 3 cards'];
+      } else {
+        text = AppLanguage.getLanguageData()['The president must discard a card'];
+      }
+    } else if (playState == 4) {
+      if (backend.isOnTheMove(ref)) {
+        text = AppLanguage.getLanguageData()['Play a card'];
+      } else {
+        text = AppLanguage.getLanguageData()['The chancellor must play a card'];
+      }
     }
-  }
-
-  // Method to update the explaining text
-  Future<void> updateExplainingText(String firstText, String secondText) async {
-    setState(() {
-      _explainingTextActive = false;
-    });
-    await Future.delayed(const Duration(milliseconds: 50));
-    backend.firstExplainingText = firstText;
-    backend.secondExplainingText = secondText;
-    setState(() {
-      _explainingTextActive = true;
-    });
-    await Future.delayed(const Duration(milliseconds: 100));
+    return text;
   }
 
   @override
@@ -418,6 +395,7 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
   }
 
   Future<void> initialize(GameState gameState) async {
+    _initialExplainingText = _getInitialExplainingText(backend.playState);
     // Removing 2 or 3 cards from the draw pile
     if ((!backend.isOnTheMove(ref) && backend.playState == 3)
         || backend.playState == 4) {
@@ -443,6 +421,7 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    final gameRoomTextKey = ref.read(boardOverviewGameRoomTextProvider);
     ref.listen(gameStateProvider, (previous, next) {
       backend.synchronizeValues(next, _init, ref);
     });
@@ -491,7 +470,14 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
                   ),
                 ),
               ),
-              _getExplainingText(_explainingTextActive),
+              Positioned(
+                top: ScreenSize.screenHeight * 0.56,
+                child: GameRoomText(
+                  key: gameRoomTextKey,
+                  duration: const Duration(milliseconds: 600),
+                  initialText: _initialExplainingText,
+                ),
+              ),
               // The 3 or 2 cards to play
               // Left card
               _getPlayingCards(backend.cardVisibility[0], 0),

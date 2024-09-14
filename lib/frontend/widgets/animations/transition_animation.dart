@@ -24,12 +24,13 @@ class TransitionAnimationState extends State<TransitionAnimation> with SingleTic
   late Animation<double> _secondTransitionAnimation;
   AnimationStatus _status = AnimationStatus.dismissed;
 
-  void animate() {
+  Future<void> animate() async {
     if (_status == AnimationStatus.dismissed) {
       _controller.forward();
     } else {
       _controller.reverse();
     }
+    await Future.delayed(widget.duration);
   }
 
   @override

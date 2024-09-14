@@ -10,6 +10,7 @@ import 'package:secret_hitler/backend/database/appwrite/notifiers/game_state_not
 import 'package:secret_hitler/backend/helper/progress_blocker.dart';
 import 'package:secret_hitler/backend/helper/timer.dart';
 import 'package:secret_hitler/backend/riverpod/qr_code/qr_code_notifier.dart';
+import 'package:secret_hitler/frontend/widgets/components/text/game_room_text.dart';
 import 'package:secret_hitler/frontend/widgets/components/useful_widgets/page_view.dart';
 
 // The provider for the auth api
@@ -68,4 +69,14 @@ final playersAndElectionProgressBlockerProvider = StateNotifierProvider<
 final boardOverviewProgressBlockerProvider = StateNotifierProvider<
     ProgressBlocker, bool>((ref) {
   return ProgressBlocker();
+});
+
+// The provider for the game room text key from the board overview page
+final boardOverviewGameRoomTextProvider = Provider<GlobalKey<GameRoomTextState>>((ref) {
+  return GlobalKey<GameRoomTextState>();
+});
+
+// The provider for the game room text key from the player and election page
+final playerAndElectionGameRoomTextProvider = Provider<GlobalKey<GameRoomTextState>>((ref) {
+  return GlobalKey<GameRoomTextState>();
 });

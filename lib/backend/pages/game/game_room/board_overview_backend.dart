@@ -95,7 +95,7 @@ class BoardOverviewBackend{
   late int fascistBoardFlippedCards;
   int liberalBoardCardAmount = 0;
   late int liberalBoardFlippedCards;
-  String firstExplainingText = AppLanguage.getLanguageData()['Play a card'];
+  String firstExplainingText = '';
   String secondExplainingText = '';
   int? discardedPresidentialCard;
   int? playedCard;
@@ -126,37 +126,16 @@ class BoardOverviewBackend{
     }
     // Drawing 3 cards from the draw pile
     if (playCardState == 0) {
-      textTransitionKey.currentState?.animate();
-      Timer(const Duration(milliseconds: 600), () {
-        boardOverviewFrontendKey.currentState?.updateExplainingText(
-          '',
-          AppLanguage.getLanguageData()['Discard a card'],
-        );
-      });
       await boardOverviewFrontendKey.currentState?.drawCards();
-      Timer(const Duration(milliseconds: 1000), () {
-        textTransitionKey.currentState?.animate();
-      });
       await boardOverviewFrontendKey.currentState?.discoverCards();
       playCardState++;
     // Discard 1 card as the president
     } else if (playCardState == 1) {
       playCardState = -2;
-      textTransitionKey.currentState?.animate();
-      Timer(const Duration(milliseconds: 600), () {
-        boardOverviewFrontendKey.currentState?.updateExplainingText(
-          '',
-          AppLanguage.getLanguageData()['Play a card'],
-        );
-      });
-      Timer(const Duration(milliseconds: 1000), () {
-        textTransitionKey.currentState?.animate();
-      });
       await discardCard(ref, cardIndex);
     // Play 1 card and discard the other one
     } else if (playCardState == 2) {
       playCardState = -2;
-      textTransitionKey.currentState?.animate();
       if (!await playCard(ref, cardIndex, true)) {
         playCardState = 2;
       }

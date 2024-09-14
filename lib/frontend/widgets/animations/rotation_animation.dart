@@ -27,12 +27,13 @@ class RotationAnimationState extends State<RotationAnimation> with SingleTickerP
   late Animation<double> _rotationAnimation;
   AnimationStatus _status = AnimationStatus.dismissed;
 
-  void animate() {
+  Future<void> animate() async {
     if (_status == AnimationStatus.dismissed) {
       _controller.forward();
     } else {
       _controller.reverse();
     }
+    await Future.delayed(widget.duration);
   }
 
   // Repeats the animation until it will be stopped manually

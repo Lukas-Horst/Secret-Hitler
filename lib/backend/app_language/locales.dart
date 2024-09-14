@@ -165,7 +165,14 @@ mixin LocaleData {
     // Board overview page
     'Draw 3 cards': 'Draw 3 cards',
     'Discard a card': 'Discard a card',
+    'The president must discard a card': 'The president must discard a card',
     'Play a card': 'Play a card',
+    'The chancellor must play a card': 'The chancellor must play a card',
+
+    // Player and election Page
+    'The president picks a chancellor candidate': 'The president picks a chancellor candidate',
+    'Pick a chancellor candidate': 'Pick a chancellor candidate',
+    'Vote for or against': 'Vote for or against',
 
     // Game room settings
     'Leave': 'Leave',
@@ -335,7 +342,14 @@ mixin LocaleData {
     // Board overview page
     'Draw 3 cards': 'Ziehe 3 Karten',
     'Discard a card': 'Lege eine Karte ab',
+    'The president must discard a card': 'Der Präsident musst eine Karte ablegen',
     'Play a card': 'Spiele eine Karte',
+    'The chancellor must play a card': 'Der Kanzler muss eine Karte spielen',
+
+    // Player and election Page
+    'The president picks a chancellor candidate': 'Der Präsident sucht einen Kanzlerkandidaten aus',
+    'Pick a chancellor candidate': 'Suche einen Kanzlerkandidaten aus',
+    'Vote for or against': 'Wähle für oder gegen',
 
     // Game room settings
     'Leave': 'Verlassen',
