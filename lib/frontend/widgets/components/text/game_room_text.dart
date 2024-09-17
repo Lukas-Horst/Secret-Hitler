@@ -49,8 +49,17 @@ class GameRoomTextState extends State<GameRoomText> {
         begin: _updateAnimation ? 0.0 : 1.0,
         end: _updateAnimation ? 1.0 : 0.0,
         child: SizedBox(
-          width: ScreenSize.screenWidth * 0.98,
-          child: ExplainingText(text: _text),
+          width: ScreenSize.screenWidth * 0.96,
+          child: Text(
+            _text,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontFamily: 'EskapadeFrakturW04BlackFamily',
+              color: Colors.white,
+              fontSize: ScreenSize.screenHeight * 0.02 +
+                  ScreenSize.screenWidth * 0.02,
+            ),
+          ),
         ),
       );
     } else {

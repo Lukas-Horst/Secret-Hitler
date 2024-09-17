@@ -38,6 +38,7 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
   late BoardOverviewBackend backend;
   bool _init = true;
   late final String _initialExplainingText;
+  late String _currentExplainingText;
 
   // Method to get one off the playing cards
   Widget _getCard(bool isLiberal, bool isCovered, int cardIndex) {
@@ -367,21 +368,49 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
     await Future.delayed(const Duration(milliseconds: 300));
   }
 
-  String _getInitialExplainingText(int playState) {
+  // Method to check if the explaining text must be changed
+  String _checkExplainingText() {
     String text = '';
+    final gameState = ref.read(gameStateProvider);
+    int playState = gameState.playState;
     if (playState == 3) {
-      if (backend.isOnTheMove(ref)) {
-        text = AppLanguage.getLanguageData()['Draw 3 cards'];
+      if (backend.isOnTheMove(ref, rightGameState: playState)) {
+        if (backend.playState == 1) {
+          text = changeExplainingText(AppLanguage.getLanguageData()['Discard a card']);
+        } else {
+          text = changeExplainingText(AppLanguage.getLanguageData()['Draw 3 cards']);
+        }
       } else {
-        text = AppLanguage.getLanguageData()['The president must discard a card'];
+        text = changeExplainingText(AppLanguage.getLanguageData()['The president discards a card']);
       }
     } else if (playState == 4) {
-      if (backend.isOnTheMove(ref)) {
-        text = AppLanguage.getLanguageData()['Play a card'];
+      if (backend.isOnTheMove(ref, rightGameState: playState)) {
+        text = changeExplainingText(AppLanguage.getLanguageData()['Play a card']);
       } else {
-        text = AppLanguage.getLanguageData()['The chancellor must play a card'];
+        text = changeExplainingText(AppLanguage.getLanguageData()['The chancellor plays a card']);
+      }
+    } else if (playState == 5) {
+      if (backend.isOnTheMove(ref, rightGameState: playState)) {
+        text = changeExplainingText(AppLanguage.getLanguageData()['Examine the top 3 cards']);
+      } else {
+        text = changeExplainingText(AppLanguage.getLanguageData()['The president examines the top 3 cards']);
       }
     }
+    if (text.isEmpty) {
+      changeExplainingText('');
+    }
+    return text;
+  }
+
+  // Method to set the initial text or update the text via animation
+  String changeExplainingText(String text) {
+    if (!_init) {
+      if (text != _currentExplainingText) {
+        final gameRoomTextKey = ref.read(boardOverviewGameRoomTextProvider);
+        gameRoomTextKey.currentState?.updateText(text);
+      }
+    }
+    _currentExplainingText = text;
     return text;
   }
 
@@ -395,7 +424,7 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
   }
 
   Future<void> initialize(GameState gameState) async {
-    _initialExplainingText = _getInitialExplainingText(backend.playState);
+    _initialExplainingText = _checkExplainingText();
     // Removing 2 or 3 cards from the draw pile
     if ((!backend.isOnTheMove(ref) && backend.playState == 3)
         || backend.playState == 4) {
@@ -407,7 +436,7 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
       ProgressBlocker progressBlocker = ref.read(playersAndElectionProgressBlockerProvider.notifier);
       progressBlocker.updateCompleter(false);
     }
-    if (backend.playState > 1 && backend.playCardState < 6) {
+    if (backend.playState > 1 && backend.playState < 6) {
       await updateDrawPile();
     }
     if ((!backend.isOnTheMove(ref) && backend.playState == 3)
@@ -423,6 +452,7 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
     super.build(context);
     final gameRoomTextKey = ref.read(boardOverviewGameRoomTextProvider);
     ref.listen(gameStateProvider, (previous, next) {
+      _checkExplainingText();
       backend.synchronizeValues(next, _init, ref);
     });
     return Column(

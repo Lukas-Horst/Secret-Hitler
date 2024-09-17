@@ -165,14 +165,28 @@ mixin LocaleData {
     // Board overview page
     'Draw 3 cards': 'Draw 3 cards',
     'Discard a card': 'Discard a card',
-    'The president must discard a card': 'The president must discard a card',
+    'The president discards a card': 'The president discards a card',
     'Play a card': 'Play a card',
-    'The chancellor must play a card': 'The chancellor must play a card',
+    'The chancellor plays a card': 'The chancellor plays a card',
+    'Examine the top 3 cards': 'Examine the top 3 cards',
+    'The president examines the top 3 cards': 'The president examines the top 3 cards',
 
     // Player and election Page
     'The president picks a chancellor candidate': 'The president picks a chancellor candidate',
     'Pick a chancellor candidate': 'Pick a chancellor candidate',
     'Vote for or against': 'Vote for or against',
+    'Wait for the other player\'s votes': 'Wait for the other player\'s votes',
+    'The voting was successful': 'The voting was successful',
+    'The voting was not successful': 'The voting was not successful',
+    'Investigate a player\'s indentity card': 'Investigate a player\'s indentity card',
+    'The president investigates a player\'s indentity card': 'The president investigates a player\'s indentity card',
+    'Pick the next president': 'Pick the next president',
+    'The president picks the next president': 'The president picks the next president',
+    'Shoot a player': 'Shoot a player',
+    'The president shoots a player': 'The president shoots a player',
+
+    'The liberals won': 'The liberals won!',
+    'The fascists won': 'The fascists won!',
 
     // Game room settings
     'Leave': 'Leave',
@@ -342,14 +356,28 @@ mixin LocaleData {
     // Board overview page
     'Draw 3 cards': 'Ziehe 3 Karten',
     'Discard a card': 'Lege eine Karte ab',
-    'The president must discard a card': 'Der Präsident musst eine Karte ablegen',
+    'The president discards a card': 'Der Präsident legt eine Karte ab',
     'Play a card': 'Spiele eine Karte',
-    'The chancellor must play a card': 'Der Kanzler muss eine Karte spielen',
+    'The chancellor plays a card': 'Der Kanzler spielt eine Karte',
+    'Examine the top 3 cards': 'Überprüfe die obersten 3 Karten',
+    'The president examines the top 3 cards': 'Der Präsident überprüft die obersten 3 Karten',
 
     // Player and election Page
     'The president picks a chancellor candidate': 'Der Präsident sucht einen Kanzlerkandidaten aus',
     'Pick a chancellor candidate': 'Suche einen Kanzlerkandidaten aus',
     'Vote for or against': 'Wähle für oder gegen',
+    'Wait for the other player\'s votes': 'Warte auf die Stimmen der anderen Spieler',
+    'The voting was successful': 'Die Wahl war erfolgreich',
+    'The voting was not successful': 'Die Wahl war nicht erfolgreich',
+    'Investigate a player\'s indentity card': 'Untersuche die Indentität von einem Spieler',
+    'The president investigates a player\'s indentity card': 'Der Präsident untersucht die Indentität eines Spielers',
+    'Pick the next president': 'Suche den nächsten Präsidenten aus',
+    'The president picks the next president': 'Der Präsident sucht den nächsten Präsidenten aus',
+    'Shoot a player': 'Erschieße einen Spieler',
+    'The president shoots a player': 'Der Präsident erschießt einen Spieler',
+
+    'The liberals won': 'Die Liberalen haben gewonnen!',
+    'The fascists won': 'Die Faschisten haben gewonnen!',
 
     // Game room settings
     'Leave': 'Verlassen',

@@ -50,6 +50,7 @@ class PlayersAndElectionState extends ConsumerState<PlayersAndElection> with Aut
   late int _hitler;
   bool _progressBlocked = false;
   late final String _initialExplainingText;
+  late String _currentExplainingText;
 
   // Method to check if the ballot cards should be flipped or not
   void _checkBallotCards(GameState gameState) async {
@@ -112,20 +113,71 @@ class PlayersAndElectionState extends ConsumerState<PlayersAndElection> with Aut
     }
   }
 
-  String _getInitialExplainingText(int playState, GameState gameState) {
+  // Method to check if the explaining text must be changed
+  String _checkExplainingText() {
     String text = '';
     BoardOverviewBackend boardOverviewBackend = backend.boardOverviewBackend;
-    if (playState == 0) {
-      if (boardOverviewBackend.isOnTheMove(ref)) {
-        text = AppLanguage.getLanguageData()['Pick a chancellor candidate'];
+    final gameState = ref.read(gameStateProvider);
+    int playState = gameState.playState;
+    if (isVotingFinished(gameState.chancellorVoting)) {
+      if (gameState.playState > 2) {
+        text = _changeExplainingText(AppLanguage.getLanguageData()['The voting was successful']);
       } else {
-        text = AppLanguage.getLanguageData()['The president picks a chancellor candidate'];
+        text = _changeExplainingText(AppLanguage.getLanguageData()['The voting was not successful']);
+      }
+    } else if (playState == 0) {
+      if (boardOverviewBackend.isOnTheMove(ref)) {
+        text = _changeExplainingText(AppLanguage.getLanguageData()['Pick a chancellor candidate']);
+      } else {
+        text = _changeExplainingText(AppLanguage.getLanguageData()['The president picks a chancellor candidate']);
       }
     } else if (playState == 1) {
-      int chancellor = gameState.currentChancellor!;
-      String chancellorName = backend.playerNames[chancellor];
-      text = '${AppLanguage.getLanguageData()['Vote for or against']}:\n$chancellorName';
+      bool hasVoted = gameState.chancellorVoting[backend.ownPlayerIndex] != 0;
+      if (hasVoted) {
+        text = _changeExplainingText(AppLanguage.getLanguageData()['Wait for the other player\'s votes']);
+      } else {
+        int chancellor = gameState.currentChancellor!;
+        String chancellorName = backend.playerNames[chancellor];
+        text = _changeExplainingText('${AppLanguage.getLanguageData()['Vote for or against']}:\n$chancellorName');
+      }
+    } else if (playState == 6) {
+      if (boardOverviewBackend.isOnTheMove(ref)) {
+        text = _changeExplainingText(AppLanguage.getLanguageData()['Investigate a player\'s indentity card']);
+      } else {
+        text = _changeExplainingText(AppLanguage.getLanguageData()['The president investigates a player\'s indentity card']);
+      }
+    } else if (playState == 7) {
+      if (boardOverviewBackend.isOnTheMove(ref)) {
+        text = _changeExplainingText(AppLanguage.getLanguageData()['Pick the next president']);
+      } else {
+        text = _changeExplainingText(AppLanguage.getLanguageData()['The president picks the next president']);
+      }
+    } else if (playState == 8) {
+      if (boardOverviewBackend.isOnTheMove(ref)) {
+        text = _changeExplainingText(AppLanguage.getLanguageData()['Shoot a player']);
+      } else {
+        text = _changeExplainingText(AppLanguage.getLanguageData()['The president shoots a player']);
+      }
+    } else if (playState == 9) {
+      text = _changeExplainingText(AppLanguage.getLanguageData()['The liberals won']);
+    } else if (playState == 10) {
+      text = _changeExplainingText(AppLanguage.getLanguageData()['The fascists won']);
     }
+    if (text.isEmpty) {
+      _changeExplainingText('');
+    }
+    return text;
+  }
+
+  // Method to set the initial text or update the text via animation
+  String _changeExplainingText(String text) {
+    if (!_init) {
+      if (text != _currentExplainingText) {
+        final gameRoomTextKey = ref.read(playerAndElectionGameRoomTextProvider);
+        gameRoomTextKey.currentState?.updateText(text);
+      }
+    }
+    _currentExplainingText = text;
     return text;
   }
 
@@ -134,8 +186,7 @@ class PlayersAndElectionState extends ConsumerState<PlayersAndElection> with Aut
     backend = widget.backend;
     _hitler = backend.playerOrder.indexOf(backend.hitler[1]);
     final gameState = ref.read(gameStateProvider);
-    _initialExplainingText = _getInitialExplainingText(
-        backend.boardOverviewBackend.playState, gameState);
+    _initialExplainingText = _checkExplainingText();
     investigatedPlayers = gameState.investigatedPlayers;
     for (int i=0; i < 2; i++) {
       _initialOpacityValues.add([1.0, 0.0]);
@@ -185,6 +236,7 @@ class PlayersAndElectionState extends ConsumerState<PlayersAndElection> with Aut
         _voting = 0;
       }
       backend.flipBallotCards(playState, chancellorVoting);
+      _checkExplainingText();
       // If the voting didn't worked successfully cause two players voted at the
       // same time we repeat the voting
       if (_voting != 0 && chancellorVoting[backend.ownPlayerIndex] == 0

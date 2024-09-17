@@ -126,7 +126,9 @@ class BoardOverviewBackend{
     }
     // Drawing 3 cards from the draw pile
     if (playCardState == 0) {
+      boardOverviewFrontendKey.currentState?.changeExplainingText('');
       await boardOverviewFrontendKey.currentState?.drawCards();
+      boardOverviewFrontendKey.currentState?.changeExplainingText(AppLanguage.getLanguageData()['Discard a card']);
       await boardOverviewFrontendKey.currentState?.discoverCards();
       playCardState++;
     // Discard 1 card as the president
@@ -160,7 +162,7 @@ class BoardOverviewBackend{
     final gameState = ref.read(gameStateProvider);
     int playState = rightGameState ?? this.playState;
     // The president is on the move
-    if (playState == 3 || playState == 2 || (playState > 4 && playState < 9)) {
+    if (playState != 4) {
       return gameState.currentPresident == playersAndElectionBackend.ownPlayerIndex;
     // The chancellor is on the move
     } else if (playState == 4) {
@@ -252,7 +254,6 @@ class BoardOverviewBackend{
     if (electionTracker != gameState.electionTracker) {
       if (!init && (playState == 0 || playState == 3)) {
         if (!_progressBlocked) {
-          print(true);
           await boardOverviewProgressBlocker.waitForUpdate();
           if (_progressBlocked) {return;} else {
             _progressBlocked = true;
@@ -262,11 +263,11 @@ class BoardOverviewBackend{
           }
         }
         bool changePageAgain = (gameState.electionTracker != 3)
-            || (gameState.electionTracker != 0);
+            && (gameState.electionTracker != 0);
         pageViewKey.currentState?.changeScrollPhysics(
           gameState.electionTracker != 3 ? true : false,
-          changePageAgain ? null : const Duration(seconds:  2),
-          changePageAgain ? null : 3,
+          changePageAgain ? const Duration(seconds:  2) : null,
+          changePageAgain ? 3 : null,
           playersAndElectionProgressBlocker,
         );
       }

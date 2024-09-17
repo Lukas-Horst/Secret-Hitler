@@ -25,17 +25,17 @@ class CustomPageViewState extends State<CustomPageView> {
   // Method to make the page view scrollable or unscrollable
   Future<void> changeScrollPhysics(bool scrollable, Duration? duration,
       int? newPage, ProgressBlocker? progressBlocker) async {
-    // Checking if no change is needed
-    if (_scrollPhysics == const ScrollPhysics()) {
-      if (scrollable) {return;}
-    } else if (!scrollable) {return;}
-    setState(() {
-      if (scrollable) {
-        _scrollPhysics = const ScrollPhysics();
-      } else {
-        _scrollPhysics = const NeverScrollableScrollPhysics();
-      }
-    });
+    // Checking if a change is needed
+    if ((_scrollPhysics != const ScrollPhysics() && scrollable)
+        || (_scrollPhysics == const ScrollPhysics() && !scrollable)) {
+      setState(() {
+        if (scrollable) {
+          _scrollPhysics = const ScrollPhysics();
+        } else {
+          _scrollPhysics = const NeverScrollableScrollPhysics();
+        }
+      });
+    }
     // Changing to the old scroll physics back if we have a duration
     if (duration != null) {
       await Future.delayed(duration);
