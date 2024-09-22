@@ -1,10 +1,11 @@
 // author: Lukas Horst
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/helper/progress_blocker.dart';
-import 'package:secret_hitler/backend/helper/timer.dart';
+import 'package:secret_hitler/backend/pages/game/game_room/game_state_functions.dart';
 
-class CustomPageView extends StatefulWidget {
+class CustomPageView extends ConsumerStatefulWidget {
 
   final PageController controller;
   final List<Widget> children;
@@ -14,17 +15,17 @@ class CustomPageView extends StatefulWidget {
     required this.children, required this.firstPage});
 
   @override
-  State<CustomPageView> createState() => CustomPageViewState();
+  ConsumerState<CustomPageView> createState() => CustomPageViewState();
 }
 
-class CustomPageViewState extends State<CustomPageView> {
+class CustomPageViewState extends ConsumerState<CustomPageView> {
 
   ScrollPhysics _scrollPhysics = const ScrollPhysics();
-  late int _currentPage;
+  late int currentPage;
 
   // Method to make the page view scrollable or unscrollable
   Future<void> changeScrollPhysics(bool scrollable, Duration? duration,
-      int? newPage, ProgressBlocker? progressBlocker) async {
+      int? newPage) async {
     // Checking if a change is needed
     if ((_scrollPhysics != const ScrollPhysics() && scrollable)
         || (_scrollPhysics == const ScrollPhysics() && !scrollable)) {
@@ -39,21 +40,17 @@ class CustomPageViewState extends State<CustomPageView> {
     // Changing to the old scroll physics back if we have a duration
     if (duration != null) {
       await Future.delayed(duration);
-      changeScrollPhysics(!scrollable, null, null, null);
+      changeScrollPhysics(!scrollable, null, null);
     }
     // Changing to a new page if it is given
     if (newPage != null) {
       await changePage(newPage);
     }
-    // If given the progress blocker updates
-    if (progressBlocker != null) {
-      progressBlocker.updateCompleter(true);
-    }
   }
 
   // Method to change the page
   Future<void> changePage(int pageNumber) async {
-    if (_currentPage != pageNumber) {
+    if (currentPage != pageNumber) {
       widget.controller.animateToPage(
         pageNumber,
         duration: const Duration(milliseconds: 500),
@@ -63,13 +60,9 @@ class CustomPageViewState extends State<CustomPageView> {
     }
   }
 
-  int getCurrentPage() {
-    return _currentPage;
-  }
-
   @override
   void initState() {
-    _currentPage = widget.firstPage;
+    currentPage = widget.firstPage;
     super.initState();
   }
 
@@ -79,7 +72,8 @@ class CustomPageViewState extends State<CustomPageView> {
       controller: widget.controller,
       physics: _scrollPhysics,
       onPageChanged: (int page) {
-        _currentPage = page;
+        currentPage = page;
+        checkProgressBlocks(ref);
       },
       children: widget.children,
     );

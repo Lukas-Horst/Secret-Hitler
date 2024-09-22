@@ -9,12 +9,10 @@ import 'package:secret_hitler/backend/app_language/app_language.dart';
 import 'package:secret_hitler/backend/constants/board_overview_constants.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/backend/database/appwrite/notifiers/game_state_notifier.dart';
-import 'package:secret_hitler/backend/helper/progress_blocker.dart';
 import 'package:secret_hitler/backend/pages/game/game_room/board_overview_backend.dart';
 import 'package:secret_hitler/backend/riverpod/provider.dart';
 import 'package:secret_hitler/frontend/widgets/animations/flip_animation.dart';
 import 'package:secret_hitler/frontend/widgets/animations/moving_animation.dart';
-import 'package:secret_hitler/frontend/widgets/animations/transition_animation.dart';
 import 'package:secret_hitler/frontend/widgets/components/game/board_overview/boards/board_functions.dart' as board_functions;
 import 'package:secret_hitler/frontend/widgets/components/game/board_overview/boards/fascist_board.dart';
 import 'package:secret_hitler/frontend/widgets/components/game/board_overview/boards/liberal_board.dart';
@@ -431,11 +429,6 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
       backend.drawPileCardAmount -= (3 - (backend.playState % 3));
     }
     await Future.delayed(const Duration(milliseconds: 50));
-    // Check for progress block on the player and election page
-    if (gameState.playState == 4) {
-      ProgressBlocker progressBlocker = ref.read(playersAndElectionProgressBlockerProvider.notifier);
-      progressBlocker.updateCompleter(false);
-    }
     if (backend.playState > 1 && backend.playState < 6) {
       await updateDrawPile();
     }

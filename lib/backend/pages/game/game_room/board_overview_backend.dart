@@ -101,7 +101,6 @@ class BoardOverviewBackend{
   int? playedCard;
   late int playState;
   int electionTracker = 0;
-  bool _progressBlocked = false;
 
   int playCardState = -1;  // The current state of the played cards
   List<int> playedCardIndices = [];
@@ -109,6 +108,7 @@ class BoardOverviewBackend{
   late int playerAmount;
   late PlayersAndElectionBackend playersAndElectionBackend;
   bool cardClickBlocked = false;
+  GameState? _oldGameState;
 
   BoardOverviewBackend(this.boardOverviewFrontendKey, this.playerAmount);
 
@@ -142,8 +142,6 @@ class BoardOverviewBackend{
         playCardState = 2;
       }
     // Playing the top card because the election tracker moved 3 times forward
-    } else if (playCardState == 3) {
-      await playCard(ref, 2, false);
     } else if (playCardState == 4) {
       if (await presidentialActionFinished(ref, null, null, null, null)) {
         playCardState = -2;
@@ -174,11 +172,16 @@ class BoardOverviewBackend{
 
   // Method to synchronize all values with the server
   void synchronizeValues(GameState gameState, bool init, WidgetRef ref) async {
+    if (init) {
+      _oldGameState = gameState.copy();
+    } else if (gameState.isEqual(_oldGameState!) && !init) {
+      return;
+    } else if (!init) {
+      _oldGameState = gameState.copy();
+    }
     final pageViewKey = ref.read(customPageViewKeyProvider);
     ProgressBlocker boardOverviewProgressBlocker = ref.read(
         boardOverviewProgressBlockerProvider.notifier);
-    ProgressBlocker playersAndElectionProgressBlocker = ref.read(
-        playersAndElectionProgressBlockerProvider.notifier);
     bool cardPlayed = false;
     bool shuffle = false;
     // A fascist card was played
@@ -216,12 +219,6 @@ class BoardOverviewBackend{
         await boardOverviewFrontendKey.currentState?.updateDrawPile();
         if (!isOnTheMove(ref)) {
           await boardOverviewProgressBlocker.waitForUpdate();
-          if (_progressBlocked) {return;} else {
-            _progressBlocked = true;
-            Future.delayed(const Duration(seconds: 4)).then((val) {
-              _progressBlocked = false;
-            });
-          }
           await boardOverviewFrontendKey.currentState?.discoverCards();
         }
       }
@@ -239,6 +236,11 @@ class BoardOverviewBackend{
       }
     } else if (playState == 2 && playCardState != 3) {
       playCardState = 3;
+      await boardOverviewFrontendKey.currentState?.updateDrawPile();
+      await boardOverviewProgressBlocker.waitForUpdate();
+      if (isOnTheMove(ref)) {
+        await playCard(ref, 2, false);
+      }
     } else if (playState == 5 && playCardState != 4) {
       if (isOnTheMove(ref) && !init) {
         await boardOverviewFrontendKey.currentState?.updateDrawPile();
@@ -253,22 +255,12 @@ class BoardOverviewBackend{
     // The election tracker moved
     if (electionTracker != gameState.electionTracker) {
       if (!init && (playState == 0 || playState == 3)) {
-        if (!_progressBlocked) {
-          await boardOverviewProgressBlocker.waitForUpdate();
-          if (_progressBlocked) {return;} else {
-            _progressBlocked = true;
-            Future.delayed(const Duration(seconds: 4)).then((val) {
-              _progressBlocked = false;
-            });
-          }
-        }
         bool changePageAgain = (gameState.electionTracker != 3)
             && (gameState.electionTracker != 0);
         pageViewKey.currentState?.changeScrollPhysics(
-          gameState.electionTracker != 3 ? true : false,
+          gameState.electionTracker != 0 ? false : true,
           changePageAgain ? const Duration(seconds:  2) : null,
           changePageAgain ? 3 : null,
-          playersAndElectionProgressBlocker,
         );
       }
       // Resetting the election tracker
@@ -286,7 +278,6 @@ class BoardOverviewBackend{
           true,
           null,
           3,
-          playersAndElectionProgressBlocker,
         );
       }
     }
@@ -297,7 +288,7 @@ class BoardOverviewBackend{
     final pageViewKey = ref.read(customPageViewKeyProvider);
     bool normalPlay = playCardState != 3;
     await pageViewKey.currentState?.changePage(2);
-    pageViewKey.currentState?.changeScrollPhysics(false, null, null, null);
+    pageViewKey.currentState?.changeScrollPhysics(false, null, null);
     if (!init && normalPlay) {
       playedCardIndices = [0, 1, 2];
       playedCardIndices.remove(discardedPresidentialCard);

@@ -2,12 +2,14 @@
 
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/constants/appwrite_constants.dart';
 import 'package:secret_hitler/backend/database/appwrite/notifiers/game_state_notifier.dart';
 import 'package:secret_hitler/backend/helper/math_functions.dart';
 import 'package:secret_hitler/backend/helper/progress_blocker.dart';
 import 'package:secret_hitler/backend/riverpod/provider.dart';
+import 'package:secret_hitler/frontend/widgets/components/useful_widgets/page_view.dart';
 
 bool _presidentialActionButton = false;  // Bool to avoid double execution of a function
 
@@ -103,14 +105,12 @@ Future<bool> voteForChancellor(WidgetRef ref, int voting,
       }
     }
   }
-  // Checking if we must block the progress on the players and election page
-  if (newState == 4) {
-    playersAndElectionProgressBlocker.updateCompleter(false);
+  if (newState == 2) {
+    newChancellor = null;
   }
   // Checking if we must block the progress on the board overview page
   if (newElectionTracker != gameState.electionTracker) {
-    boardOverviewProgressBlocker.updateCompleter(false);
-    playersAndElectionProgressBlocker.updateCompleter(false);
+    checkProgressBlocks(ref, newElectionTracker: newElectionTracker);
   }
   return await databaseApi.updateDocument(
     gameStateCollectionId,
@@ -389,4 +389,34 @@ Future<bool> presidentialActionFinished(WidgetRef ref, int? newPresident,
     return response;
   }
   return false;
+}
+
+// Method to check if a progress block is needed
+void checkProgressBlocks(WidgetRef ref, {int? newElectionTracker}) {
+  GameState gameState = ref.read(gameStateProvider);
+  ProgressBlocker boardOverviewProgressBlocker = ref.read(
+      boardOverviewProgressBlockerProvider.notifier);
+  ProgressBlocker playersAndElectionProgressBlocker = ref.read(
+      playersAndElectionProgressBlockerProvider.notifier);
+  GlobalKey<CustomPageViewState> pageViewState = ref.read(customPageViewKeyProvider);
+  int currentPage = pageViewState.currentState!.currentPage;
+  int playState = gameState.playState;
+  if (newElectionTracker != null) {
+    boardOverviewProgressBlocker.updateCompleter(false);
+    if (newElectionTracker > 0) {
+      playersAndElectionProgressBlocker.updateCompleter(false);
+    }
+    return;
+  }
+  // Checking for the players and election page
+  if ((playState == 0 || playState > 5) && currentPage == 3) {
+    playersAndElectionProgressBlocker.updateCompleter(true);
+  } else if (playState == 3 || playState == 4) {
+    playersAndElectionProgressBlocker.updateCompleter(false);
+  }
+  // Checking for the board overview page
+  if ((playState == 3 || playState == 2 || playState == 0 || playState == 5)
+      && currentPage == 2) {
+    boardOverviewProgressBlocker.updateCompleter(true);
+  }
 }

@@ -35,6 +35,40 @@ class GameState {
     required this.investigatedPlayers, required this.notHitlerConfirmed,
     this.currentChancellor, this.formerChancellor, this.formerPresident,
     this.discardedPresidentialCard, this.playedCard});
+
+  // Method to create a copy of the current game state
+  GameState copy() {
+    return GameState(
+      currentPresident: currentPresident,
+      killedPlayers: killedPlayers,
+      playState: playState,
+      regularPresident: regularPresident,
+      chancellorVoting: chancellorVoting,
+      electionTracker: electionTracker,
+      fascistBoardCardAmount: fascistBoardCardAmount,
+      liberalBoardCardAmount: liberalBoardCardAmount,
+      drawPileCardAmount: drawPileCardAmount,
+      cardColors: cardColors,
+      investigatedPlayers: investigatedPlayers,
+      notHitlerConfirmed: notHitlerConfirmed,
+    );
+  }
+
+  // Method to check the current game state with a other instance
+  bool isEqual(GameState other) {
+    return currentPresident == other.currentPresident &&
+        playState == other.playState &&
+        killedPlayers.toString() == other.killedPlayers.toString() &&
+        regularPresident == other.regularPresident &&
+        chancellorVoting.toString() == other.chancellorVoting.toString() &&
+        electionTracker == other.electionTracker &&
+        fascistBoardCardAmount == other.fascistBoardCardAmount &&
+        liberalBoardCardAmount == other.liberalBoardCardAmount &&
+        drawPileCardAmount == other.drawPileCardAmount &&
+        cardColors.toString() == other.cardColors.toString() &&
+        investigatedPlayers.toString() == other.investigatedPlayers.toString() &&
+        notHitlerConfirmed.toString() == other.notHitlerConfirmed.toString();
+  }
 }
 
 class GameStateNotifier extends StateNotifier<GameState> {

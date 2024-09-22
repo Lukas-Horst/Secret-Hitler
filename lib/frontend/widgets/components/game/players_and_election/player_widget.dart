@@ -76,7 +76,7 @@ class PlayerWidgetState extends ConsumerState<PlayerWidget> {
   bool _isNotHitler = false;
   bool _init = true;
   late PlayersAndElectionBackend _backend;
-  bool _progressBlocked = false;
+  final Map<int, bool> _progressBlocked = {};
 
   List<OpacityAnimation> _getImages() {
     List<OpacityAnimation> imagesList = [];
@@ -224,18 +224,14 @@ class PlayerWidgetState extends ConsumerState<PlayerWidget> {
     }
     await Future.delayed(const Duration(milliseconds: 500));
     if (isVotingFinished(chancellorVoting) && !_votingCardFlipped && _voted) {
-      ProgressBlocker boardOverviewProgressBlocker = ref.read(
-          boardOverviewProgressBlockerProvider.notifier);
       final pageViewKey = ref.read(customPageViewKeyProvider);
       await pageViewKey.currentState?.changePage(3);
       pageViewKey.currentState?.changeScrollPhysics(
         false,
         const Duration(seconds: 10),
         2,
-        null
       );
       await _flipVotingCard();
-      boardOverviewProgressBlocker.updateCompleter(true);
     }
   }
 
@@ -400,6 +396,9 @@ class PlayerWidgetState extends ConsumerState<PlayerWidget> {
   void initState() {
     _backend = widget.backend;
     for (int i=0; i < 11; i++) {
+      _progressBlocked[i] = false;
+    }
+    for (int i=0; i < 11; i++) {
       _initialOpacityValues.add([0.0, 1.0]);
     }
     _initialOpacityValues.add([1.0, 0.3]);
@@ -425,13 +424,14 @@ class PlayerWidgetState extends ConsumerState<PlayerWidget> {
       _checkChancellorVoting(next.chancellorVoting, next.playState);
       _isInvestigated = next.investigatedPlayers.contains(widget.index);
       ProgressBlocker progressBlocker = ref.read(playersAndElectionProgressBlockerProvider.notifier);
+      int playState = next.playState;
       await progressBlocker.waitForUpdate();
-      if (!_progressBlocked) {
-        _progressBlocked = true;
+      if (!_progressBlocked[playState]!) {
+        _progressBlocked[playState] = true;
         await _checkForGovernmentChanges(next);
         _checkForPresidentActions(next);
         await Future.delayed(const Duration(seconds: 4));
-        _progressBlocked = false;
+        _progressBlocked[playState] = false;
       }
     });
     return SizedBox(
