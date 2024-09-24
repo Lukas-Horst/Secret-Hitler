@@ -36,7 +36,7 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
   late BoardOverviewBackend backend;
   bool _init = true;
   late final String _initialExplainingText;
-  late String _currentExplainingText;
+  String currentExplainingText = '';
 
   // Method to get one off the playing cards
   Widget _getCard(bool isLiberal, bool isCovered, int cardIndex) {
@@ -367,13 +367,13 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
   }
 
   // Method to check if the explaining text must be changed
-  String _checkExplainingText() {
+  String checkExplainingText() {
     String text = '';
     final gameState = ref.read(gameStateProvider);
     int playState = gameState.playState;
     if (playState == 3) {
       if (backend.isOnTheMove(ref, rightGameState: playState)) {
-        if (backend.playState == 1) {
+        if (backend.playCardState == 1) {
           text = changeExplainingText(AppLanguage.getLanguageData()['Discard a card']);
         } else {
           text = changeExplainingText(AppLanguage.getLanguageData()['Draw 3 cards']);
@@ -403,12 +403,12 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
   // Method to set the initial text or update the text via animation
   String changeExplainingText(String text) {
     if (!_init) {
-      if (text != _currentExplainingText) {
+      if (text != currentExplainingText) {
         final gameRoomTextKey = ref.read(boardOverviewGameRoomTextProvider);
         gameRoomTextKey.currentState?.updateText(text);
       }
     }
-    _currentExplainingText = text;
+    currentExplainingText = text;
     return text;
   }
 
@@ -422,7 +422,7 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
   }
 
   Future<void> initialize(GameState gameState) async {
-    _initialExplainingText = _checkExplainingText();
+    _initialExplainingText = checkExplainingText();
     // Removing 2 or 3 cards from the draw pile
     if ((!backend.isOnTheMove(ref) && backend.playState == 3)
         || backend.playState == 4) {
@@ -445,7 +445,6 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
     super.build(context);
     final gameRoomTextKey = ref.read(boardOverviewGameRoomTextProvider);
     ref.listen(gameStateProvider, (previous, next) {
-      _checkExplainingText();
       backend.synchronizeValues(next, _init, ref);
     });
     return Column(

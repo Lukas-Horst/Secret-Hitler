@@ -56,18 +56,15 @@ Future<bool> voteForChancellor(WidgetRef ref, int voting,
   final databaseApi = ref.read(databaseApiProvider);
   final gameStateNotifier = ref.read(gameStateProvider.notifier);
   final gameState = ref.read(gameStateProvider);
-  ProgressBlocker boardOverviewProgressBlocker = ref.read(
-      boardOverviewProgressBlockerProvider.notifier);
-  ProgressBlocker playersAndElectionProgressBlocker = ref.read(
-      playersAndElectionProgressBlockerProvider.notifier);
   List<int> chancellorVoting = gameState.chancellorVoting;
   // Updating the own voting
   chancellorVoting[ownPlayerIndex] = voting;
-  final bool votingFinished = isVotingFinished(chancellorVoting);
+  final bool votingFinished = isVotingFinished(chancellorVoting, gameState.killedPlayers);
   int newState = 1;
   int newElectionTracker = gameState.electionTracker;
   if (votingFinished) {
-    newState = _countVoting(chancellorVoting, gameState.electionTracker);
+    newState = _countVoting(chancellorVoting, gameState.electionTracker,
+        gameState.killedPlayers.length);
     // If the voting wasn't successful
     if (newState != 3) {
       newElectionTracker++;
@@ -130,9 +127,10 @@ Future<bool> voteForChancellor(WidgetRef ref, int voting,
 }
 
 // Function to check if all players has voted
-bool isVotingFinished(List<int> chancellorVoting) {
-  for (int voting in chancellorVoting) {
-    if (voting == 0) {
+bool isVotingFinished(List<int> chancellorVoting, List<int> killedPlayers) {
+  for (int i=0; i < chancellorVoting.length; i++) {
+    int voting = chancellorVoting[i];
+    if (voting == 0 && !killedPlayers.contains(i)) {
       return false;
     }
   }
@@ -140,8 +138,10 @@ bool isVotingFinished(List<int> chancellorVoting) {
 }
 
 // Function which counts the voting and returns the next play state
-int _countVoting(List<int> chancellorVoting, int electionTracker) {
-  int neededVotes = floorDivision(chancellorVoting.length, 2) + 1;
+int _countVoting(List<int> chancellorVoting, int electionTracker,
+    int killedPlayersAmount) {
+  int neededVotes = floorDivision(
+      chancellorVoting.length - killedPlayersAmount, 2) + 1;
   for (int voting in chancellorVoting) {
     // Yes vote
     if (voting == 2) {

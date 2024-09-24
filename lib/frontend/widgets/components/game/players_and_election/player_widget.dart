@@ -219,11 +219,13 @@ class PlayerWidgetState extends ConsumerState<PlayerWidget> {
   // Method to check the chancellor voting of all players
   Future<void> _checkChancellorVoting(List<int> chancellorVoting,
       int playState) async {
+    GameState gameState = ref.read(gameStateProvider);
     if (chancellorVoting[widget.index] != 0) {
       _setVotingCard(chancellorVoting[widget.index] == 2);
     }
     await Future.delayed(const Duration(milliseconds: 500));
-    if (isVotingFinished(chancellorVoting) && !_votingCardFlipped && _voted) {
+    if (isVotingFinished(chancellorVoting, gameState.killedPlayers)
+        && !_votingCardFlipped && _voted) {
       final pageViewKey = ref.read(customPageViewKeyProvider);
       await pageViewKey.currentState?.changePage(3);
       pageViewKey.currentState?.changeScrollPhysics(

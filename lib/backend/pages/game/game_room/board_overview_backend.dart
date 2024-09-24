@@ -141,10 +141,11 @@ class BoardOverviewBackend{
       if (!await playCard(ref, cardIndex, true)) {
         playCardState = 2;
       }
-    // Playing the top card because the election tracker moved 3 times forward
+    // Examine the top 3 cards
     } else if (playCardState == 4) {
       if (await presidentialActionFinished(ref, null, null, null, null)) {
         playCardState = -2;
+        boardOverviewFrontendKey.currentState?.changeExplainingText('');
         await boardOverviewFrontendKey.currentState?.drawCards();
         await boardOverviewFrontendKey.currentState?.discoverCards();
         await Future.delayed(const Duration(seconds: 3));
@@ -178,6 +179,9 @@ class BoardOverviewBackend{
       return;
     } else if (!init) {
       _oldGameState = gameState.copy();
+    }
+    if (boardOverviewFrontendKey.currentState!.currentExplainingText.isNotEmpty) {
+      boardOverviewFrontendKey.currentState?.changeExplainingText('');
     }
     final pageViewKey = ref.read(customPageViewKeyProvider);
     ProgressBlocker boardOverviewProgressBlocker = ref.read(
@@ -217,17 +221,20 @@ class BoardOverviewBackend{
       playCardState = 0;
       if (!init) {
         await boardOverviewFrontendKey.currentState?.updateDrawPile();
+        await boardOverviewProgressBlocker.waitForUpdate();
+        boardOverviewFrontendKey.currentState?.checkExplainingText();
         if (!isOnTheMove(ref)) {
-          await boardOverviewProgressBlocker.waitForUpdate();
           await boardOverviewFrontendKey.currentState?.discoverCards();
         }
       }
     } else if (playState == 4 && playCardState != 2) {
-      // Activate the discard animation for all players who wasn't on the move
+      // Activate the discard animation for all players
       if (!init) {
+        boardOverviewFrontendKey.currentState?.changeExplainingText('');
         await boardOverviewFrontendKey.currentState?.coverCards();
         playCardState = 1;
         await boardOverviewFrontendKey.currentState?.discard(discardedPresidentialCard!);
+        boardOverviewFrontendKey.currentState?.checkExplainingText();
         await boardOverviewFrontendKey.currentState?.discoverCards();
       }
       playCardState = 2;
@@ -245,6 +252,8 @@ class BoardOverviewBackend{
       if (isOnTheMove(ref) && !init) {
         await boardOverviewFrontendKey.currentState?.updateDrawPile();
       }
+      await boardOverviewProgressBlocker.waitForUpdate();
+      boardOverviewFrontendKey.currentState?.checkExplainingText();
       playCardState = 4;
     }
     if (fascistBoardCardAmount != 6 && liberalBoardCardAmount != 5 && cardPlayed) {
@@ -255,6 +264,7 @@ class BoardOverviewBackend{
     // The election tracker moved
     if (electionTracker != gameState.electionTracker) {
       if (!init && (playState == 0 || playState == 3)) {
+        await boardOverviewProgressBlocker.waitForUpdate();
         bool changePageAgain = (gameState.electionTracker != 3)
             && (gameState.electionTracker != 0);
         pageViewKey.currentState?.changeScrollPhysics(

@@ -1,10 +1,12 @@
 // author: Lukas Horst
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/backend/database/appwrite/notifiers/game_state_notifier.dart';
+import 'package:secret_hitler/backend/helper/convertAppwriteData.dart';
 import 'package:secret_hitler/backend/helper/datastructure_functions.dart';
 import 'package:secret_hitler/backend/helper/progress_blocker.dart';
 import 'package:secret_hitler/backend/pages/game/game_room/board_overview_backend.dart';
@@ -51,6 +53,8 @@ class PlayersAndElectionState extends ConsumerState<PlayersAndElection> with Aut
   bool _progressBlocked = false;
   late final String _initialExplainingText;
   late String _currentExplainingText;
+  late List<int> _killedPlayers;
+  late List<int> _investigatedPlayers;
 
   // Method to check if the ballot cards should be flipped or not
   void _checkBallotCards(GameState gameState) async {
@@ -114,71 +118,85 @@ class PlayersAndElectionState extends ConsumerState<PlayersAndElection> with Aut
   }
 
   // Method to check if the explaining text must be changed
-  String _checkExplainingText() {
-    String text = '';
+  Future<void> _checkExplainingText() async {
     BoardOverviewBackend boardOverviewBackend = backend.boardOverviewBackend;
     final gameState = ref.read(gameStateProvider);
     int playState = gameState.playState;
-    if (isVotingFinished(gameState.chancellorVoting)) {
+    // Checking if a player was killed
+    if (!listEquals(_killedPlayers, gameState.killedPlayers)) {
+      _killedPlayers = convertDynamicToIntList(copyList(gameState.killedPlayers));
+      String shotPlayer = backend.playerNames[_killedPlayers[_killedPlayers.length-1]];
+      _changeExplainingText('$shotPlayer ${AppLanguage.getLanguageData()['was shot']}!');
+      await Future.delayed(const Duration(seconds: 4));
+    }
+    // Checking if a player was investigated
+    if (!listEquals(_investigatedPlayers, gameState.investigatedPlayers)) {
+      _investigatedPlayers = convertDynamicToIntList(copyList(gameState.investigatedPlayers));
+      String investigatedPlayer = backend.playerNames[_investigatedPlayers[investigatedPlayers.length-1]];
+      _changeExplainingText('$investigatedPlayer ${AppLanguage.getLanguageData()['was investigated']}');
+      await Future.delayed(const Duration(seconds: 4));
+    }
+    if (isVotingFinished(gameState.chancellorVoting, gameState.killedPlayers)) {
       if (gameState.playState > 2) {
-        text = _changeExplainingText(AppLanguage.getLanguageData()['The voting was successful']);
+        _changeExplainingText(AppLanguage.getLanguageData()['The voting was successful']);
       } else {
-        text = _changeExplainingText(AppLanguage.getLanguageData()['The voting was not successful']);
+        _changeExplainingText(AppLanguage.getLanguageData()['The voting was not successful']);
       }
     } else if (playState == 0) {
       if (boardOverviewBackend.isOnTheMove(ref)) {
-        text = _changeExplainingText(AppLanguage.getLanguageData()['Pick a chancellor candidate']);
+        _changeExplainingText(AppLanguage.getLanguageData()['Pick a chancellor candidate']);
       } else {
-        text = _changeExplainingText(AppLanguage.getLanguageData()['The president picks a chancellor candidate']);
+        _changeExplainingText(AppLanguage.getLanguageData()['The president picks a chancellor candidate']);
       }
     } else if (playState == 1) {
       bool hasVoted = gameState.chancellorVoting[backend.ownPlayerIndex] != 0;
       if (hasVoted) {
-        text = _changeExplainingText(AppLanguage.getLanguageData()['Wait for the other player\'s votes']);
+        _changeExplainingText(AppLanguage.getLanguageData()['Wait for the other player\'s votes']);
       } else {
         int chancellor = gameState.currentChancellor!;
         String chancellorName = backend.playerNames[chancellor];
-        text = _changeExplainingText('${AppLanguage.getLanguageData()['Vote for or against']}:\n$chancellorName');
+        _changeExplainingText('${AppLanguage.getLanguageData()['Vote for or against']}:\n$chancellorName');
       }
     } else if (playState == 6) {
       if (boardOverviewBackend.isOnTheMove(ref)) {
-        text = _changeExplainingText(AppLanguage.getLanguageData()['Investigate a player\'s indentity card']);
+        _changeExplainingText(AppLanguage.getLanguageData()['Investigate a player\'s indentity card']);
       } else {
-        text = _changeExplainingText(AppLanguage.getLanguageData()['The president investigates a player\'s indentity card']);
+        _changeExplainingText(AppLanguage.getLanguageData()['The president investigates a player\'s indentity card']);
       }
     } else if (playState == 7) {
       if (boardOverviewBackend.isOnTheMove(ref)) {
-        text = _changeExplainingText(AppLanguage.getLanguageData()['Pick the next president']);
+        _changeExplainingText(AppLanguage.getLanguageData()['Pick the next president']);
       } else {
-        text = _changeExplainingText(AppLanguage.getLanguageData()['The president picks the next president']);
+        _changeExplainingText(AppLanguage.getLanguageData()['The president picks the next president']);
       }
     } else if (playState == 8) {
       if (boardOverviewBackend.isOnTheMove(ref)) {
-        text = _changeExplainingText(AppLanguage.getLanguageData()['Shoot a player']);
+        _changeExplainingText(AppLanguage.getLanguageData()['Shoot a player']);
       } else {
-        text = _changeExplainingText(AppLanguage.getLanguageData()['The president shoots a player']);
+        _changeExplainingText(AppLanguage.getLanguageData()['The president shoots a player']);
       }
     } else if (playState == 9) {
-      text = _changeExplainingText(AppLanguage.getLanguageData()['The liberals won']);
+      _changeExplainingText(AppLanguage.getLanguageData()['The liberals won']);
     } else if (playState == 10) {
-      text = _changeExplainingText(AppLanguage.getLanguageData()['The fascists won']);
+      _changeExplainingText(AppLanguage.getLanguageData()['The fascists won']);
     }
-    if (text.isEmpty) {
+    if (_currentExplainingText.isEmpty) {
       _changeExplainingText('');
     }
-    return text;
   }
 
   // Method to set the initial text or update the text via animation
-  String _changeExplainingText(String text) {
+  Future<void> _changeExplainingText(String text) async {
     if (!_init) {
       if (text != _currentExplainingText) {
         final gameRoomTextKey = ref.read(playerAndElectionGameRoomTextProvider);
-        gameRoomTextKey.currentState?.updateText(text);
+        await gameRoomTextKey.currentState?.updateText(text);
       }
     }
     _currentExplainingText = text;
-    return text;
+    if (_init) {
+      _initialExplainingText = _currentExplainingText;
+    }
   }
 
   @override
@@ -186,7 +204,9 @@ class PlayersAndElectionState extends ConsumerState<PlayersAndElection> with Aut
     backend = widget.backend;
     _hitler = backend.playerOrder.indexOf(backend.hitler[1]);
     final gameState = ref.read(gameStateProvider);
-    _initialExplainingText = _checkExplainingText();
+    _killedPlayers = convertDynamicToIntList(copyList(gameState.killedPlayers));
+    _investigatedPlayers = convertDynamicToIntList(copyList(gameState.investigatedPlayers));
+    _checkExplainingText();
     investigatedPlayers = gameState.investigatedPlayers;
     for (int i=0; i < 2; i++) {
       _initialOpacityValues.add([1.0, 0.0]);
@@ -236,7 +256,6 @@ class PlayersAndElectionState extends ConsumerState<PlayersAndElection> with Aut
         _voting = 0;
       }
       backend.flipBallotCards(playState, chancellorVoting);
-      _checkExplainingText();
       // If the voting didn't worked successfully cause two players voted at the
       // same time we repeat the voting
       if (_voting != 0 && chancellorVoting[backend.ownPlayerIndex] == 0
@@ -244,6 +263,7 @@ class PlayersAndElectionState extends ConsumerState<PlayersAndElection> with Aut
         voteForChancellor(ref, _voting, backend.ownPlayerIndex, _hitler);
       }
       investigatedPlayers = next.investigatedPlayers;
+      _checkExplainingText();
       ProgressBlocker progressBlocker = ref.read(playersAndElectionProgressBlockerProvider.notifier);
       await progressBlocker.waitForUpdate();
       if (!_progressBlocked) {
