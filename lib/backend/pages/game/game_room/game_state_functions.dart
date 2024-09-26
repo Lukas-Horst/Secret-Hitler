@@ -68,7 +68,7 @@ Future<bool> voteForChancellor(WidgetRef ref, int voting,
     // If the voting wasn't successful
     if (newState != 3) {
       newElectionTracker++;
-    // Else the election tracker resets
+      // Else the election tracker resets
     } else {
       newElectionTracker = 0;
     }
@@ -94,6 +94,7 @@ Future<bool> voteForChancellor(WidgetRef ref, int voting,
       // If hitler is successfully voted the fascist win
       if (newChancellor == hitler) {
         newState = 10;
+        newElectionTracker = gameState.electionTracker;
       // Else the chancellor is confirmed not hitler
       } else {
         if (!gameState.notHitlerConfirmed.contains(newChancellor!)) {

@@ -393,6 +393,10 @@ class BoardOverviewState extends ConsumerState<BoardOverview> with AutomaticKeep
       } else {
         text = changeExplainingText(AppLanguage.getLanguageData()['The president examines the top 3 cards']);
       }
+    } else if (playState == 9) {
+      text = changeExplainingText(AppLanguage.getLanguageData()['The liberals won']);
+    } else if (playState == 10) {
+      text = changeExplainingText(AppLanguage.getLanguageData()['The fascists won']);
     }
     if (text.isEmpty) {
       changeExplainingText('');

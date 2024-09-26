@@ -52,7 +52,7 @@ class PlayersAndElectionState extends ConsumerState<PlayersAndElection> with Aut
   late int _hitler;
   bool _progressBlocked = false;
   late final String _initialExplainingText;
-  late String _currentExplainingText;
+  String _currentExplainingText = '';
   late List<int> _killedPlayers;
   late List<int> _investigatedPlayers;
 

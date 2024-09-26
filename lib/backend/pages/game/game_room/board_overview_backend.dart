@@ -180,7 +180,8 @@ class BoardOverviewBackend{
     } else if (!init) {
       _oldGameState = gameState.copy();
     }
-    if (boardOverviewFrontendKey.currentState!.currentExplainingText.isNotEmpty) {
+    if (boardOverviewFrontendKey.currentState!.currentExplainingText.isNotEmpty
+        && (gameState.playState < 2 || gameState.playState > 5)) {
       boardOverviewFrontendKey.currentState?.changeExplainingText('');
     }
     final pageViewKey = ref.read(customPageViewKeyProvider);
@@ -290,6 +291,14 @@ class BoardOverviewBackend{
           3,
         );
       }
+    }
+    if (gameState.playState > 8) {
+      await pageViewKey.currentState?.changeScrollPhysics(
+        true,
+        null,
+        null,
+      );
+      boardOverviewFrontendKey.currentState?.checkExplainingText();
     }
   }
 

@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/frontend/widgets/animations/opacity_animation.dart';
-import 'package:secret_hitler/frontend/widgets/components/text/explaining_text.dart';
 
 // Explaining text for the board overview page and player and election page
 class GameRoomText extends StatefulWidget {

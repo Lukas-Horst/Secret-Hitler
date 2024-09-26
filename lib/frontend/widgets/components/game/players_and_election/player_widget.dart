@@ -231,7 +231,7 @@ class PlayerWidgetState extends ConsumerState<PlayerWidget> {
       pageViewKey.currentState?.changeScrollPhysics(
         false,
         const Duration(seconds: 10),
-        2,
+        gameState.playState > 8 ? null : 2,
       );
       await _flipVotingCard();
     }
