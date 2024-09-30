@@ -70,7 +70,9 @@ Future<bool> voteForChancellor(WidgetRef ref, int voting,
       newElectionTracker++;
       // Else the election tracker resets
     } else {
-      newElectionTracker = 0;
+      if (gameState.fascistBoardCardAmount != 5) {
+        newElectionTracker = 0;
+      }
     }
   }
   int newPresident = gameState.currentPresident;
@@ -209,29 +211,17 @@ Future<bool> playCard(WidgetRef ref, int cardIndex, bool normalPlay) async {
     cardColor,
     gameState,
     newFascistBoardCardAmount,
+    newLiberalBoardCardAmount,
   );
   int newDrawPileCardAmount = normalPlay
       ? gameState.drawPileCardAmount - 3
       : gameState.drawPileCardAmount - 1;
   List<bool> newCardColors = List.from(gameState.cardColors);
-  // If the draw pile has fewer than 3 card, it will be reshuffled with the card
-  // from the discards pile
+  newCardColors = _checkDrawPile(newDrawPileCardAmount,
+      newCardColors, normalPlay, newFascistBoardCardAmount,
+      newLiberalBoardCardAmount);
   if (newDrawPileCardAmount < 3) {
     newDrawPileCardAmount = 14 - newFascistBoardCardAmount - newLiberalBoardCardAmount;
-    newCardColors = shuffleCards(
-      newFascistBoardCardAmount,
-      newLiberalBoardCardAmount,
-      newDrawPileCardAmount,
-    );
-  // Else the one or 3 cards will be removed from the draw pile
-  } else {
-    for (int i=0; i < 3; i++) {
-      if (normalPlay) {
-        newCardColors.removeAt(0);
-      } else if (i == 2) {
-        newCardColors.removeAt(2);
-      }
-    }
   }
   int newPresident = gameState.currentPresident;
   int? newFormerPresident;
@@ -266,12 +256,14 @@ Future<bool> playCard(WidgetRef ref, int cardIndex, bool normalPlay) async {
       'formerPresident': newFormerPresident,
       'formerChancellor': newFormerChancellor,
       'regularPresident': true,
+      'veto': 0,
     },
   );
 }
 
 // Function to get the new game state based on the played card
-int _getNewGameState(bool cardColor, GameState gameState, int fascistBoardCardAmount) {
+int _getNewGameState(bool cardColor, GameState gameState,
+    int fascistBoardCardAmount, int liberalBoardCardAmount) {
   int playerAmount = gameState.chancellorVoting.length;
   // If a fascist card was played we need to check if their are any presidential action
   if (!cardColor) {
@@ -298,13 +290,39 @@ int _getNewGameState(bool cardColor, GameState gameState, int fascistBoardCardAm
     }
   }
   // The liberal team won
-  if (gameState.liberalBoardCardAmount + 1 == 5) {
+  if (liberalBoardCardAmount == 5) {
     return 9;
   // The fascist team won
-  } else if (fascistBoardCardAmount == 7) {
+  } else if (fascistBoardCardAmount == 6) {
     return 10;
   }
   return 0;
+}
+
+// Method to check if the draw pile should be reshuffled and to update the
+// attributes for the draw pile
+List<bool> _checkDrawPile(int drawPileCardAmount, List<bool> cardColors,
+    bool normalPlay, int fascistBoardCardAmount, int liberalBoardCardAmount) {
+  // If the draw pile has fewer than 3 card, it will be reshuffled with the card
+  // from the discards pile
+  if (drawPileCardAmount < 3) {
+    drawPileCardAmount = 14 - fascistBoardCardAmount - liberalBoardCardAmount;
+    cardColors = shuffleCards(
+      fascistBoardCardAmount,
+      liberalBoardCardAmount,
+      drawPileCardAmount,
+    );
+  // Else the one or 3 cards will be removed from the draw pile
+  } else {
+    for (int i=0; i < 3; i++) {
+      if (normalPlay) {
+        cardColors.removeAt(0);
+      } else if (i == 2) {
+        cardColors.removeAt(2);
+      }
+    }
+  }
+  return cardColors;
 }
 
 // Method to shuffle the cards on the draw pile
@@ -420,4 +438,43 @@ void checkProgressBlocks(WidgetRef ref, {int? newElectionTracker}) {
       && currentPage == 2) {
     boardOverviewProgressBlocker.updateCompleter(true);
   }
+}
+
+// Method to update the veto state
+Future<bool> updateVeto(WidgetRef ref, int vetoState) async {
+  final databaseApi = ref.read(databaseApiProvider);
+  final gameStateNotifier = ref.read(gameStateProvider.notifier);
+  final GameState gameState = ref.read(gameStateProvider);
+  int newElectionTracker = gameState.electionTracker;
+  int newPlayState = gameState.playState;
+  int newDrawPileCardAmount = gameState.drawPileCardAmount;
+  List<bool> newCardColors = List.from(gameState.cardColors);
+  if (vetoState == 2) {
+    newElectionTracker++;
+    newDrawPileCardAmount -= 3;
+    newCardColors = _checkDrawPile(newDrawPileCardAmount,
+        newCardColors, true, gameState.fascistBoardCardAmount,
+        gameState.liberalBoardCardAmount);
+    if (newDrawPileCardAmount < 3) {
+      newDrawPileCardAmount = 14 - gameState.fascistBoardCardAmount -
+          gameState.liberalBoardCardAmount;
+    }
+  } else if (vetoState == 3) {
+    newElectionTracker = 0;
+  }
+  if (newElectionTracker == 3) {
+    newPlayState = 2;
+  }
+  bool response = await databaseApi.updateDocument(
+    gameStateCollectionId,
+    gameStateNotifier.gameStateDocument!.$id,
+    {
+      'veto': vetoState,
+      'electionTracker': newElectionTracker,
+      'playState': newPlayState,
+      'cardColors': newCardColors,
+      'drawPileCardAmount': newDrawPileCardAmount,
+    },
+  );
+  return response;
 }

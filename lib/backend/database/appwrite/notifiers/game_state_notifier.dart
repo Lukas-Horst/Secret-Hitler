@@ -26,6 +26,7 @@ class GameState {
   int? formerPresident;
   int? discardedPresidentialCard;
   int? playedCard;
+  int veto;
 
   GameState({required this.currentPresident, required this.killedPlayers,
     required this.playState, required this.regularPresident,
@@ -34,7 +35,7 @@ class GameState {
     required this.drawPileCardAmount, required this.cardColors,
     required this.investigatedPlayers, required this.notHitlerConfirmed,
     this.currentChancellor, this.formerChancellor, this.formerPresident,
-    this.discardedPresidentialCard, this.playedCard});
+    this.discardedPresidentialCard, this.playedCard, required this.veto});
 
   // Method to create a copy of the current game state
   GameState copy() {
@@ -51,6 +52,7 @@ class GameState {
       cardColors: cardColors,
       investigatedPlayers: investigatedPlayers,
       notHitlerConfirmed: notHitlerConfirmed,
+      veto: veto,
     );
   }
 
@@ -67,7 +69,8 @@ class GameState {
         drawPileCardAmount == other.drawPileCardAmount &&
         cardColors.toString() == other.cardColors.toString() &&
         investigatedPlayers.toString() == other.investigatedPlayers.toString() &&
-        notHitlerConfirmed.toString() == other.notHitlerConfirmed.toString();
+        notHitlerConfirmed.toString() == other.notHitlerConfirmed.toString() &&
+        veto == other.veto;
   }
 }
 
@@ -95,6 +98,7 @@ class GameStateNotifier extends StateNotifier<GameState> {
       cardColors: [],
       investigatedPlayers: [],
       notHitlerConfirmed: [],
+      veto: 0,
     )
   );
 
@@ -126,6 +130,7 @@ class GameStateNotifier extends StateNotifier<GameState> {
       );
       int? discardedPresidentialCard = gameStateDocument!.data['discardedPresidentialCard'];
       int? playedCard = gameStateDocument!.data['playedCard'];
+      int veto = gameStateDocument!.data['veto'];
       state = GameState(
         currentPresident: currentPresident,
         killedPlayers: killedPlayers,
@@ -144,6 +149,7 @@ class GameStateNotifier extends StateNotifier<GameState> {
         playedCard: playedCard,
         investigatedPlayers: investigatedPlayers,
         notHitlerConfirmed: notHitlerConfirmed,
+        veto: veto,
       );
     } catch(e) {print(e);}
   }

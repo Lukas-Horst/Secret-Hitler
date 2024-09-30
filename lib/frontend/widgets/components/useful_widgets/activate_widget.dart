@@ -19,10 +19,11 @@ class ActivateWidgetState extends State<ActivateWidget> {
 
   late bool _activated;
 
-  void activateWidget() {
+  Future<void> activateWidget() async {
     setState(() {
       _activated = true;
     });
+    await Future.delayed(const Duration(milliseconds: 100));
   }
 
   void deactivateWidget() {
@@ -31,6 +32,7 @@ class ActivateWidgetState extends State<ActivateWidget> {
     });
   }
 
+  // Method to switch from the one state to the other
   void toggleWidget() {
     if (_activated) {
       deactivateWidget();

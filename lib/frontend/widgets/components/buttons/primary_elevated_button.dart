@@ -10,9 +10,10 @@ class PrimaryElevatedButton extends StatelessWidget {
   final String text;
   final Function() onPressed;
   final double? textSize;
+  final double? screenWidth;
 
   const PrimaryElevatedButton({super.key, required this.text,
-    required this.onPressed, this.textSize});
+    required this.onPressed, this.textSize, this.screenWidth});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +23,7 @@ class PrimaryElevatedButton extends StatelessWidget {
           backgroundColor: AppDesign.getSecondaryColor(),
           foregroundColor: Colors.black,
           fixedSize: Size(
-            ScreenSize.screenWidth * 0.85,
+            screenWidth ?? ScreenSize.screenWidth * 0.85,
             ScreenSize.screenHeight * 0.065,
           ),
           side: const BorderSide(

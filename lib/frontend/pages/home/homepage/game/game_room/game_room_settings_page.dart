@@ -30,7 +30,7 @@ class GameRoomSettings extends ConsumerWidget {
             gameStatNotifier.unsubscribeGameRoom();
             closePage(context, 1);
           },
-        )
+        ),
       ],
     );
   }

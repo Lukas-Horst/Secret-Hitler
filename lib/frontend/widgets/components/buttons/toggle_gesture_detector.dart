@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 // Gesture detector which can only be clicked once until it will be reset
 class ToggleGestureDetector extends StatefulWidget {
 
-  final Widget child;
   final Function onTap;
   final Duration? resetTimer;
+  final Widget child;
 
   const ToggleGestureDetector({super.key, required this.child,
     required this.onTap, this.resetTimer});
@@ -32,8 +32,8 @@ class ToggleGestureDetectorState extends State<ToggleGestureDetector> {
     return GestureDetector(
       onTap: () async {
         if (!toggle) {
-          widget.onTap();
           toggle = true;
+          widget.onTap();
           if (widget.resetTimer != null) {
             await Future.delayed(widget.resetTimer!);
             toggle = false;

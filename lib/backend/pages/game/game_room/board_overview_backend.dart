@@ -18,6 +18,7 @@ import 'package:secret_hitler/frontend/widgets/components/game/board_overview/bo
 import 'package:secret_hitler/frontend/widgets/components/game/board_overview/boards/liberal_board.dart';
 import 'package:secret_hitler/frontend/widgets/components/game/board_overview/piles/discard_pile.dart';
 import 'package:secret_hitler/frontend/widgets/components/game/board_overview/piles/draw_pile.dart';
+import 'package:secret_hitler/frontend/widgets/components/useful_widgets/page_view.dart';
 
 // Backend class for the board overview page
 class BoardOverviewBackend{
@@ -101,6 +102,8 @@ class BoardOverviewBackend{
   int? playedCard;
   late int playState;
   int electionTracker = 0;
+  int veto = 0;
+  bool _vetoShuffle = false;
 
   int playCardState = -1;  // The current state of the played cards
   List<int> playedCardIndices = [];
@@ -174,6 +177,7 @@ class BoardOverviewBackend{
   // Method to synchronize all values with the server
   void synchronizeValues(GameState gameState, bool init, WidgetRef ref) async {
     if (init) {
+      veto = gameState.veto;
       _oldGameState = gameState.copy();
     } else if (gameState.isEqual(_oldGameState!) && !init) {
       return;
@@ -217,6 +221,14 @@ class BoardOverviewBackend{
       }
     }
     playState = gameState.playState;
+    if (fascistBoardCardAmount != 6 && liberalBoardCardAmount != 5) {
+      await _checkElectionTracker(
+        init, gameState, boardOverviewProgressBlocker, pageViewKey,
+      );
+      if (playState != 4 || playCardState == 2) {
+        await _checkVeto(ref, gameState, shuffle);
+      }
+    }
     // Checking for a change of the play state and the play card state
     if (playState == 3 && (playCardState < 0 || playCardState > 1)) {
       playCardState = 0;
@@ -236,10 +248,16 @@ class BoardOverviewBackend{
         playCardState = 1;
         await boardOverviewFrontendKey.currentState?.discard(discardedPresidentialCard!);
         boardOverviewFrontendKey.currentState?.checkExplainingText();
+        if (isOnTheMove(ref)) {
+          boardOverviewFrontendKey.currentState?.vetoPressed = false;
+          await boardOverviewFrontendKey.currentState?.vetoActivateKey.currentState?.activateWidget();
+          boardOverviewFrontendKey.currentState?.vetoOpacityKey.currentState?.animate();
+        }
         await boardOverviewFrontendKey.currentState?.discoverCards();
       }
       playCardState = 2;
       if (init) {
+        drawPileCardAmount--;
         discardPileCardAmount++;
       }
     } else if (playState == 2 && playCardState != 3) {
@@ -257,31 +275,14 @@ class BoardOverviewBackend{
       boardOverviewFrontendKey.currentState?.checkExplainingText();
       playCardState = 4;
     }
-    if (fascistBoardCardAmount != 6 && liberalBoardCardAmount != 5 && cardPlayed) {
+    if (fascistBoardCardAmount != 6 && liberalBoardCardAmount != 5
+        && cardPlayed && !_vetoShuffle) {
       if (shuffle) {
         await boardOverviewFrontendKey.currentState?.shuffleCards();
       }
     }
-    // The election tracker moved
-    if (electionTracker != gameState.electionTracker) {
-      if (!init && (playState == 0 || playState == 3)) {
-        await boardOverviewProgressBlocker.waitForUpdate();
-        bool changePageAgain = (gameState.electionTracker != 3)
-            && (gameState.electionTracker != 0);
-        pageViewKey.currentState?.changeScrollPhysics(
-          gameState.electionTracker != 0 ? false : true,
-          changePageAgain ? const Duration(seconds:  2) : null,
-          changePageAgain ? 3 : null,
-        );
-      }
-      // Resetting the election tracker
-      if (electionTracker > gameState.electionTracker && !init) {
-        liberalBoardKey.currentState?.resetElectionTracker();
-        // Moving the election tracker forward
-      } else if (!init) {
-        liberalBoardKey.currentState?.moveElectionTrackerForward();
-      }
-      electionTracker = gameState.electionTracker;
+    if (playState == 4 && playCardState != 2) {
+      await _checkVeto(ref, gameState, shuffle);
     }
     if (cardPlayed) {
       if (gameState.playState < 9 && gameState.playState != 5) {
@@ -299,6 +300,96 @@ class BoardOverviewBackend{
         null,
       );
       boardOverviewFrontendKey.currentState?.checkExplainingText();
+    }
+  }
+
+  // Method to check if the veto state changed
+  Future<void> _checkVeto(WidgetRef ref, GameState gameState, bool shuffle) async {
+    if (veto != gameState.veto) {
+      veto = gameState.veto;
+      if (veto == 0) {
+        cardClickBlocked = false;
+        _vetoShuffle = false;
+      } else if (veto == 1) {
+        boardOverviewFrontendKey.currentState?.checkExplainingText();
+        if (isPresident(gameState)) {
+          for (int i=0; i < 2; i++) {
+            boardOverviewFrontendKey.currentState?.ballotCardToggleKey[i]
+                .currentState?.toggle = false;
+          }
+          for (int i=0; i < 3; i++) {
+            boardOverviewFrontendKey.currentState?.playingCardOpacityKey[i]
+                .currentState?.animate();
+          }
+        }
+      } else if (veto == 2) {
+        if (!isPresident(gameState)) {
+          await boardOverviewFrontendKey.currentState?.checkExplainingText();
+        } else {
+          boardOverviewFrontendKey.currentState?.checkExplainingText();
+          await Future.delayed(const Duration(milliseconds: 4600));
+          for (int i=0; i < 3; i++) {
+            boardOverviewFrontendKey.currentState?.playingCardOpacityKey[i]
+                .currentState?.animate();
+          }
+          await Future.delayed(const Duration(milliseconds: 600));
+        }
+        // Discarding both cards
+        playedCardIndices = [0, 1, 2];
+        playedCardIndices.remove(discardedPresidentialCard);
+        await boardOverviewFrontendKey.currentState?.coverCards();
+        await Future.delayed(const Duration(milliseconds: 200));
+        boardOverviewFrontendKey.currentState?.discard(playedCardIndices[0]);
+        await Future.delayed(const Duration(milliseconds: 150));
+        await boardOverviewFrontendKey.currentState?.discard(playedCardIndices[1]);
+        if (shuffle) {
+          _vetoShuffle = true;
+          await boardOverviewFrontendKey.currentState?.shuffleCards();
+          await Future.delayed(const Duration(milliseconds: 500));
+        }
+      } else if (veto == 3) {
+        if (isOnTheMove(ref)) {
+          await boardOverviewFrontendKey.currentState?.checkExplainingText();
+          await boardOverviewFrontendKey.currentState?.flipCards();
+        } else {
+          boardOverviewFrontendKey.currentState?.checkExplainingText();
+          if (isPresident(gameState)) {
+            await Future.delayed(const Duration(milliseconds: 4600));
+            for (int i=0; i < 3; i++) {
+              boardOverviewFrontendKey.currentState?.playingCardOpacityKey[i]
+                  .currentState?.animate();
+            }
+          }
+        }
+        cardClickBlocked = false;
+      }
+    }
+  }
+
+  // Method to check if the election tracker changed
+  Future<void> _checkElectionTracker(bool init, GameState gameState,
+      ProgressBlocker boardOverviewProgressBlocker,
+      GlobalKey<CustomPageViewState> pageViewKey) async {
+    // The election tracker moved
+    if (electionTracker != gameState.electionTracker) {
+      if (!init && (playState == 0 || playState == 3)) {
+        await boardOverviewProgressBlocker.waitForUpdate();
+        bool changePageAgain = (gameState.electionTracker != 3)
+            && (gameState.electionTracker != 0);
+        pageViewKey.currentState?.changeScrollPhysics(
+          gameState.electionTracker != 0 ? false : true,
+          changePageAgain ? const Duration(seconds:  2) : null,
+          changePageAgain ? 3 : null,
+        );
+      }
+      // Resetting the election tracker
+      if (electionTracker > gameState.electionTracker && !init) {
+        await liberalBoardKey.currentState?.resetElectionTracker();
+        // Moving the election tracker forward
+      } else if (!init) {
+        liberalBoardKey.currentState?.moveElectionTrackerForward();
+      }
+      electionTracker = gameState.electionTracker;
     }
   }
 
@@ -323,5 +414,10 @@ class BoardOverviewBackend{
       normalPlay,
       cardColor,
     );
+  }
+
+  // Method to check if the player is the current president
+  bool isPresident(GameState gameState) {
+    return playersAndElectionBackend.ownPlayerIndex == gameState.currentPresident;
   }
 }
