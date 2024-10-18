@@ -10,9 +10,11 @@ class UserState {
   final bool firstCheck;
   final bool withoutVerification;
   final bool isGuest;
+  final String? provider;
 
   UserState({required this.user, required this.firstCheck,
-    required this.withoutVerification, required this.isGuest});
+    required this.withoutVerification, required this.isGuest,
+    required this.provider});
 }
 
 // Notifier to check if the user is logged in or not
@@ -22,7 +24,8 @@ class UserStateNotifier extends StateNotifier<UserState> {
   bool _isSubscribed = false;
 
   UserStateNotifier(this._authApi) :super(UserState(user: null,
-      firstCheck: false, withoutVerification: false, isGuest: false)) {
+      firstCheck: false, withoutVerification: false, isGuest: false,
+      provider: null)) {
     checkUserStatus();
   }
 
@@ -41,8 +44,13 @@ class UserStateNotifier extends StateNotifier<UserState> {
         newVerificationState = user.emailVerification;
       }
     }
+    String? provider;
+    if (!isGuest && user != null) {
+      provider = await _authApi.getAuthProvider();
+    }
     state = UserState(user: user, firstCheck: true,
-        withoutVerification: newVerificationState, isGuest: isGuest);
+        withoutVerification: newVerificationState, isGuest: isGuest,
+        provider: provider);
   }
 
   // Method which starts a stream to any changes from the user account
@@ -69,6 +77,7 @@ class UserStateNotifier extends StateNotifier<UserState> {
   // verification page will be skipped).
   Future<void> changeVerificationState() async {
     state = UserState(user: state.user, firstCheck: state.firstCheck,
-        withoutVerification: !state.withoutVerification, isGuest: state.isGuest);
+        withoutVerification: !state.withoutVerification,
+        isGuest: state.isGuest, provider: state.provider);
   }
 }

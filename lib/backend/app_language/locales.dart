@@ -2,6 +2,8 @@
 
 mixin LocaleData {
   static const Map<String, dynamic> EN = {
+    'Yes': 'Yes',
+    'No': 'No',
     'Login': 'Login',
     'Register': 'Register',
     'E-Mail': 'E-Mail',
@@ -199,9 +201,18 @@ mixin LocaleData {
 
     // Game room settings
     'Leave': 'Leave',
+
+    // User data page
+    'There are no changes': 'There are no changes',
+    'Unsaved changes': 'Unsaved changes',
+    'There are unsaved changes': 'There are unsaved changes that may be lost. Are you sure you want to leave the page without saving your changes?',
+    'Changes couldn\'t be saved. Please try again!': 'Changes couldn\'t be saved. Please try again!',
+    'Changes saved': 'Changes saved',
   };
 
   static const Map<String, dynamic> DE = {
+    'Yes': 'Ja',
+    'No': 'Nein',
     'Login': 'Anmelden',
     'Register': 'Registrieren',
     'E-Mail': 'E-Mail',
@@ -399,5 +410,12 @@ mixin LocaleData {
 
     // Game room settings
     'Leave': 'Verlassen',
+
+    // User data page
+    'There are no changes': 'Es gibt keine Änderungen',
+    'Unsaved changes': 'Ungespeicherte Änderungen',
+    'There are unsaved changes': 'Es gibt ungespeicherte Änderungen, die verloren gehen können. Möchten Sie die Seite wirklich verlassen, ohne deine Änderungen zu speichern?',
+    'Changes couldn\'t be saved. Please try again!': 'Änderungen konnten nicht gespeichert werden. Bitter versuche es erneut!',
+    'Changes saved': 'Änderungen gespeichert',
   };
 }

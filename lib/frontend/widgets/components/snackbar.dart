@@ -9,7 +9,7 @@ class CustomSnackbar {
   static bool _activated = false;
 
   // Function to open a snackbar with a text
-  static Future<void> showSnackbar(BuildContext context, String text, Color color,
+  static Future<void> showSnackbar(String text, Color color,
       Duration duration) async {
     if (!_activated) {
       _activated = true;
@@ -40,7 +40,7 @@ class CustomSnackbar {
   }
 
   // Function to close a snackbar if any is currently open
-  static void closeSnackbar(BuildContext context) {
+  static void closeSnackbar() {
     _activated = false;
     Get.closeCurrentSnackbar();
   }

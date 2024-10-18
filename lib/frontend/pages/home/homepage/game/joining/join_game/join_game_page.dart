@@ -36,7 +36,6 @@ class _JoinGameState extends ConsumerState<JoinGame> {
 
   final GlobalKey<CustomTextFormFieldState> _roomIdTextFieldKey = GlobalKey<CustomTextFormFieldState>();
   final GlobalKey<CustomTextFormFieldState> _roomPasswordTextFieldKey = GlobalKey<CustomTextFormFieldState>();
-  final GlobalKey<ActivateWidgetState> _navigationBarActivateKey = GlobalKey<ActivateWidgetState>();
 
   void _goBack(BuildContext context) {
     Navigator.pop(context);

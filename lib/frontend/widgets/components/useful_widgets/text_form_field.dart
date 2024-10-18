@@ -19,11 +19,12 @@ class CustomTextFormField extends StatefulWidget {
   final bool autoFocus;
   final double width;
   final double height;
+  final String? provider;
 
   const CustomTextFormField({super.key, required this.hintText,
     required this.obscureText, required this.textController, required this.readOnly,
     this.currentFocusNode, this.nextFocusNode, required this.autoFocus,
-    required this.width, required this.height});
+    required this.width, required this.height, this.provider});
 
   @override
   State<CustomTextFormField> createState() => CustomTextFormFieldState();
@@ -45,15 +46,16 @@ class CustomTextFormFieldState extends State<CustomTextFormField> {
   Widget? _getSuffixIcon() {
     if (widget.readOnly) {
       return IconButton(
-        onPressed: () {
-          _changeTextEditingStatus();
-        },
+        onPressed: widget.provider == null
+            ? () {_changeTextEditingStatus();}
+            : null,
         icon: Icon(
           _textEditingActive
               ? Icons.edit
               : Icons.check,
           size: ScreenSize.screenHeight * 0.025 +
               ScreenSize.screenWidth * 0.025,
+          color: widget.provider == null ? Colors.black : Colors.grey[800],
         ),
       );
     } else if (widget.obscureText) {
@@ -201,6 +203,7 @@ class CustomTextFormFieldState extends State<CustomTextFormField> {
                 hintStyle: TextStyle(
                   fontFamily: 'EskapadeFrakturW04BlackFamily',
                   fontSize: _fontSize,
+                  color: Colors.grey[800],
                 ),
               ),
               style: TextStyle(

@@ -173,7 +173,6 @@ class _WaitingRoomState extends ConsumerState<WaitingRoom> {
                       context, gameRoomStateNotifier,);
                   } else {
                     CustomSnackbar.showSnackbar(
-                      context,
                       AppLanguage.getLanguageData()['Too few players'],
                       Colors.red,
                       const Duration(seconds: 3),

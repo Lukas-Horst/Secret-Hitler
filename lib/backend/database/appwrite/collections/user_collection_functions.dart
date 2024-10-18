@@ -39,3 +39,21 @@ Future<bool> updateOnlineStatus(WidgetRef ref, bool online) async {
   }
   return response;
 }
+
+// Function to update the username
+Future<bool> updateUserName(WidgetRef ref, String userName) async {
+  final databaseApi = ref.watch(databaseApiProvider);
+  final userState = ref.watch(userStateProvider);
+  final authApi = ref.watch(authApiProvider);
+  bool response = false;
+  response = await authApi.updateUserName(userName);
+  if (!response) {return response;}
+  response = await databaseApi.updateDocument(
+    userCollectionId,
+    userState.user!.$id,
+    {
+      'userName': userName,
+    },
+  );
+  return response;
+}

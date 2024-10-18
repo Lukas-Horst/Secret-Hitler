@@ -97,7 +97,6 @@ Future<void> joinWaitingRoom(WidgetRef ref, Document gameRoomDocument,
     if (!rejoinGame) {
       LoadingSpin.closeLoadingSpin(context);
       CustomSnackbar.showSnackbar(
-        context,
         AppLanguage.getLanguageData()['There is currently an active game'],
         Colors.red,
         const Duration(seconds: 3),
@@ -110,7 +109,6 @@ Future<void> joinWaitingRoom(WidgetRef ref, Document gameRoomDocument,
       if (!_checkRejoinGameRoom(ref, gameRoomDocument)) {
         LoadingSpin.closeLoadingSpin(context);
         CustomSnackbar.showSnackbar(
-          context,
           AppLanguage.getLanguageData()['The waiting room is full'],
           Colors.red,
           const Duration(seconds: 3),

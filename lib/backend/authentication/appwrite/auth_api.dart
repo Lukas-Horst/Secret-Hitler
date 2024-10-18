@@ -1,4 +1,4 @@
-
+// author: Lukas Horst
 
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/enums.dart';
@@ -144,7 +144,8 @@ class AuthApi {
     }
   }
 
-  // Method to send a verification email to the user. Returns true if the email is submitted successfully
+  // Method to send a verification email to the user. Returns true if the email
+  // is submitted successfully
   Future<bool> sendVerificationMail(BuildContext context) async {
     LoadingSpin.openLoadingSpin(context);
     try {
@@ -159,7 +160,8 @@ class AuthApi {
     }
   }
 
-  // Method to send a recovery email to reset the password. Returns true if the email is submitted successfully
+  // Method to send a recovery email to reset the password. Returns true if the
+  // email is submitted successfully
   Future<bool> sendRecoveryMail(String email) async {
     try {
       await _account.createRecovery(
@@ -172,10 +174,9 @@ class AuthApi {
     }
   }
 
-  // Method to update the email address
+  // Method to update the email address if possible
   Future<bool> updateEmail(String email, String password,
       BuildContext context) async {
-    LoadingSpin.openLoadingSpin(context);
     try {
       await _account.updateEmail(email: email, password: password);
       return true;
@@ -184,5 +185,25 @@ class AuthApi {
       print(e);
       return false;
     }
+  }
+
+  // Method to update the user name
+  Future<bool> updateUserName(String userName) async {
+    try {
+      await _account.updateName(name: userName);
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
+  // Method to return the name of the provider
+  Future<String?> getAuthProvider() async {
+    var identities = await _account.listIdentities();
+    for (var identity in identities.identities) {
+      return identity.provider;
+    }
+    return null;
   }
 }
