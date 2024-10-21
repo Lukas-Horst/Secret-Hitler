@@ -22,16 +22,19 @@ class Register extends ConsumerWidget {
   final _emailTextController = TextEditingController();
   final _passwordTextController = TextEditingController();
   final _confirmPasswordTextController = TextEditingController();
+  final _nameTextController = TextEditingController();
 
   // Focus nodes
   final _emailFocusNode = FocusNode();
   final _passwordFocusNode = FocusNode();
   final _confirmPasswordFocusNode = FocusNode();
+  final _nameFocusNode = FocusNode();
 
   // Text field keys
   final GlobalKey<CustomTextFormFieldState> _emailTextFieldKey = GlobalKey<CustomTextFormFieldState>();
   final GlobalKey<CustomTextFormFieldState> _passwordTextFieldKey = GlobalKey<CustomTextFormFieldState>();
   final GlobalKey<CustomTextFormFieldState> _confirmPasswordTextFieldKey = GlobalKey<CustomTextFormFieldState>();
+  final GlobalKey<CustomTextFormFieldState> _nameTextFieldKey = GlobalKey<CustomTextFormFieldState>();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -58,6 +61,23 @@ class Register extends ConsumerWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      // User name text field
+                      TextFieldHeadText(
+                        text: AppLanguage.getLanguageData()['Name'],
+                      ),
+                      CustomTextFormField(
+                        key: _nameTextFieldKey,
+                        hintText: AppLanguage.getLanguageData()['Enter your name'],
+                        obscureText: false,
+                        textController: _nameTextController,
+                        readOnly: false,
+                        autoFocus: false,
+                        width: ScreenSize.screenWidth * 0.85,
+                        height: ScreenSize.screenHeight * 0.065,
+                        currentFocusNode: _nameFocusNode,
+                        nextFocusNode: _emailFocusNode,
+                      ),
+                      SizedBox(height: ScreenSize.screenHeight * 0.02),
                       // E-Mail text field
                       TextFieldHeadText(
                         text: AppLanguage.getLanguageData()['E-Mail'],
@@ -109,7 +129,7 @@ class Register extends ConsumerWidget {
                         height: ScreenSize.screenHeight * 0.065,
                         currentFocusNode: _confirmPasswordFocusNode,
                       ),
-                      SizedBox(height: ScreenSize.screenHeight * 0.06),
+                      SizedBox(height: ScreenSize.screenHeight * 0.04),
 
                       // Register button
                       PrimaryElevatedButton(
@@ -118,13 +138,18 @@ class Register extends ConsumerWidget {
                           String password = _passwordTextController.text.trim();
                           String confirmedPassword = _confirmPasswordTextController.text.trim();
                           String email = _emailTextController.text.trim();
+                          String name = _nameTextController.text.trim();
                           _confirmPasswordTextFieldKey.currentState?.resetsErrors();
                           bool passwordResponse = _passwordTextFieldKey.currentState!.resetsErrors();
                           bool emailResponse = _emailTextFieldKey.currentState!.resetsErrors();
-                          if (passwordResponse || emailResponse) {
+                          bool nameResponse = _nameTextFieldKey.currentState!.resetsErrors();
+                          if (passwordResponse || emailResponse || nameResponse) {
                             await Future.delayed(const Duration(milliseconds: 400));
                           }
-                          if (email.isEmpty) {
+                          if (name.isEmpty) {
+                            _nameTextFieldKey.currentState?.showError(
+                                AppLanguage.getLanguageData()['Field is empty']);
+                          } else if (email.isEmpty) {
                             _emailTextFieldKey.currentState?.showError(
                                 AppLanguage.getLanguageData()['Field is empty']);
                           } else if (password.length < 8) {
@@ -145,6 +170,7 @@ class Register extends ConsumerWidget {
                                 email,
                                 password,
                                 context,
+                                name,
                                 _emailTextFieldKey,
                                 _passwordTextFieldKey,
                                 _confirmPasswordTextFieldKey,
@@ -167,9 +193,8 @@ class Register extends ConsumerWidget {
                           }
                         },
                       ),
-
+                      SizedBox(height: ScreenSize.screenHeight * 0.01),
                       // Link to login page
-                      SizedBox(height: ScreenSize.screenHeight * 0.12),
                       LoginRegisterSwitchButton(
                         questionText: AppLanguage.getLanguageData()['Already have an account?'],
                         buttonText: AppLanguage.getLanguageData()['Login'],

@@ -29,7 +29,7 @@ class AuthApi {
 
   // Method to sign in with an email and a password
   Future<bool> signIn(String email, String password, BuildContext context,
-      GlobalKey<CustomTextFormFieldState> emailTextFieldKey,
+      String name, GlobalKey<CustomTextFormFieldState> emailTextFieldKey,
       GlobalKey<CustomTextFormFieldState> passwordTextFieldKey,
       GlobalKey<CustomTextFormFieldState> confirmPasswordTextFieldKey) async {
     LoadingSpin.openLoadingSpin(context);
@@ -38,6 +38,7 @@ class AuthApi {
         userId: ID.unique(),
         email: email,
         password: password,
+        name: name,
       );
       return true;
     } on AppwriteException catch(e) {
@@ -58,7 +59,7 @@ class AuthApi {
   Future<bool> emailPasswordLogin(String email, String password,
       BuildContext context,
       GlobalKey<CustomTextFormFieldState> emailTextFieldKey,
-      GlobalKey<CustomTextFormFieldState> passwordTextFieldKey,) async {
+      GlobalKey<CustomTextFormFieldState> passwordTextFieldKey) async {
     LoadingSpin.openLoadingSpin(context);
     try {
       await _account.createEmailPasswordSession(
@@ -175,13 +176,16 @@ class AuthApi {
   }
 
   // Method to update the email address if possible
-  Future<bool> updateEmail(String email, String password,
-      BuildContext context) async {
+  Future<bool> updateEmail(String email, String password, BuildContext context,
+      GlobalKey<CustomTextFormFieldState> passwordTextFieldKey) async {
     try {
       await _account.updateEmail(email: email, password: password);
       return true;
     } catch (e) {
       LoadingSpin.closeLoadingSpin(context);
+      if (e.toString().contains('Invalid `password`')) {
+        print(true);
+      }
       print(e);
       return false;
     }

@@ -50,7 +50,7 @@ mixin LocaleData {
     'Enter "DELETE"': 'Enter "DELETE"',
     'Confirm E-Mail': 'Confirm E-Mail',
     'Send confirmation e-mail': 'Send confirmation e-mail',
-    'Confirm your current email': 'Please confirm your current email or change it.',
+    'Confirm your current email': 'Please confirm your current email.',
     'Continue without confirmation': 'Continue without confirmation',
     'OR': 'OR',
     'Confirmation email sent': 'Confirmation email sent.',
@@ -208,6 +208,8 @@ mixin LocaleData {
     'There are unsaved changes': 'There are unsaved changes that may be lost. Are you sure you want to leave the page without saving your changes?',
     'Changes couldn\'t be saved. Please try again!': 'Changes couldn\'t be saved. Please try again!',
     'Changes saved': 'Changes saved',
+    'Please enter your password': 'Please enter your password',
+    'Email couldn\'t be saved': 'The email couldn\'t be saved. Please check your password!',
   };
 
   static const Map<String, dynamic> DE = {
@@ -259,7 +261,7 @@ mixin LocaleData {
     'Enter "DELETE"': 'Gebe "LÖSCHEN" ein',
     'Confirm E-Mail': 'E-Mail bestätigen',
     'Send confirmation e-mail': 'Bestätigungsmail senden',
-    'Confirm your current email': 'Bitte bestätige deine aktuelle E-mail, oder ändere sie.',
+    'Confirm your current email': 'Bitte bestätige deine aktuelle E-mail.',
     'Continue without confirmation': 'Ohne Bestätigung fortfahren',
     'OR': 'ODER',
     'Confirmation email sent': 'Bestätigungsmail gesendet.',
@@ -417,5 +419,7 @@ mixin LocaleData {
     'There are unsaved changes': 'Es gibt ungespeicherte Änderungen, die verloren gehen können. Möchten Sie die Seite wirklich verlassen, ohne deine Änderungen zu speichern?',
     'Changes couldn\'t be saved. Please try again!': 'Änderungen konnten nicht gespeichert werden. Bitter versuche es erneut!',
     'Changes saved': 'Änderungen gespeichert',
+    'Please enter your password': 'Bitte gebe dein Password ein',
+    'Email couldn\'t be saved': 'Die E-Mail konnte nicht gespeichert werden. Überprüfe bitte das Passwort!',
   };
 }

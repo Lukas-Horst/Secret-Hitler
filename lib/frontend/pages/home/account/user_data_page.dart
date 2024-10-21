@@ -35,10 +35,15 @@ class _UserDataState extends ConsumerState<UserData> {
   // Controllers
   final nameTextController = TextEditingController();
   final emailTextController = TextEditingController();
+  final passwordTextController = TextEditingController();
 
   // Focus nodes
   final nameFocusNode = FocusNode();
   final emailFocusNode = FocusNode();
+  final passwordFocusNode = FocusNode();
+
+  // Text field keys
+  final GlobalKey<CustomTextFormFieldState> passwordTextFieldKey = GlobalKey<CustomTextFormFieldState>();
 
   void _goBack(BuildContext context, UserStateNotifier userStateNotifier,
       User user) {
@@ -119,6 +124,23 @@ class _UserDataState extends ConsumerState<UserData> {
                         currentFocusNode: emailFocusNode,
                         provider: userState.provider,
                       ),
+                      SizedBox(height: ScreenSize.screenHeight * 0.02),
+
+                      // Password text field
+                      TextFieldHeadText(
+                        text: AppLanguage.getLanguageData()['Password'],
+                      ),
+                      CustomTextFormField(
+                        key: passwordTextFieldKey,
+                        hintText: AppLanguage.getLanguageData()['Enter your password'],
+                        obscureText: true,
+                        textController: passwordTextController,
+                        readOnly: false,
+                        autoFocus: false,
+                        width: ScreenSize.screenWidth * 0.85,
+                        height: ScreenSize.screenHeight * 0.065,
+                        currentFocusNode: passwordFocusNode,
+                      ),
                       SizedBox(height: ScreenSize.screenHeight * 0.10),
 
                       // Save button and change password button
@@ -128,27 +150,51 @@ class _UserDataState extends ConsumerState<UserData> {
                           PrimaryElevatedButton(
                             text: AppLanguage.getLanguageData()['Save'],
                             onPressed: () async {
+                              bool passwordResponse = passwordTextFieldKey.currentState!.resetsErrors();
+                              if (passwordResponse) {
+                                await Future.delayed(const Duration(milliseconds: 400));
+                              }
                               if (_checkChanges(userState.user!)) {
-                                LoadingSpin.openLoadingSpin(context);
                                 String userName = nameTextController.text.trim();
                                 String email = emailTextController.text.trim();
-                                bool response = false;
+                                String password = passwordTextController.text.trim();
+                                bool nameResponse = false;
+                                bool emailResponse = false;
                                 if (userName.isNotEmpty) {
-                                  response = await updateUserName(ref, userName);
+                                  LoadingSpin.openLoadingSpin(context);
+                                  nameResponse = await updateUserName(ref, userName);
+                                } else {
+                                  nameResponse = true;
                                 }
                                 if (email.isNotEmpty) {
-                                  response = await authApi.updateEmail(
-                                    email,
-                                    userState.user!.password!,
-                                    context,
-                                  );
+                                  if (password.length < 8
+                                      || password.length > 256) {
+                                    passwordTextFieldKey.currentState?.showError(
+                                        AppLanguage.getLanguageData()['Please enter your password']);
+                                  } else {
+                                    LoadingSpin.openLoadingSpin(context);
+                                    emailResponse = await authApi.updateEmail(
+                                      email,
+                                      password,
+                                      context,
+                                      passwordTextFieldKey,
+                                    );
+                                  }
+                                } else {
+                                  emailResponse = true;
                                 }
                                 LoadingSpin.closeLoadingSpin(context);
-                                if (response) {
+                                if (nameResponse && emailResponse) {
                                   userStateNotifier.checkUserStatus();
                                   CustomSnackbar.showSnackbar(
                                     AppLanguage.getLanguageData()['Changes saved'],
                                     Colors.green,
+                                    const Duration(seconds: 3),
+                                  );
+                                } else if (nameResponse) {
+                                  CustomSnackbar.showSnackbar(
+                                    AppLanguage.getLanguageData()['Email couldn\'t be saved'],
+                                    Colors.red,
                                     const Duration(seconds: 3),
                                   );
                                 } else {
@@ -167,19 +213,21 @@ class _UserDataState extends ConsumerState<UserData> {
                               }
                             },
                           ),
-                          CustomTextButton(
-                            text: AppLanguage.getLanguageData()['Change password'] + '?',
-                            textStyle: TextStyle(
-                              fontFamily: 'EskapadeFrakturW04BlackFamily',
-                              color: AppDesign.getContraryPrimaryColor(),
-                              fontSize: ScreenSize.screenHeight * 0.015 +
+                          userState.provider == null
+                              ? CustomTextButton(
+                                text: AppLanguage.getLanguageData()['Change password'] + '?',
+                                textStyle: TextStyle(
+                                  fontFamily: 'EskapadeFrakturW04BlackFamily',
+                                  color: AppDesign.getContraryPrimaryColor(),
+                                  fontSize: ScreenSize.screenHeight * 0.015 +
                                   ScreenSize.screenWidth * 0.015,
-                              decoration: TextDecoration.underline,
-                            ),
-                            onTap: () {
-                              newPage(context, const ChangePassword());
-                            },
-                          ),
+                                  decoration: TextDecoration.underline,
+                                ),
+                                onTap: () {
+                                  newPage(context, const ChangePassword());
+                                  },
+                                )
+                              : const SizedBox(),
                         ],
                       )
                     ],
