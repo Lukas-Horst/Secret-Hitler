@@ -5,7 +5,7 @@ import 'package:appwrite/models.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/constants/appwrite_constants.dart';
 import 'package:secret_hitler/backend/database/appwrite/database_api.dart';
-import 'package:secret_hitler/backend/helper/convertAppwriteData.dart';
+import 'package:secret_hitler/backend/helper/convert_appwrite_data.dart';
 
 class GameState {
 

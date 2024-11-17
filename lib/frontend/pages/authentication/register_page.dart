@@ -166,7 +166,7 @@ class Register extends ConsumerWidget {
                             _passwordTextFieldKey.currentState?.showError('');
                           } else {
                             try {
-                              final response = await authApi.signIn(
+                              final response = await authApi.register(
                                 email,
                                 password,
                                 context,

@@ -8,6 +8,7 @@ import 'package:secret_hitler/backend/database/appwrite/database_api.dart';
 import 'package:secret_hitler/backend/database/appwrite/notifiers/game_room_state_notifier.dart';
 import 'package:secret_hitler/backend/database/appwrite/notifiers/game_state_notifier.dart';
 import 'package:secret_hitler/backend/helper/progress_blocker.dart';
+import 'package:secret_hitler/backend/helper/send_mail_timeout.dart';
 import 'package:secret_hitler/backend/helper/timer.dart';
 import 'package:secret_hitler/backend/riverpod/qr_code/qr_code_notifier.dart';
 import 'package:secret_hitler/frontend/widgets/components/text/game_room_text.dart';
@@ -79,4 +80,8 @@ final boardOverviewGameRoomTextProvider = Provider<GlobalKey<GameRoomTextState>>
 // The provider for the game room text key from the player and election page
 final playerAndElectionGameRoomTextProvider = Provider<GlobalKey<GameRoomTextState>>((ref) {
   return GlobalKey<GameRoomTextState>();
+});
+
+final sendMailTimeoutProvider = Provider<SendMailTimeout>((ref) {
+  return SendMailTimeout();
 });

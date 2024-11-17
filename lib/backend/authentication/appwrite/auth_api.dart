@@ -27,8 +27,8 @@ class AuthApi {
     return _client;
   }
 
-  // Method to sign in with an email and a password
-  Future<bool> signIn(String email, String password, BuildContext context,
+  // Method to register with an email and a password
+  Future<bool> register(String email, String password, BuildContext context,
       String name, GlobalKey<CustomTextFormFieldState> emailTextFieldKey,
       GlobalKey<CustomTextFormFieldState> passwordTextFieldKey,
       GlobalKey<CustomTextFormFieldState> confirmPasswordTextFieldKey) async {
@@ -171,6 +171,7 @@ class AuthApi {
       );
       return true;
     } catch(e) {
+      print(e);
       return false;
     }
   }

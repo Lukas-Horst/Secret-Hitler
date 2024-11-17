@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/backend/database/appwrite/notifiers/game_state_notifier.dart';
-import 'package:secret_hitler/backend/helper/convertAppwriteData.dart';
+import 'package:secret_hitler/backend/helper/convert_appwrite_data.dart';
 import 'package:secret_hitler/backend/helper/datastructure_functions.dart';
 import 'package:secret_hitler/backend/helper/progress_blocker.dart';
 import 'package:secret_hitler/backend/pages/game/game_room/board_overview_backend.dart';

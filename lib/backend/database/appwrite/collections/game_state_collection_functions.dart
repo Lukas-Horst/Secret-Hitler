@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/constants/appwrite_constants.dart';
 import 'package:secret_hitler/backend/database/appwrite/notifiers/game_room_state_notifier.dart';
-import 'package:secret_hitler/backend/helper/convertAppwriteData.dart';
+import 'package:secret_hitler/backend/helper/convert_appwrite_data.dart';
 import 'package:secret_hitler/backend/helper/useful_functions.dart';
 import 'package:secret_hitler/backend/pages/game/game_room/game_state_functions.dart';
 import 'package:secret_hitler/backend/riverpod/provider.dart';
