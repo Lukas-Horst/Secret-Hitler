@@ -217,6 +217,7 @@ mixin LocaleData {
     'Changes saved': 'Changes saved',
     'Please enter your password': 'Please enter your password',
     'Email couldn\'t be saved': 'The email couldn\'t be saved. Please check your password!',
+    'There was an error. Please try again!': 'There was an error. Please try again!',
   };
 
   static const Map<String, dynamic> DE = {
@@ -435,5 +436,6 @@ mixin LocaleData {
     'Changes saved': 'Änderungen gespeichert',
     'Please enter your password': 'Bitte gebe dein Password ein',
     'Email couldn\'t be saved': 'Die E-Mail konnte nicht gespeichert werden. Überprüfe bitte das Passwort!',
+    'There was an error. Please try again!': 'Es gab einen Fehler. Bitte versuche es erneut!',
   };
 }

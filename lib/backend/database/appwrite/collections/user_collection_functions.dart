@@ -1,5 +1,9 @@
 // author: Lukas Horst
 
+import 'dart:convert';
+
+import 'package:appwrite/appwrite.dart';
+import 'package:appwrite/models.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/constants/appwrite_constants.dart';
 import 'package:secret_hitler/backend/riverpod/provider.dart';
@@ -57,4 +61,26 @@ Future<bool> updateUserName(WidgetRef ref, String userName) async {
     },
   );
   return response;
+}
+
+Future<bool> deleteUser(String userId, Client client) async {
+  Functions functions = Functions(client);
+  try {
+    Execution result = await functions.createExecution(
+      functionId: deleteUserFunctionId,
+      body: jsonEncode({'userId': '6755cc29000bca9f7f35'}),
+      xasync: false,
+    );
+    // Function call was successful
+    if (result.responseStatusCode == 200) {
+      final responseBody = jsonDecode(result.responseBody);
+      if (responseBody['message'] == 'Benutzer erfolgreich gelöscht.') {
+        return true;
+      }
+    }
+    return false;
+  } catch (e) {
+    print(e);
+    return false;
+  }
 }

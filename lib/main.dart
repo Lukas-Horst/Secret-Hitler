@@ -46,9 +46,6 @@ class _MyAppState extends State<MyApp> {
           cursorColor: AppDesign.getTertiaryColor()
         ),
       ),
-      // home: const GameRoomNavigation(playerAmount: 9, playerNames: [
-      //   'test0', 'test1', 'test2', 'test3', 'test4',
-      // ],),
       home: const LoginConfirmEmailSwitch(),
     );
   }
