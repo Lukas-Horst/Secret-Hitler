@@ -6,7 +6,6 @@ import 'package:secret_hitler/backend/app_language/app_language.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/backend/database/appwrite/collections/user_collection_functions.dart';
 import 'package:secret_hitler/backend/helper/useful_functions.dart';
-import 'package:secret_hitler/backend/riverpod/provider.dart';
 import 'package:secret_hitler/frontend/pages/home/settings/design_page.dart';
 import 'package:secret_hitler/frontend/pages/home/settings/language_page.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons/primary_elevated_button.dart';
@@ -28,8 +27,6 @@ class _SettingsState extends ConsumerState<Settings> {
 
   @override
   Widget build(BuildContext context) {
-    final databaseApi = ref.watch(databaseApiProvider);
-    final userState = ref.watch(userStateProvider);
     return SafeArea(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -58,10 +55,7 @@ class _SettingsState extends ConsumerState<Settings> {
                 ),
                 PrimaryElevatedButton(
                   text: AppLanguage.getLanguageData()['Imprint'],
-                  onPressed: () async {
-                    bool response = await updateOnlineStatus(ref, true);
-                    print(response);
-                  },
+                  onPressed: () async {},
                 ),
               ],
             ),

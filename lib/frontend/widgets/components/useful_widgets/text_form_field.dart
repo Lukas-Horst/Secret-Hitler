@@ -1,8 +1,6 @@
 // author: Lukas Horst
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:secret_hitler/backend/app_design/app_design.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/frontend/widgets/animations/moving_animation.dart';
@@ -32,7 +30,7 @@ class CustomTextFormField extends StatefulWidget {
 
 class CustomTextFormFieldState extends State<CustomTextFormField> {
 
-  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _passwordVisible = false;
   String? _errorStatus;
   bool _errorMessageVisible = false;

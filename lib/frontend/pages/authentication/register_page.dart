@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
-import 'package:secret_hitler/backend/database/appwrite/collections/user_collection_functions.dart';
 import 'package:secret_hitler/backend/riverpod/provider.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons/login_register_switch_button.dart';
@@ -42,7 +41,7 @@ class Register extends ConsumerWidget {
     final userStateNotifier = ref.watch(userStateProvider.notifier);
     return PopScope(
       canPop: false,
-      onPopInvoked: (didpop) async {
+      onPopInvokedWithResult: (didpop, _) async {
         if (!didpop) {}
       },
       child: Scaffold(
@@ -184,8 +183,7 @@ class Register extends ConsumerWidget {
                                   _emailTextFieldKey,
                                   _passwordTextFieldKey,
                                 );
-                                await userStateNotifier.checkUserStatus();
-                                await createUser(ref);
+                                await userStateNotifier.checkUserStatus(ref: ref);
                               }
                             } catch(e) {
                               print(e);

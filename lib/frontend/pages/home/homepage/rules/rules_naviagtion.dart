@@ -55,7 +55,7 @@ class _RulesNavigationState extends State<RulesNavigation> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvoked: (didpop) async {
+      onPopInvokedWithResult: (didpop, _) async {
         if (!didpop) {
           _goBack(context);
         }

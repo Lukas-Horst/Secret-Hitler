@@ -52,7 +52,7 @@ class _QrCodeScannerPageState extends ConsumerState<QrCodeScannerPage> {
 
     return PopScope(
       canPop: false,
-      onPopInvoked: (didpop) async {
+      onPopInvokedWithResult: (didpop, _) async {
         if (!didpop) {
           _goBack(context);
         }

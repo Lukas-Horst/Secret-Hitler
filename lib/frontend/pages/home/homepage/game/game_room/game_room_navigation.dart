@@ -71,7 +71,7 @@ class _GameRoomNavigationState extends ConsumerState<GameRoomNavigation> {
     gameRoomStateNotifier.resetGameRoom();
     return PopScope(
       canPop: false,
-      onPopInvoked: (didpop) async {},
+      onPopInvokedWithResult: (didpop, _) async {},
       child: SafeArea(
         child: Scaffold(
           backgroundColor: const Color(0xFF474747),

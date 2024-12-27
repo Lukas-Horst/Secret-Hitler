@@ -42,7 +42,7 @@ class _ChangePasswordState extends ConsumerState<ChangePassword> {
     final userState = ref.watch(userStateProvider);
     return PopScope(
       canPop: false,
-      onPopInvoked: (didpop) async {
+      onPopInvokedWithResult: (didpop, _) async {
         if (!didpop) {
           _goBack(context);
         }

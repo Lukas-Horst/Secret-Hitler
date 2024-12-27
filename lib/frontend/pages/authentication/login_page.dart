@@ -45,7 +45,7 @@ class Login extends ConsumerWidget {
     final userStateNotifier = ref.watch(userStateProvider.notifier);
     return PopScope(
       canPop: false,
-      onPopInvoked: (didpop) async {
+      onPopInvokedWithResult: (didpop, _) async {
         if (!didpop) {}
       },
       child: Scaffold(
@@ -152,7 +152,7 @@ class Login extends ConsumerWidget {
                                 _emailTextFieldKey,
                                 _passwordTextFieldKey,
                               );
-                              await userStateNotifier.checkUserStatus();
+                              await userStateNotifier.checkUserStatus(ref: ref);
                             },
                           ),
                           CustomTextButton(
@@ -166,7 +166,7 @@ class Login extends ConsumerWidget {
                             ),
                             onTap: () async {
                               await authApi.guestLogin(context);
-                              await userStateNotifier.checkUserStatus();
+                              await userStateNotifier.checkUserStatus(ref: ref);
                             },
                           ),
                         ],
@@ -189,7 +189,7 @@ class Login extends ConsumerWidget {
                             imageName: 'Google',
                             onPressed: () async {
                               await authApi.googleLogin(context);
-                              await userStateNotifier.checkUserStatus();
+                              await userStateNotifier.checkUserStatus(ref: ref);
                             },
                           ),
                           ThirdPartyButton(

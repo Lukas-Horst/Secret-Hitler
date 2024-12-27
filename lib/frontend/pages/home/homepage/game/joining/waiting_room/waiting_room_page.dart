@@ -125,7 +125,7 @@ class _WaitingRoomState extends ConsumerState<WaitingRoom> {
     }
     return PopScope(
       canPop: false,
-      onPopInvoked: (didpop) async {
+      onPopInvokedWithResult: (didpop, _) async {
         if (!didpop) {
           _goBack(context, ref, gameRoomStateNotifier,
             gameRoomState.gameRoomDocument!,);

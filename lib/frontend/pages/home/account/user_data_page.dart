@@ -75,7 +75,7 @@ class _UserDataState extends ConsumerState<UserData> {
     final authApi = ref.watch(authApiProvider);
     return PopScope(
       canPop: false,
-      onPopInvoked: (didpop) async {
+      onPopInvokedWithResult: (didpop, _) async {
         if (!didpop) {
           _goBack(context, userStateNotifier, userState.user!);
         }

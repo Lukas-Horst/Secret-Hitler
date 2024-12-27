@@ -44,7 +44,7 @@ class _PageNavigationState extends ConsumerState<PageNavigation> {
   Widget build(BuildContext context) {
     return PopScope(
         canPop: false,
-        onPopInvoked: (didpop) async {
+      onPopInvokedWithResult: (didpop, _) async {
           if (!didpop) {}
         },
       child: Scaffold(

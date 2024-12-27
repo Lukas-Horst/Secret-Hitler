@@ -13,7 +13,6 @@ import 'package:secret_hitler/frontend/widgets/components/buttons/primary_elevat
 import 'package:secret_hitler/frontend/widgets/components/text/explaining_text.dart';
 import 'package:secret_hitler/frontend/widgets/components/useful_widgets/text_form_field.dart';
 import 'package:secret_hitler/frontend/widgets/header/header.dart';
-import 'package:secret_hitler/frontend/widgets/loading_spin.dart';
 
 class DeleteAccount extends ConsumerStatefulWidget {
   const DeleteAccount({super.key});
@@ -43,7 +42,7 @@ class _DeleteAccountState extends ConsumerState<DeleteAccount> {
     final authApi = ref.read(authApiProvider);
     return PopScope(
       canPop: false,
-      onPopInvoked: (didpop) async {
+      onPopInvokedWithResult: (didpop, _) async {
         if (!didpop) {
           _goBack(context);
         }

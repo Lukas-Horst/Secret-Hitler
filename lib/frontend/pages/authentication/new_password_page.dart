@@ -33,7 +33,7 @@ class _NewPasswordState extends State<NewPassword> {
     LoadingSpin.closeLoadingSpin(context);
     return PopScope(
       canPop: false,
-      onPopInvoked: (didpop) async {
+      onPopInvokedWithResult: (didpop, _) async {
         if (!didpop) {}
       },
       child: Scaffold(

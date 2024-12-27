@@ -9,17 +9,21 @@ import 'package:secret_hitler/backend/constants/appwrite_constants.dart';
 import 'package:secret_hitler/backend/riverpod/provider.dart';
 
 // Function to create a user in the user collection of the database
-Future<bool> createUser(WidgetRef ref) async {
-  final databaseApi = ref.watch(databaseApiProvider);
-  final userState = ref.watch(userStateProvider);
+Future<bool> createUser(WidgetRef ref, bool isGuest) async {
+  final databaseApi = ref.read(databaseApiProvider);
+  final userState = ref.read(userStateProvider);
+  // Checking if the user already exists in the database
+  if (await databaseApi.getDocumentById(userCollectionId, userState.user!.$id) != null) {
+    return false;
+  }
   bool response = await databaseApi.createDocument(
     userCollectionId,
     userState.user!.$id,
     {
-      'online': false,
+      'online': true,
       'userName': userState.user!.name,
       'lastActive': DateTime.now().toIso8601String(),
-      'guest': false,
+      'guest': isGuest,
       'provider': userState.provider != null,
     },
   );

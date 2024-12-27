@@ -4,6 +4,7 @@ import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/models.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/authentication/appwrite/auth_api.dart';
+import 'package:secret_hitler/backend/database/appwrite/collections/user_collection_functions.dart';
 
 class UserState {
   final User? user;
@@ -30,7 +31,7 @@ class UserStateNotifier extends StateNotifier<UserState> {
   }
 
   // Method to check if the user is logged in
-  Future<void> checkUserStatus() async {
+  Future<void> checkUserStatus({WidgetRef? ref}) async {
     final user = await _authApi.getCurrentUser();
     bool newVerificationState = state.withoutVerification;
     bool isGuest = false;
@@ -51,6 +52,9 @@ class UserStateNotifier extends StateNotifier<UserState> {
     state = UserState(user: user, firstCheck: true,
         withoutVerification: newVerificationState, isGuest: isGuest,
         provider: provider);
+    if (ref != null && user != null) {
+      await createUser(ref, isGuest);
+    }
   }
 
   // Method which starts a stream to any changes from the user account

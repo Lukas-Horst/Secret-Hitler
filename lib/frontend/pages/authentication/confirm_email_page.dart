@@ -34,7 +34,7 @@ class _ConfirmEmailState extends ConsumerState<ConfirmEmail> {
     LoadingSpin.closeLoadingSpin(context);
     return PopScope(
       canPop: false,
-      onPopInvoked: (didpop) async {
+      onPopInvokedWithResult: (didpop, _) async {
         if (!didpop) {}
       },
       child: Scaffold(
