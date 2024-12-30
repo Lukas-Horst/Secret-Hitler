@@ -69,6 +69,7 @@ mixin LocaleData {
     'More than 256 characters': 'More than 256 characters',
     'Field is empty': 'Field is empty',
     'Invalid credentials': 'Invalid credentials',
+    'The email already exists': 'The email already exists',
 
     // Rules Pages
     'RulePage1Section1': 'The year is 1932. The place is pre-WWII Germany. In Secret Hitler, players are German politicians attempting to hold a fragile Liberal government together and stem the rising tide of Fascism. Watch out though-there are secret Fascists among you, and one player is Secret Hitler.',
@@ -218,6 +219,7 @@ mixin LocaleData {
     'Please enter your password': 'Please enter your password',
     'Email couldn\'t be saved': 'The email couldn\'t be saved. Please check your password!',
     'There was an error. Please try again!': 'There was an error. Please try again!',
+    'Your account has been successfully deleted!': 'Your account has been successfully deleted!',
   };
 
   static const Map<String, dynamic> DE = {
@@ -288,6 +290,7 @@ mixin LocaleData {
     'More than 256 characters': 'More than 256 characters',
     'Field is empty': 'Feld ist leer',
     'Invalid credentials': 'Ungültige Daten',
+    'The email already exists': 'Diese E-mail existiert bereits',
 
     // Rules Pages
     'RulePage1Section1': 'Wir schreiben das Jahr 1932 und befinden uns in Deutschland vor dem Zweiten Weltkrieg. In Secret Hitler sind die Spieler deutsche Politiker, die versuchen, eine fragile liberale Regierung zusammenzuhalten und die wachsende Welle des Faschismus einzudämmen. Aber Vorsicht, es gibt heimliche Faschisten unter ihnen, und ein Spieler ist Hitler.',
@@ -437,5 +440,6 @@ mixin LocaleData {
     'Please enter your password': 'Bitte gebe dein Password ein',
     'Email couldn\'t be saved': 'Die E-Mail konnte nicht gespeichert werden. Überprüfe bitte das Passwort!',
     'There was an error. Please try again!': 'Es gab einen Fehler. Bitte versuche es erneut!',
+    'Your account has been successfully deleted!': 'Dein Account wurde erfolgreich gelöscht!',
   };
 }

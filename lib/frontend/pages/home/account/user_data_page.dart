@@ -71,8 +71,8 @@ class _UserDataState extends ConsumerState<UserData> {
   @override
   Widget build(BuildContext context) {
     final userState = ref.watch(userStateProvider);
-    final userStateNotifier = ref.watch(userStateProvider.notifier);
-    final authApi = ref.watch(authApiProvider);
+    final userStateNotifier = ref.read(userStateProvider.notifier);
+    final authApi = ref.read(authApiProvider);
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didpop, _) async {
@@ -255,7 +255,7 @@ class _UserDataState extends ConsumerState<UserData> {
                 decoration: TextDecoration.underline,
               ),
               onTap: () {
-                newPage(context, const DeleteAccount());
+                replacePage(context, const DeleteAccount());
               },
             ),
           ],

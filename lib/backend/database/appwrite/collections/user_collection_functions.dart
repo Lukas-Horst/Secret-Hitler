@@ -6,6 +6,7 @@ import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/models.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/constants/appwrite_constants.dart';
+import 'package:secret_hitler/backend/database/appwrite/collections/game_room_collection_functions.dart';
 import 'package:secret_hitler/backend/riverpod/provider.dart';
 
 // Function to create a user in the user collection of the database
@@ -67,16 +68,37 @@ Future<bool> updateUserName(WidgetRef ref, String userName) async {
   return response;
 }
 
-Future<bool> deleteUser(String userId, Client client) async {
-  Functions functions = Functions(client);
+Future<bool> deleteUser(String userId, WidgetRef ref) async {
+  final authApi = ref.read(authApiProvider);
+  final userNotifier = ref.read(userStateProvider.notifier);
+  final databaseApi = ref.read(databaseApiProvider);
+  Functions functions = Functions(authApi.getClient());
   try {
+    Document? userDocument = await databaseApi.getDocumentById(userCollectionId, userId);
+    if (userDocument != null) {
+      final gameRooms = userDocument.data['gameRooms'];
+      // Removing the player from all game rooms he is in
+      for (final gameRoomMap in gameRooms) {
+        final gameRoomDocument = await databaseApi.getDocumentById(gameRoomCollectionId, gameRoomMap['\$id']);
+        await leaveWaitingRoom(ref, gameRoomDocument!, null);
+      }
+      // Then deleting the user document
+      bool response = await databaseApi.deleteDocument(userCollectionId, userId);
+      if (!response) {
+        return false;
+      }
+    }
     Execution result = await functions.createExecution(
       functionId: deleteUserFunctionId,
-      body: jsonEncode({'userId': '6755cc29000bca9f7f35'}),
+      body: jsonEncode({'userId': userId}),
       xasync: false,
     );
     // Function call was successful
     if (result.responseStatusCode == 200) {
+      // The user will be logged out
+      await authApi.logout(null);
+      userNotifier.checkUserStatus();
+      userNotifier.changeVerificationState();
       final responseBody = jsonDecode(result.responseBody);
       if (responseBody['message'] == 'Benutzer erfolgreich gelöscht.') {
         return true;

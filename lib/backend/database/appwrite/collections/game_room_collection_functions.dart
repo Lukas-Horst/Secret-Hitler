@@ -133,18 +133,22 @@ Future<void> joinWaitingRoom(WidgetRef ref, Document gameRoomDocument,
 
 // Function to leave a waiting room and update the host or close the waiting room
 Future<void> leaveWaitingRoom(WidgetRef ref, Document gameRoomDocument,
-    BuildContext context) async {
-  LoadingSpin.openLoadingSpin(context);
+    BuildContext? context) async {
+  if (context != null) {
+    LoadingSpin.openLoadingSpin(context);
+  }
   await _updateUserList(ref, gameRoomDocument, false);
-  LoadingSpin.closeLoadingSpin(context);
-  closePage(context, 1);
+  if (context != null) {
+    LoadingSpin.closeLoadingSpin(context);
+    closePage(context, 1);
+  }
 }
 
 // Function to add or delete a user from a waiting room
 Future<void> _updateUserList(WidgetRef ref, Document gameRoomDocument,
     bool addUser) async {
-  final databaseApi = ref.watch(databaseApiProvider);
-  final userState = ref.watch(userStateProvider);
+  final databaseApi = ref.read(databaseApiProvider);
+  final userState = ref.read(userStateProvider);
   User currentUser = userState.user!;
   final users = gameRoomDocument.data['users'];
   bool isHost = isCurrentUserHost(ref, gameRoomDocument);

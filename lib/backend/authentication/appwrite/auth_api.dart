@@ -45,6 +45,8 @@ class AuthApi {
       print(e.message);
       if (e.message!.contains('Invalid `email` param')) {
         emailTextFieldKey.currentState?.showError(AppLanguage.getLanguageData()['Invalid email format']);
+      } else if (e.message!.contains('A user with the same id')) {
+        emailTextFieldKey.currentState?.showError(AppLanguage.getLanguageData()['The email already exists']);
       }
       LoadingSpin.closeLoadingSpin(context);
       return false;
@@ -122,13 +124,17 @@ class AuthApi {
   }
 
   // Method to logout from AppWrite
-  Future<bool> logout(BuildContext context) async {
-    LoadingSpin.openLoadingSpin(context);
+  Future<bool> logout(BuildContext? context) async {
+    if (context != null) {
+      LoadingSpin.openLoadingSpin(context);
+    }
     try {
       await _account.deleteSession(sessionId: 'current');
       return true;
     } catch(e) {
-      LoadingSpin.closeLoadingSpin(context);
+      if (context != null) {
+        LoadingSpin.closeLoadingSpin(context);
+      }
       print(e);
       return false;
     }

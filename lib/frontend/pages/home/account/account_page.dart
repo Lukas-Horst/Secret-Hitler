@@ -16,8 +16,8 @@ class Account extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authApi = ref.watch(authApiProvider);
-    final userNotifier = ref.watch(userStateProvider.notifier);
+    final authApi = ref.read(authApiProvider);
+    final userNotifier = ref.read(userStateProvider.notifier);
     return SafeArea(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,

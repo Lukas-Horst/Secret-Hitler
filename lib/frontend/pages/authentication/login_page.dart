@@ -167,6 +167,7 @@ class Login extends ConsumerWidget {
                             onTap: () async {
                               await authApi.guestLogin(context);
                               await userStateNotifier.checkUserStatus(ref: ref);
+                              LoadingSpin.closeLoadingSpin(context);
                             },
                           ),
                         ],

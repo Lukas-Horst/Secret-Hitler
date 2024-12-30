@@ -20,3 +20,11 @@ void closePage(BuildContext context, int amount) {
     Navigator.of(context).pop();
   }
 }
+
+// Function to replace the current page with an other page
+void replacePage(BuildContext context, Widget page) {
+  Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(builder: (context) => page),
+  );
+}
