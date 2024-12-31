@@ -5,7 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/app_design/app_design.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
+import 'package:secret_hitler/backend/helper/useful_functions.dart';
 import 'package:secret_hitler/backend/riverpod/provider.dart';
+import 'package:secret_hitler/frontend/pages/authentication/reset_password_page.dart';
+import 'package:secret_hitler/frontend/widgets/components/snackbar.dart';
 import 'package:secret_hitler/frontend/widgets/components/useful_widgets/bottom_navigation_bar.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons/custom_text_button.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons/navigation_back_button.dart';
@@ -23,6 +26,11 @@ class ChangePassword extends ConsumerStatefulWidget {
 
 class _ChangePasswordState extends ConsumerState<ChangePassword> {
 
+  // Text field keys
+  final GlobalKey<CustomTextFormFieldState> oldPasswordTextFieldKey = GlobalKey<CustomTextFormFieldState>();
+  final GlobalKey<CustomTextFormFieldState> newPasswordTextFieldKey = GlobalKey<CustomTextFormFieldState>();
+  final GlobalKey<CustomTextFormFieldState> confirmNewPasswordTextFieldKey = GlobalKey<CustomTextFormFieldState>();
+
   // Controllers
   final oldPasswordController = TextEditingController();
   final newPasswordController = TextEditingController();
@@ -39,7 +47,8 @@ class _ChangePasswordState extends ConsumerState<ChangePassword> {
 
   @override
   Widget build(BuildContext context) {
-    final userState = ref.watch(userStateProvider);
+    final authApi = ref.read(authApiProvider);
+    final userState = ref.read(userStateProvider);
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didpop, _) async {
@@ -68,6 +77,7 @@ class _ChangePasswordState extends ConsumerState<ChangePassword> {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           CustomTextFormField(
+                            key: oldPasswordTextFieldKey,
                             hintText: AppLanguage.getLanguageData()['Enter your old password'],
                             obscureText: true,
                             textController: oldPasswordController,
@@ -87,7 +97,9 @@ class _ChangePasswordState extends ConsumerState<ChangePassword> {
                                   ScreenSize.screenWidth * 0.015,
                               decoration: TextDecoration.underline,
                             ),
-                            onTap: () {},
+                            onTap: () {
+                              replacePage(context, ResetPassword(email: userState.user!.email,));
+                            },
                           ),
                         ],
                       ),
@@ -98,6 +110,7 @@ class _ChangePasswordState extends ConsumerState<ChangePassword> {
                         text: AppLanguage.getLanguageData()['New password'],
                       ),
                       CustomTextFormField(
+                        key: newPasswordTextFieldKey,
                         hintText: AppLanguage.getLanguageData()['Enter your new password'],
                         obscureText: true,
                         textController: newPasswordController,
@@ -115,6 +128,7 @@ class _ChangePasswordState extends ConsumerState<ChangePassword> {
                         text: AppLanguage.getLanguageData()['Confirm password'],
                       ),
                       CustomTextFormField(
+                        key: confirmNewPasswordTextFieldKey,
                         hintText: AppLanguage.getLanguageData()['Confirm your password'],
                         obscureText: true,
                         textController: confirmNewPasswordController,
@@ -129,8 +143,53 @@ class _ChangePasswordState extends ConsumerState<ChangePassword> {
                       // Save button
                       PrimaryElevatedButton(
                         text: AppLanguage.getLanguageData()['Save'],
-                        onPressed: () {
-
+                        onPressed: () async {
+                          String oldPassword = oldPasswordController.text.trim();
+                          String newPassword = newPasswordController.text.trim();
+                          String confirmNewPassword = confirmNewPasswordController.text.trim();
+                          confirmNewPasswordTextFieldKey.currentState?.resetsErrors();
+                          bool oldPasswordResponse = oldPasswordTextFieldKey.currentState!.resetsErrors();
+                          bool newPasswordResponse = newPasswordTextFieldKey.currentState!.resetsErrors();
+                          if (oldPasswordResponse || newPasswordResponse) {
+                            await Future.delayed(const Duration(milliseconds: 400));
+                          }
+                          if (oldPassword.isEmpty) {
+                            oldPasswordTextFieldKey.currentState?.showError(
+                                AppLanguage.getLanguageData()['Field is empty']);
+                          } else if (newPassword.length < 8) {
+                            newPasswordTextFieldKey.currentState?.showError(
+                                AppLanguage.getLanguageData()['Less than 8 characters']);
+                            confirmNewPasswordTextFieldKey.currentState?.showError('');
+                          } else if (newPassword.length > 256) {
+                            newPasswordTextFieldKey.currentState?.showError(
+                                AppLanguage.getLanguageData()['More than 256 characters']);
+                            confirmNewPasswordTextFieldKey.currentState?.showError('');
+                          } else if (newPassword != confirmNewPassword) {
+                            confirmNewPasswordTextFieldKey.currentState?.showError(
+                                AppLanguage.getLanguageData()['Passwords do not match']);
+                            newPasswordTextFieldKey.currentState?.showError('');
+                          } else if (newPassword == oldPassword) {
+                            newPasswordTextFieldKey.currentState?.showError(
+                                AppLanguage.getLanguageData()['No changes to the old password']);
+                            confirmNewPasswordTextFieldKey.currentState?.showError('');
+                          } else {
+                            bool response = await authApi.changePassword(
+                              newPassword, oldPassword,
+                              oldPasswordTextFieldKey, context);
+                            if (response) {
+                              CustomSnackbar.showSnackbar(
+                                AppLanguage.getLanguageData()['Your password has been changed'],
+                                Colors.green,
+                                const Duration(seconds: 3),
+                              );
+                            } else {
+                              CustomSnackbar.showSnackbar(
+                                AppLanguage.getLanguageData()['Your password could not be changed'],
+                                Colors.red,
+                                const Duration(seconds: 3),
+                              );
+                            }
+                          }
                         },
                       ),
                     ],

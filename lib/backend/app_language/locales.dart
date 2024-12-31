@@ -18,7 +18,7 @@ mixin LocaleData {
     'Confirm your password': 'Confirm your password',
     'Already have an account?': 'Already have an account?',
     'Reset password': 'Reset password',
-    'Enter your e-mail to reset your password.': 'Enter your e-mail to reset your password.',
+    'Send a recovery email to reset your password.': 'Send a recovery email to reset your password.',
     'Continue': 'Continue',
     'New password': 'New password',
     'Enter your new password': 'Enter your new password',
@@ -48,13 +48,14 @@ mixin LocaleData {
     'Delete': 'Delete',
     'Please enter "DELETE"': 'Please enter "DELETE" in the text field to delete your account.',
     'Enter "DELETE"': 'Enter "DELETE"',
-    'Confirm E-Mail': 'Confirm E-Mail',
-    'Send confirmation e-mail': 'Send confirmation e-mail',
+    'Confirm E-Mail': 'Confirm email',
+    'Send confirmation e-mail': 'Send confirmation email',
     'Confirm your current email': 'Please confirm your current email.',
     'Continue without confirmation': 'Continue without confirmation',
     'OR': 'OR',
     'Confirmation email sent': 'Confirmation email sent.',
     'Confirmation email could not be sent': 'Confirmation email could not be sent.',
+    'Send': 'Send',
     'Recovery email sent': 'Recovery email sent.',
     'Recovery email could not be sent': 'Recovery email could not be sent.',
     'Email already sent': 'Email already sent.',
@@ -70,6 +71,7 @@ mixin LocaleData {
     'Field is empty': 'Field is empty',
     'Invalid credentials': 'Invalid credentials',
     'The email already exists': 'The email already exists',
+    'The email does not exist': 'The email does not exist',
 
     // Rules Pages
     'RulePage1Section1': 'The year is 1932. The place is pre-WWII Germany. In Secret Hitler, players are German politicians attempting to hold a fragile Liberal government together and stem the rising tide of Fascism. Watch out though-there are secret Fascists among you, and one player is Secret Hitler.',
@@ -220,6 +222,9 @@ mixin LocaleData {
     'Email couldn\'t be saved': 'The email couldn\'t be saved. Please check your password!',
     'There was an error. Please try again!': 'There was an error. Please try again!',
     'Your account has been successfully deleted!': 'Your account has been successfully deleted!',
+    'No changes to the old password': 'No changes to the old password',
+    'Your password has been changed': 'Your password has been changed.',
+    'Your password could not be changed': 'Your password could not be changed.',
   };
 
   static const Map<String, dynamic> DE = {
@@ -239,7 +244,7 @@ mixin LocaleData {
     'Confirm your password': 'Bestätige dein Passwort',
     'Already have an account?': 'Schon einen Account?',
     'Reset password': 'Passwort zurücksetzen',
-    'Enter your e-mail to reset your password.': 'Gebe deine Email ein, um dein Passwort zurückzusetzen.',
+    'Send a recovery email to reset your password.': 'Sende eine Wiederherstellungsmail um dein Passwort zurückzusetzen.',
     'Continue': 'Weiter',
     'New password': 'Neues Passwort',
     'Enter your new password': 'Gebe dein neues Passwort ein',
@@ -276,6 +281,7 @@ mixin LocaleData {
     'OR': 'ODER',
     'Confirmation email sent': 'Bestätigungsmail gesendet.',
     'Confirmation email could not be sent': 'Bestätigungsmail konnte nicht gesendet werden.',
+    'Send': 'Senden',
     'Recovery email sent': 'Wiederherstellungsmail gesendet.',
     'Recovery email could not be sent': 'Wiederherstellungsmail konnte nicht gesendet werden.',
     'Email already sent': 'E-Mail wurde schon gesendet.',
@@ -291,6 +297,7 @@ mixin LocaleData {
     'Field is empty': 'Feld ist leer',
     'Invalid credentials': 'Ungültige Daten',
     'The email already exists': 'Diese E-mail existiert bereits',
+    'The email does not exist': 'Diese E-mail existiert nicht',
 
     // Rules Pages
     'RulePage1Section1': 'Wir schreiben das Jahr 1932 und befinden uns in Deutschland vor dem Zweiten Weltkrieg. In Secret Hitler sind die Spieler deutsche Politiker, die versuchen, eine fragile liberale Regierung zusammenzuhalten und die wachsende Welle des Faschismus einzudämmen. Aber Vorsicht, es gibt heimliche Faschisten unter ihnen, und ein Spieler ist Hitler.',
@@ -441,5 +448,8 @@ mixin LocaleData {
     'Email couldn\'t be saved': 'Die E-Mail konnte nicht gespeichert werden. Überprüfe bitte das Passwort!',
     'There was an error. Please try again!': 'Es gab einen Fehler. Bitte versuche es erneut!',
     'Your account has been successfully deleted!': 'Dein Account wurde erfolgreich gelöscht!',
+    'No changes to the old password': 'Kein Unterschied zum alten Passwort',
+    'Your password has been changed': 'Dein Passwort wurde geändert.',
+    'Your password could not be changed': 'Dein Passwort konnte nicht geändert werden.',
   };
 }

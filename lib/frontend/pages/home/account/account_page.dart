@@ -38,11 +38,11 @@ class Account extends ConsumerWidget {
                     newPage(context, const UserData());
                   },
                 ),
-                PrimaryElevatedButton(
-                  text: AppLanguage.getLanguageData()['Statistics'],
-                  onPressed: () async {
-                  },
-                ),
+                // PrimaryElevatedButton(
+                //   text: AppLanguage.getLanguageData()['Statistics'],
+                //   onPressed: () async {
+                //   },
+                // ),
                 PrimaryElevatedButton(
                   text: AppLanguage.getLanguageData()['Logout'],
                   onPressed: () async {

@@ -69,7 +69,6 @@ class AuthApi {
           password: password);
       return true;
     } on AppwriteException catch(e) {
-      print(e.message);
       print(e);
       if (e.message!.contains('Invalid `email` param')) {
         emailTextFieldKey.currentState?.showError(
@@ -169,13 +168,21 @@ class AuthApi {
 
   // Method to send a recovery email to reset the password. Returns true if the
   // email is submitted successfully
-  Future<bool> sendRecoveryMail(String email) async {
+  Future<bool> sendRecoveryMail(String email,
+      GlobalKey<CustomTextFormFieldState> emailTextFieldKey) async {
     try {
       await _account.createRecovery(
         email: email,
         url: 'http://reset-password-and-verify-email.onrender.com/recovery',
       );
       return true;
+    } on AppwriteException catch(e) {
+      print(e);
+      if (e.message!.contains('User with the requested ID could not be found')) {
+        emailTextFieldKey.currentState?.showError(
+            AppLanguage.getLanguageData()['The email does not exist']);
+      }
+      return false;
     } catch(e) {
       print(e);
       return false;
@@ -216,6 +223,33 @@ class AuthApi {
       return identity.provider;
     }
     return null;
+  }
+
+  // Method to change the password if the user is logged in
+  Future<bool> changePassword(String newPassword, String oldPassword,
+      GlobalKey<CustomTextFormFieldState> oldPasswordTextFieldKey,
+      BuildContext context) async {
+    LoadingSpin.openLoadingSpin(context);
+    try {
+      await _account.updatePassword(
+        password: newPassword,
+        oldPassword: oldPassword,
+      );
+      LoadingSpin.closeLoadingSpin(context);
+      return true;
+    } on AppwriteException catch(e) {
+      print(e);
+      if (e.message!.contains('Invalid credentials')) {
+        oldPasswordTextFieldKey.currentState?.showError(
+            AppLanguage.getLanguageData()['Wrong password']);
+      }
+      LoadingSpin.closeLoadingSpin(context);
+      return false;
+    } catch(e) {
+      print(e);
+      LoadingSpin.closeLoadingSpin(context);
+      return false;
+    }
   }
 
 }
