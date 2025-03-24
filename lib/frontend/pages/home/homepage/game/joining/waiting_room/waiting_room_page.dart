@@ -18,7 +18,7 @@ import 'package:secret_hitler/frontend/widgets/components/useful_widgets/activat
 import 'package:secret_hitler/frontend/widgets/components/useful_widgets/bottom_navigation_bar.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons/navigation_back_button.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons/primary_elevated_button.dart';
-import 'package:secret_hitler/frontend/widgets/components/snackbar.dart';
+import 'package:secret_hitler/frontend/widgets/components/useful_widgets/snackbar.dart';
 import 'package:secret_hitler/frontend/widgets/components/text/adjustable_standard_text.dart';
 import 'package:secret_hitler/frontend/widgets/components/text/explaining_text.dart';
 import 'package:secret_hitler/frontend/widgets/header/header.dart';

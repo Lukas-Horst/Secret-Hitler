@@ -11,6 +11,7 @@ import 'package:secret_hitler/backend/database/local/hive_database.dart';
 import 'package:secret_hitler/frontend/pages/authentication/switches/login_confirm_email_switch.dart';
 
 void main() async {
+  // Ensure Flutter bindings are initialized before running the app
   WidgetsFlutterBinding.ensureInitialized();
 
   // Loading the .env file for the appwrite id's

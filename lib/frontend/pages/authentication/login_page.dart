@@ -16,7 +16,7 @@ import 'package:secret_hitler/frontend/widgets/components/buttons/third_party_bu
 import 'package:secret_hitler/frontend/widgets/components/text/divider_with_text.dart';
 import 'package:secret_hitler/frontend/widgets/components/text/text_field_head_text.dart';
 import 'package:secret_hitler/frontend/widgets/components/useful_widgets/text_form_field.dart';
-import 'package:secret_hitler/frontend/widgets/loading_spin.dart';
+import 'package:secret_hitler/frontend/widgets/components/useful_widgets/loading_spin.dart';
 
 import '../../widgets/header/header.dart';
 

@@ -7,11 +7,11 @@ import 'package:secret_hitler/backend/riverpod/provider.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons/primary_elevated_button.dart';
 import 'package:secret_hitler/frontend/widgets/components/text/divider_with_text.dart';
-import 'package:secret_hitler/frontend/widgets/components/snackbar.dart';
+import 'package:secret_hitler/frontend/widgets/components/useful_widgets/snackbar.dart';
 import 'package:secret_hitler/frontend/widgets/components/text/explaining_text.dart';
 import 'package:secret_hitler/frontend/widgets/components/useful_widgets/text_form_field.dart';
 import 'package:secret_hitler/frontend/widgets/header/header.dart';
-import 'package:secret_hitler/frontend/widgets/loading_spin.dart';
+import 'package:secret_hitler/frontend/widgets/components/useful_widgets/loading_spin.dart';
 
 class ConfirmEmail extends ConsumerStatefulWidget {
   const ConfirmEmail({super.key});

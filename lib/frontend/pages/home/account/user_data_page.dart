@@ -5,15 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:secret_hitler/backend/app_design/app_design.dart';
 import 'package:secret_hitler/backend/app_language/app_language.dart';
+import 'package:secret_hitler/backend/authentication/user_state_notifier.dart';
 import 'package:secret_hitler/backend/database/appwrite/collections/user_collection_functions.dart';
 import 'package:secret_hitler/backend/helper/useful_functions.dart';
 import 'package:secret_hitler/backend/riverpod/provider.dart';
-import 'package:secret_hitler/backend/authentication/user_state_notifier.dart';
 import 'package:secret_hitler/backend/constants/screen_size.dart';
 import 'package:secret_hitler/frontend/pages/home/account/change_password_page.dart';
 import 'package:secret_hitler/frontend/pages/home/account/delete_account_page.dart';
-import 'package:secret_hitler/frontend/widgets/components/alert_dialog.dart';
-import 'package:secret_hitler/frontend/widgets/components/snackbar.dart';
+import 'package:secret_hitler/frontend/widgets/components/useful_widgets/alert_dialog.dart';
+import 'package:secret_hitler/frontend/widgets/components/useful_widgets/snackbar.dart';
 import 'package:secret_hitler/frontend/widgets/components/useful_widgets/bottom_navigation_bar.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons/custom_text_button.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons/navigation_back_button.dart';
@@ -21,7 +21,7 @@ import 'package:secret_hitler/frontend/widgets/components/buttons/primary_elevat
 import 'package:secret_hitler/frontend/widgets/components/text/text_field_head_text.dart';
 import 'package:secret_hitler/frontend/widgets/components/useful_widgets/text_form_field.dart';
 import 'package:secret_hitler/frontend/widgets/header/header.dart';
-import 'package:secret_hitler/frontend/widgets/loading_spin.dart';
+import 'package:secret_hitler/frontend/widgets/components/useful_widgets/loading_spin.dart';
 
 class UserData extends ConsumerStatefulWidget {
   const UserData({super.key});

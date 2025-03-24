@@ -90,7 +90,7 @@ Future<bool> deleteUser(String userId, WidgetRef ref) async {
     }
     Execution result = await functions.createExecution(
       functionId: deleteUserFunctionId,
-      body: jsonEncode({'userId': userId}),
+      body: jsonEncode({'userId': userId, 'projectId': appwriteProjectId}),
       xasync: false,
     );
     // Function call was successful

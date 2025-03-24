@@ -56,7 +56,7 @@ class Header extends StatelessWidget {
                           width: ScreenSize.screenWidth * 0.3,
                         ),
                         SizedBox(
-                          width: ScreenSize.screenWidth * 0.47,
+                          width: ScreenSize.screenWidth * 0.48,
                           height: ScreenSize.screenHeight * 0.07,
                           child: Center(
                             child: Text(

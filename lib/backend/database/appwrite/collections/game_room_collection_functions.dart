@@ -11,8 +11,8 @@ import 'package:secret_hitler/backend/helper/useful_functions.dart';
 import 'package:secret_hitler/backend/riverpod/provider.dart';
 import 'package:secret_hitler/frontend/pages/home/homepage/game/game_room/game_room_navigation.dart';
 import 'package:secret_hitler/frontend/pages/home/homepage/game/joining/waiting_room/waiting_room_page.dart';
-import 'package:secret_hitler/frontend/widgets/components/snackbar.dart';
-import 'package:secret_hitler/frontend/widgets/loading_spin.dart';
+import 'package:secret_hitler/frontend/widgets/components/useful_widgets/snackbar.dart';
+import 'package:secret_hitler/frontend/widgets/components/useful_widgets/loading_spin.dart';
 
 // Function to create a waiting room in the database
 Future<void> createWaitingRoom(WidgetRef ref, String password,

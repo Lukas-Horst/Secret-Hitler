@@ -9,7 +9,7 @@ import 'package:secret_hitler/frontend/pages/home/homepage/game/joining/new_game
 import 'package:secret_hitler/frontend/pages/home/homepage/rules/rules_naviagtion.dart';
 import 'package:secret_hitler/frontend/widgets/components/buttons/primary_elevated_button.dart';
 import 'package:secret_hitler/frontend/widgets/header/header.dart';
-import 'package:secret_hitler/frontend/widgets/loading_spin.dart';
+import 'package:secret_hitler/frontend/widgets/components/useful_widgets/loading_spin.dart';
 
 class Homepage extends StatelessWidget {
   const Homepage({super.key});

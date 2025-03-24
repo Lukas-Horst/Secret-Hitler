@@ -10,7 +10,7 @@ import 'package:secret_hitler/backend/helper/useful_functions.dart';
 import 'package:secret_hitler/backend/pages/game/game_room/game_state_functions.dart';
 import 'package:secret_hitler/backend/riverpod/provider.dart';
 import 'package:secret_hitler/frontend/pages/home/homepage/game/game_room/game_room_navigation.dart';
-import 'package:secret_hitler/frontend/widgets/loading_spin.dart';
+import 'package:secret_hitler/frontend/widgets/components/useful_widgets/loading_spin.dart';
 
 // Function to create the game state to the game room document
 Future<void> createGameStateDocument(WidgetRef ref, Document gameRoomDocument) async {
